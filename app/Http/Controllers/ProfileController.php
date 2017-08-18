@@ -154,24 +154,25 @@ class ProfileController extends Controller {
         }
         $posts = Post::where('post_author', $users->id)->where('post_status','publish')->orderBy('id', 'DESC')->paginate(12, ['*'], 'tulisanpage');
         $buqus = Buqus::where('buqu_author', $users->id)->orderBy('id', 'DESC')->paginate(12, ['*'], 'buqupage');
-        $followers = Followers::with('followers')->where('user_id', $users->id)->orderBy('id', 'DESC')->paginate(50, ['*'], 'followerpage');
+        $followers = Followers::join('users','follower_id','=','users.id')->where('user_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followerpage');
 
-        $jml_followers = Followers::with('followers')->where('user_id',$users->id)->count('user_id');
-        $jml_following = Followers::with('followers')->where('follower_id',$users->id)->count('user_id');
-            # code...
+        $jml_followers = Followers::where('user_id',$users->id)->distinct('follower_id')->count('follower_id');
+        $jml_following = Followers::where('follower_id',$users->id)->distinct('user_id')->count('user_id');
       
-        $followings = Followers::where('follower_id', $users->id)->orderBy('id', 'DESC')->paginate(50, ['*'], 'followingpage');
+        $followings = Followers::join('users','user_id','=','users.id')->where('follower_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followingpage');
 
         return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_followers','jml_following'));
     }
 
-    public function terbaru($limit = 50) {
+    public function terbaru($limit = 52) {
         //penulis yang baru pertama membuat tulisan yang terbaru
         $pagetitle = 'Penulis Terbaru';        
-        $users = DB::select("SELECT post_author, post_title, post_slug, MIN(published_at) published_at, u.name, u.username, u.user_image
-FROM posts p INNER JOIN users u ON p.post_author = u.id 
+        $users = DB::select("SELECT * FROM (
+SELECT MIN(p.published_at) published_at, u.id, u.name, u.username, u.user_image, u.role, p.post_author, p.post_slug, p.post_title
+FROM users u INNER JOIN posts p ON p.post_author = u.id 
 WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
-GROUP BY post_author, post_title, post_slug, u.name, u.username, u.user_image ORDER BY MIN(p.published_at) desc limit ".$limit);
+GROUP BY u.id, u.name, u.username, u.user_image, u.role, p.post_author, p.post_slug, p.post_title
+)a ORDER BY published_at DESC LIMIT ".$limit);
 
         return view('pages.penulisterbaru', compact('pagetitle', 'users'));
     }
@@ -179,11 +180,11 @@ GROUP BY post_author, post_title, post_slug, u.name, u.username, u.user_image OR
     public function populer($limit = 20) {
         //penulis dengan follower terbanyak
         $pagetitle = 'Penulis Terpopuler';
-        $users = DB::select("select post_author, count(f.id) total_followers, u.name, u.username, u.user_image from posts p 
-INNER JOIN users u ON p.post_author = u.id 
-INNER JOIN followers f ON u.id=f.user_id
-WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1 and username NOT IN ('qlomba', 'qworkshop')
-group by post_author, u.name, u.username, u.user_image  order by count(f.id) desc limit ".$limit);
+        $users = DB::select("select u.id post_author, count(f.id) total_followers, u.name, u.username, u.user_image, u.role 
+from followers f 
+INNER JOIN users u ON f.user_id = u.id 
+WHERE u.status=1 and username NOT IN ('qlomba', 'qworkshop')
+group by u.id, u.name, u.username, u.user_image, u.role  order by count(f.id) desc limit ".$limit);
 
         return view('pages.penulispopuler', compact('pagetitle', 'users'));
     }
@@ -191,10 +192,10 @@ group by post_author, u.name, u.username, u.user_image  order by count(f.id) des
    public function favorit($limit = 50) {
         //penulis dengan post view terbanyak
         $pagetitle = 'Penulis Terfavorit';
-        $users = DB::select("select post_author, sum(view_count) total_view, u.name, u.username, u.user_image from posts p 
+        $users = DB::select("select post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p 
 INNER JOIN users u ON p.post_author = u.id 
 WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
-group by post_author, u.name, u.username, u.user_image  order by sum(view_count) desc limit ".$limit);
+group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit ".$limit);
 
         return view('pages.penulisfavorit', compact('pagetitle', 'users'));
     }
@@ -202,10 +203,10 @@ group by post_author, u.name, u.username, u.user_image  order by sum(view_count)
     public function produktif($limit = 50) {
         //penulis dengan jumlah tulisan terbit terbanyak
         $pagetitle = 'Penulis Terproduktif';
-        $users = DB::select("SELECT post_author, count(p.id) total_post, u.name, u.username, u.user_image
+        $users = DB::select("SELECT post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
 FROM posts p INNER JOIN users u ON p.post_author = u.id 
 WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
-GROUP BY post_author, u.name, u.username, u.user_image ORDER BY count(p.id) desc limit ".$limit);
+GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit ".$limit);
 
         return view('pages.penulisproduktif', compact('pagetitle', 'users'));
     }

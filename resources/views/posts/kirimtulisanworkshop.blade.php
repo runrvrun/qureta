@@ -61,22 +61,29 @@
                         </div>
                     </div>
                     
-                    <div class="form-group {{ $errors->has('tempat_lahir') ? 'has-error' : ''}}">
-                         {!! Form::label('tempat_lahir', 'Tempat Lahir', ['class' => 'col-md-4 control-label']) !!}
+                     <div class="form-group {{ $errors->has('date_of_birth') ? 'has-error' : ''}}">
+                         {!! Form::label('date_of_birth', 'Tanggal Lahir', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::text('tempat_lahir', null, ['class' => 'form-control','required' => 'required']) !!}
-                            {!! $errors->first('tempat_lahir', '<p class="help-block">:message</p>') !!}
+                            {!! Form::date('date_of_birth', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('date_of_birth', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                   
+                    <div class="form-group {{ $errors->has('profession') ? 'has-error' : ''}}">
+                         {!! Form::label('profession', 'Profesi', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="col-md-6">
+                            {!! Form::text('profession', null, ['class' => 'form-control','required' => 'required']) !!}
+                            {!! $errors->first('profession', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     
-                     <div class="form-group {{ $errors->has('tgl_lahir') ? 'has-error' : ''}}">
-                         {!! Form::label('tgl_lahir', 'Tanggal Lahir', ['class' => 'col-md-4 control-label']) !!}
+                    <div class="form-group {{ $errors->has('institution') ? 'has-error' : ''}}">
+                         {!! Form::label('institution', 'Institusi', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::date('tgl_lahir', null, ['class' => 'form-control']) !!}
-                            {!! $errors->first('tgl_lahir', '<p class="help-block">:message</p>') !!}
+                            {!! Form::text('institution', null, ['class' => 'form-control','required' => 'required']) !!}
+                            {!! $errors->first('institution', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-
 
                      <div class="form-group {{ $errors->has('files') ? 'has-error' : ''}}">
                          {!! Form::label('files', 'Kirim Tulisan dan CV (.doc, .docx, atau .pdf)', ['class' => 'col-md-4 control-label']) !!}

@@ -18,24 +18,27 @@
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->
                     <!--                        <br/>
                                             <br/>-->
+                  
                     <div class="table-responsive">
                         <table class="table table-striped">
+
                             <thead>
                                 <tr>
-                                    <th> Nama</th><th> Email </th><th>No. Telepon</th><th>Alamat</th><th>Tempat Lahir</th><th>Tanggal Lahir</th><th></th>
+                                    <th></th><th> Nama</th><th> Email </th><th>No. Telepon</th><th>Alamat</th><th>Profesi</th><th>Institusi</th><th>Tanggal Lahir</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($workshop as $item)
+
                                 <tr>
-                                   
+                                    <td><a href="{{ url( '/admin/workshops_posts/'.$item->workshop_id.'/'.$item->user_id)}}"><button class="btn btn-xs btn-primary">Lihat File</button></a></td>
                                     <td>{{ $item->name }}</td>
                                    <td>{{ $item->email }}</td>
                                     <td>{{ $item->phone_number }}</td>
                                    <td>{{ $item->address }}</td>
-                                     <td>{{ $item->tempat_lahir }}</td>
-                                   <td>{{ $item->tgl_lahir }}</td>
-                                   <td><a href="{{ url( '/admin/workshops_posts/'.$item->workshop_id.'/'.$item->user_id)}}"><button class="btn btn-xs btn-primary">Lihat File</button></a></td>
+                                   <td>{{ $item->profession }}</td>
+                                   <td>{{ $item->institution }}</td>
+                                   <td>{{ $item->date_of_birth }}</td>                                  
                                 </tr>
                                 @endforeach
                             </tbody>

@@ -5,6 +5,7 @@
 @endsection
 @section('addcss')
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link href="http://demo.expertphp.in/css/jquery.ui.autocomplete.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -35,7 +36,14 @@
             </div>
             @endif
             <!-- disable edit if someone else is editing -->
-            <input type="hidden" name="last_edit_minute" value="{{ Carbon::parse($post->updated_at)->diffInMinutes(Carbon::now()) }}" />
+            <?php
+		if($post->updated_at){
+			$updated_at = $post->updated_at;
+		}else{
+			$updated_at = $post->created_at;
+		}
+	    ?>
+            <input type="hidden" name="last_edit_minute" value="{{ Carbon::parse($updated_at)->diffInMinutes(Carbon::now()) }}" />
             <input type="hidden" name="updated_by" value="{{$post->updated_by}}" />
             <input type="hidden" name="my_username" value="{{Auth::user()->username}}" />
             <div class="alert alert-warning alert-dismissible" role="alert" id="being_edited" style="display: none;">
@@ -70,7 +78,7 @@
             <div class="form-group">                
                 <label>Lomba</label>
                 @if(isset($competition))
-                {!! Form::select('post_competition', get_dd_competition(), $competition->competition->id, ['class' => 'form-control', 'placeholder'=>' - ']) !!}
+                {!! Form::select('post_competition', get_dd_competition($competition->competition->id), $competition->competition->id, ['class' => 'form-control', 'placeholder'=>' - ']) !!}
                 @else
                 {!! Form::select('post_competition', get_dd_competition(), null, ['class' => 'form-control', 'placeholder'=>' - ']) !!}
                 @endif
@@ -197,6 +205,12 @@
         </div>
     </div>
 </div>
+<?php
+//debug post
+		if(Auth::check() && Auth::user()->role='admin'){
+			//dd($post);
+		}
+?>
 @endsection
 
 @section('addjs')
@@ -293,11 +307,11 @@ if(cansave.length > 0){
         var inputs = document.getElementsByTagName("input");
         for (var i = 0; i < inputs.length; i++) {
             if (inputs[i].type === 'submit' || inputs[i].type === 'text') {
-                inputs[i].disabled = true;
+                //inputs[i].disabled = true;
             }
         }        
-        $("#being_edited_by").text(' oleh {{{ $post->updated_by }}}');
-        $("#being_edited").css('display','block');        
+        //$("#being_edited_by").text(' oleh {{{ $post->updated_by }}}');
+        //$("#being_edited").css('display','block');        
      }
    });
 </script>

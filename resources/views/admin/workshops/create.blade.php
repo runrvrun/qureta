@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 
-@section('content')
-{{ Carbon::setLocale('id') }}
+@section('content') 
 <div class="container">
     <div class="row">
         <div class="col-md-8">
@@ -43,14 +42,14 @@
                     <div class="form-group {{ $errors->has('workshop_startdate') ? 'has-error' : ''}}">
                         {!! Form::label('workshop_startdate', 'Mulai Pendaftaran', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::date('workshop_startdate', null, ['class' => 'form-control']) !!}
+                            {!! Form::input('text', 'workshop_startdate', null, ['id'=>'workshop_startdate','class' => 'form-control']) !!}
                             {!! $errors->first('workshop_startdate', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('workshop_enddate') ? 'has-error' : ''}}">
                         {!! Form::label('workshop_enddate', 'Akhir Pendaftaran', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::date('workshop_enddate', null, ['class' => 'form-control']) !!}
+                            {!! Form::input('text', 'workshop_enddate', null, ['id'=>'workshop_enddate','class' => 'form-control']) !!}
                             {!! $errors->first('workshop_enddate', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -73,4 +72,15 @@
         </div>
     </div>
 </div>
+@endsection  
+@section('addjs') 
+<script type="text/javascript">
+    $(function () {
+    $('#workshop_startdate').datetimepicker({
+    locale: 'id'
+    });
+    $('#workshop_enddate').datetimepicker({
+    locale: 'id'
+    });  
+    });</script>
 @endsection

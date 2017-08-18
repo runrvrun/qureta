@@ -22,6 +22,10 @@ Route::get('/home', 'HomeController@index');
 Route::get('/redirect/{provider}', 'SocialAuthController@redirect');
 Route::get('/callback/{provider}', 'SocialAuthController@callback');
 
+Route::get('karir', function () {
+    return redirect('page/karir');
+});
+
 Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function() {
     // main page for the admin section (app/views/admin/dashboard.blade.php)
 //    Route::get('/', function() {
@@ -49,7 +53,6 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::post('/users/changepass', 'Admin\\UsersController@changepassword');
     Route::resource('/users', 'Admin\\UsersController');    
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
-    Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'Admin\\UsersController@autoComplete'));   
     Route::resource('/statistics', 'Admin\\StatisticsController');    
     Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');    
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
@@ -58,8 +61,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
      Route::resource('messages', 'MessagesController');  
      Route::get('messageautocomplete',array('as'=>'messageautocomplete','uses'=>'MessagesController@autoComplete'));
      Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'UserController@autoComplete'));     
-     Route::get('postwauthorautocomplete',array('as'=>'postwauthorautocomplete','uses'=>'PostsController@postwauthorautocomplete'));   
-     Route::get('compostautocomplete/{competitionid}',array('as'=>'compostautocomplete','uses'=>'Admin\\Competition_postsController@autocomplete'));
+
 
 Route::get('/kirim-tulisan', 'PostsController@kirimtulisan')->middleware('auth');
 Route::get('/kirim-tulisan/lomba/{a}', 'PostsController@kirimtulisanlomba')->middleware('auth');

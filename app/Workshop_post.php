@@ -26,6 +26,6 @@ class Workshop_post extends Model {
      *
      * @var array
      */
-    protected $fillable = ['workshop_id', 'name', 'user_id', 'email', 'phone_number','address','tempat_lahir','tgl_lahir','tgl_daftar'];
+    protected $fillable = ['workshop_id', 'name', 'user_id', 'email', 'phone_number','address','tempat_lahir','tgl_lahir','tgl_daftar','date_of_birth','profession','institution'];
 
 }

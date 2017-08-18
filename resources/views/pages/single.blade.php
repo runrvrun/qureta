@@ -46,6 +46,9 @@
     @endif
     <div class="name">
         {{ HTML::link('/profile/'.$post->post_authors->username, $post->post_authors->name)}}
+@if(isset($post->post_authors->role) && ($post->post_authors->role == 'premium' || $post->post_authors->role == 'partner' || $post->post_authors->role == 'admin' || $post->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
             </div>
     <div class="title">{{ get_user_profesi($post->post_author) }}</div>
     <div class="info">{{ $post->published_at ? $post->published_at->format('j M Y'): '' }}</div>

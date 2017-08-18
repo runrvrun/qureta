@@ -178,3 +178,7 @@ function update_user_post_count($user_id) {
     $requestData['post_count'] = $post_count;
     $user->update($requestData);
 }
+
+function get_recommended_user() {
+    return App\User_metum::with('user')->where('meta_name', '=', 'recommended')->inRandomOrder()->take(4)->get();
+}

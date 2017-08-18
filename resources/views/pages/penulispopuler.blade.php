@@ -21,7 +21,11 @@
 	    @else
             <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->user_image) }}" alt="{{ $row->user_image }}" onerror="avaError(this);" /></div>    
             @endif
-            <div class="name">{{ HTML::link('/profile/'.$row->username, $row->name)}}</div>
+            <div class="name">{{ HTML::link('/profile/'.$row->username, $row->name)}} 
+@if(isset($row->role) && ($row->role == 'premium' || $row->role == 'partner' || $row->role == 'admin' || $row->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
             <div class="title">{{ get_user_profesi($row->post_author) }}</div>            
             <div class="title">Total followers: {{ number_format($row->total_followers,0,',','.') }}</div>
         </div>  

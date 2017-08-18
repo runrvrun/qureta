@@ -70,7 +70,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
@@ -90,7 +94,7 @@
                     {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}
                 </div>
             </div>
-            <div class="share{{ $row->id }} floating-share-box" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='{{ $row->post_title }} | Qureta' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'>
+            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='{{ $row->post_title }} | Qureta' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'>
 	</div>
 	</div>
         </div>
@@ -135,7 +139,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
@@ -153,7 +161,7 @@
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>               
-            <div class="share{{ $row->id }} floating-share-box" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
+            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>     
         @endif
         @endforeach
@@ -196,7 +204,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
@@ -219,6 +231,58 @@
         @endif
         @endforeach
     </div>
+<?php
+$recommended_writers = get_recommended_user();
+?>
+@if(count($recommended_writers)>0)
+    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+    <!--recommended writers-->
+    <div class="row topic-title">
+        <div class="col-sm-12">
+            <h3>{{ HTML::link('', 'PENULIS FAVORIT')}}</h3>
+        </div>
+    </div>
+    <div class="row recommended-user">
+    @foreach($recommended_writers as $recw)          
+        <div class="article col-sm-3 grid-group-item">
+            <div class="user-info">
+                @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))
+                <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>    
+                @else
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>    
+                @endif
+                <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
+@if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
+                <div class="title">{{ get_user_profesi($recw->user->id) }}                                
+                </div>
+                @if(Auth::check() && $recw->user->id !== Auth::user()->id) 
+                <!--logged in and not own profile, show follow button-->
+                <input type="hidden" id="userid" value="{{ $recw->user->id }}" />
+                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+                <input type="hidden" id="userid" value="{{ $recw->user->id }}" />
+                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+                @if (isFollowing($recw->user->id))
+                <div class="col-md-2">                    
+                    <button class="btn btn-primary" id="btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
+                </div>
+                @else
+                <div class="col-md-2">                    
+                    <button class="btn btn-primary" id="btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
+                </div>
+                @endif
+                @else
+                <div class="col-md-2">                    
+                    <a href="{{url('/login')}}"><button class="btn btn-primary" style="background-color: #337ab7;" id="btnFollowUser"> <i class="fa fa-user-plus"></i> Follow</button></a>
+                </div>
+                @endif
+            </div>
+        </div>
+    @endforeach
+    </div>
+@endif
     <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <!--topic row 4-->
     <div class="row topic-title">
@@ -257,7 +321,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
@@ -318,7 +386,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
@@ -359,7 +431,11 @@
                 @else
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
-                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+                <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
                 <div class="title">{{ get_user_profesi($row->post_author) }}
                 @if(Auth::check() && (Auth::user()->role=='admin' || Auth::user()->role=='editor'))
                     @if($row->sticky)
