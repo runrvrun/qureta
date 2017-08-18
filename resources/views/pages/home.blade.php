@@ -239,7 +239,7 @@ $recommended_writers = get_recommended_user();
     <!--recommended writers-->
     <div class="row topic-title">
         <div class="col-sm-12">
-            <h3>{{ HTML::link('', 'PENULIS FAVORIT')}}</h3>
+            <h3>{{ HTML::link('/penulis/favorit', 'PENULIS FAVORIT')}}</h3>
         </div>
     </div>
     <div class="row recommended-user">
@@ -260,22 +260,18 @@ $recommended_writers = get_recommended_user();
                 </div>
                 @if(Auth::check() && $recw->user->id !== Auth::user()->id) 
                 <!--logged in and not own profile, show follow button-->
-                <input type="hidden" id="userid" value="{{ $recw->user->id }}" />
-                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-                <input type="hidden" id="userid" value="{{ $recw->user->id }}" />
-                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
                 @if (isFollowing($recw->user->id))
-                <div class="col-md-2">                    
-                    <button class="btn btn-primary" id="btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
+                <div>                    
+                    <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
                 </div>
                 @else
-                <div class="col-md-2">                    
-                    <button class="btn btn-primary" id="btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
+                <div>                    
+                    <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
                 </div>
                 @endif
                 @else
-                <div class="col-md-2">                    
-                    <a href="{{url('/login')}}"><button class="btn btn-primary" style="background-color: #337ab7;" id="btnFollowUser"> <i class="fa fa-user-plus"></i> Follow</button></a>
+                <div>                    
+                    <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
                 </div>
                 @endif
             </div>
@@ -646,6 +642,40 @@ $('.share_button').click(function () {
                 }
             });
         }
+    }
+});
+
+$('.btnFollowUser').click(function () {
+    var $this = $(this);
+    $this.toggleClass('active');
+    var userid = $this.data('userid');
+    var followerid = document.getElementById('followerid').value;
+    var token = '{{{ csrf_token() }}}';
+    var data = {"_token": token, "userid": userid, "followerid": followerid};
+    if ($this.hasClass('active')) {
+        $.ajax({
+            url: "/user/follow",
+            type: "POST",
+            data: data,
+            error: function (exception) {
+                console.log(data)
+            },
+            success: function () {
+                $this.html('<i class="fa fa-check"></i> Following');
+            }
+        });
+    } else {
+        $.ajax({
+            url: "/user/unfollow",
+            type: "POST",
+            data: data,
+            error: function (exception) {
+                console.log(data)
+            },
+            success: function () {
+                $this.html('<i class="fa fa-user-plus"></i> Follow');
+            }
+        });
     }
 });
 </script>

@@ -74,9 +74,8 @@ class PostsController extends Controller {
             Auth::logout();
             return redirect('/login');
         }
-        $draftcount = 0;
         $lomba = Competition::findOrFail($lombaid);
-        return view('posts.kirimtulisan', compact('lomba','draftcount'));
+        return view('posts.kirimtulisan', compact('lomba'));
     }
 
     public function kirimtulisanworkshop($workshopid) {
@@ -169,7 +168,7 @@ class PostsController extends Controller {
             $fileName = rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
-            Image::make($file->getRealPath())->resize(214, null, function ($constraint) {
+            Image::make($file->getRealPath())->resize(350, null, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode('jpg', 75)->save($uploadThumbPath . $fileName);
             Image::make($file->getRealPath())->resize(653, null, function ($constraint) {
@@ -660,6 +659,21 @@ class PostsController extends Controller {
         $follower = User::find($followerid);
         $post->unbookmark($follower);
         return response()->json(['responseText' => 'Success!'], 200);
+    }
+
+    public function postwauthorautocomplete(Request $request) {
+        $query = $request->get('term','');
+        
+        $post=Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('post_title','LIKE','%'.$query.'%')->get();
+
+        $data=array();
+        foreach ($post as $p) {
+                $data[]=array('label'=>$p->post_title.' ('.$p->post_authors->name.')');
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['value'=>'No Result Found','id'=>''];
     }
 
 }
