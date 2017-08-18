@@ -142,7 +142,16 @@
                             {!! $errors->first('linkedin', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-
+@if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+                    <div class="form-group {{ $errors->has('recommended') ? 'has-error' : ''}}">
+                        {!! Form::label('recommended', 'Recommended Writer', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="col-md-6">
+                            {{ Form::hidden('recommended_id',null) }}
+                            {!! Form::checkbox('recommended', 1, null) !!}
+                            {!! $errors->first('recommended', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+@endif
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-4">
                             {!! Form::submit('Update Profil', ['class' => 'btn btn-primary']) !!}
@@ -156,7 +165,7 @@
                                         'url' => ['/admin/users', $user->id],
                                         'style' => 'display:inline'
                                         ]) !!}
-                                        {!! Form::button('<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Delete user" /> Delete User', array(
+                                        {!! Form::button('<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Delete user"></span> Delete User', array(
                                         'type' => 'submit',
                                         'class' => 'btn btn-danger',
                                         'title' => 'Delete user',

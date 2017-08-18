@@ -5,3 +5,17 @@
 Homestead.json
 Homestead.yaml
 .env
+vendor/
+node_modules/
+npm-debug.log
+public/storage
+public/hot
+public/uploads
+storage/*.key
+.env.*.php
+.env.php
+.env
+Homestead.yaml
+Homestead.json
+.rocketeer/
+/config

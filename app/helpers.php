@@ -168,8 +168,13 @@ function is_banned($user_id){
     return App\User::where('id',$user_id)->where('banned_until','>',Carbon::now()->toDateTimeString())->count();
 }
 
-function get_dd_competition() {
-    return App\Competition::where('competition_enddate','>',Carbon::now()->toDateTimeString())->pluck('competition_title', 'id');
+function get_dd_competition($includeid=null) {
+    //return App\Competition::pluck('competition_title', 'id');
+
+    if($includeid){
+        return App\Competition::where('id',$includeid)->orwhere('competition_startdate','<=',Carbon::today()->toDateString())->Where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
+    }
+    return App\Competition::where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
 }
 
 function update_user_post_count($user_id) {
@@ -180,5 +185,5 @@ function update_user_post_count($user_id) {
 }
 
 function get_recommended_user() {
-    return App\User_metum::with('user')->where('meta_name', '=', 'recommended')->inRandomOrder()->take(4)->get();
+    return App\User_metum::with('user')->where('meta_name', '=', 'recommended')->where('meta_value', '=', '1')->inRandomOrder()->take(4)->get();
 }
