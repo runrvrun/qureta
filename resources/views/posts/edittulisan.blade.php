@@ -67,14 +67,8 @@
             ]) !!}
             {!! Form::hidden('post_id', $post->id) !!}
             {!! Form::hidden('post_status', $post->post_status) !!}
-            @if(isset($lomba))
-            <div class="form-group {{ $errors->has('post_title') ? 'has-error' : ''}}">
-                {!! Form::hidden('lomba_id', $lomba->id) !!}
-                <h4>Kirim tulisan untuk lomba: <strong>{{ $lomba->competition_title }}</strong></h4>
-            </div>
-            @endif
-
-            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+            
+            @if(isset($competition->competition->id) || Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
             <div class="form-group">                
                 <label>Lomba</label>
                 @if(isset($competition))
@@ -95,9 +89,7 @@
             @endif
 
             <div class="form-group {{ $errors->has('post_title') ? 'has-error' : ''}}">
-                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                <label for="post_title">Judul</label>		
-                @endif
+                <label for="post_title">Judul</label>	
                 {!! Form::text('post_title', null, ['class' => 'form-control', 'placeholder' => 'Judul Tulisan', 'id' => 'post_title', $readonly]) !!}
                 {!! $errors->first('post_title', '<p class="help-block">:message</p>') !!}                        
             </div>

@@ -323,21 +323,6 @@ form#navBarSearchForm{
     border-radius: 50%;    
 }
 
-.recommended-user .article{
-    margin: 3px 0px;
-}
-
-.recommended-user .article .user-info{
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 5px;    
-    min-height: 112px;
-}
-
-.recommended-user button{
-    margin: 5px 0px;
-}
-
 .user-info img {
     width:40px;
     height:40px;
@@ -354,6 +339,21 @@ form#navBarSearchForm{
     width: calc(100% - 60px);
     overflow: hidden;
     transition: all 0.5s ease;    
+}
+
+.recommended-user .article{
+    margin: 3px 0px;
+}
+
+.recommended-user .article .user-info{
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;    
+    min-height: 112px;
+}
+
+.recommended-user button{
+    margin: 5px 0px;
 }
 
 .user-info > .name a {
@@ -452,15 +452,20 @@ div.user-info div.name a{
 .article-single.title h1{
     font-size: 24px;   
     font-weight: bold;
+    margin-bottom: 20px;
 }
-.article-single.content p{
-    font-size: 15px;  
+.article-single.content p, .article-single.content ul li, .article-single.content ol li{
+    font-size: 16px;  
     line-height: 25px;
     font-family: Helvetica, serif;
 }
-
 .require-login{
 height:500px;overflow: hidden; text-overflow: ellipsis;
+}
+
+.fr-box.fr-basic.fr-top .fr-wrapper{    
+    font-size: 16px;  
+    font-family: Helvetica, serif;
 }
 
 .article-image{
@@ -656,10 +661,13 @@ nav.admin-nav li a:hover{
 
 .adsense-homepage-top{
     margin-top:0px;
-    margin-bottom: -25px;
 }
 .homepage .adsense-homepage-top{
     margin-top:65px;
+    margin-bottom: -15px;
+}
+.adsense-homepage-bottom{
+    margin-top:20px;
 }
 
 /*petani fr.oala*/
@@ -1176,13 +1184,10 @@ hr.displaynone{
 .fb-comments span, .fb-comments iframe{
     width:auto !important;
 }
-.floating-share-box{
-background-color:#fff;position: absolute;z-index:3333;border-radius:25px;border:1px solid #ccc;
-}
 
 .verified-user{
     display: inline-block;
-    background: url("/images/verified.jpg") no-repeat;
+    background: url("/images/verified.png") no-repeat;
     background-size: contain;
     height: 1em;
     width: 100%;
@@ -1281,6 +1286,9 @@ background-color:#fff;position: absolute;z-index:3333;border-radius:25px;border:
 
     .adsense-homepage-top{
         padding-top:10px;
+    }
+    .homepage .adsense-homepage-top{
+        margin-top:0px;
     }
     
     .fb-comments span, .fb-comments iframe{

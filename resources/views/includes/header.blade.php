@@ -54,9 +54,9 @@
                         </a>
 
                         <ul class="dropdown-menu" role="menu">        
-                            <li><a href="{{ url('/profile') }}">
+                            <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
                                     <strong>{{ Auth::user()->name }}</strong>
-                                    <br/>View Profil
+                                    <br/>Lihat Profil
                                 </a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
@@ -92,7 +92,7 @@
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Artikel <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/post/populer') }}">Terpopuler</a></li>
+                            <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
                             <li><a href="{{ url('/rekam') }}">Rekam</a></li>
                             <li><a href="{{ url('/jejak') }}">Jejak</a></li>
                         </ul>
@@ -101,10 +101,10 @@
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Penulis <span class="caret"></span></a>
                         <ul class="dropdown-menu">                            
-                            <li><a href="{{ url('/penulis/terbaru') }}">Terbaru</a></li>
-                            <li><a href="{{ url('/penulis/populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/penulis/favorit') }}">Terfavorit</a></li>
-                            <li><a href="{{ url('/penulis/produktif') }}">Terproduktif</a></li>
+                            <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
+                            <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
+                            <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
+                            <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
                         </ul>
                     </li>
                     <li class="nav-divider"></li>
@@ -112,8 +112,8 @@
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Buqu <span class="caret"></span></a>
                         <ul class="dropdown-menu">
 
-                            <li><a href="{{ url('/buqu/pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu/terpopuler') }}">Buqu Terpopuler</a></li>
+                            <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
+                            <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
                             <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
                             <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
                         </ul>
@@ -288,9 +288,9 @@
                     </a>
 
                     <ul class="dropdown-menu" role="menu">        
-                        <li><a href="{{ url('/profile') }}">
+                        <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
                                 <strong>{{ Auth::user()->name }}</strong>
-                                <br/>View Profil
+                                <br/>Lihat Profil
                             </a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
@@ -326,83 +326,33 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse3">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">     
-                    @if(Auth::check())
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')       
                     <li class="dropdown">
-                        <a href="{{ url('/post') }}">Artikel</a>
+                        <a href="{{ url('/artikel-populer') }}">Artikel</a>
                         <ul class="dropdown-menu dropdown-hover">
                             <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/post/populer') }}">Terpopuler</a></li>
+                            <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
                             <li><a href="{{ url('/rekam') }}">Rekam</a></li>
                             <li><a href="{{ url('/jejak') }}">Jejak</a></li>
                         </ul>
-                    </li>
-                    @else
-                    <li class="dropdown">
-                        <a href="{{ url('/post/populer') }}">Artikel</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/post/populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/rekam') }}">Rekam</a></li>
-                            <li><a href="{{ url('/jejak') }}">Jejak</a></li>
-                        </ul>
-                    </li>
-                    @endif
-                    @elseif(!Auth::check())
-                    <li class="dropdown">
-                        <a href="{{ url('/post/populer') }}">Artikel</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/post/populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/rekam') }}">Rekam</a></li>
-                            <li><a href="{{ url('/jejak') }}">Jejak</a></li>
-                        </ul>
-                    </li>
-                    @endif
-
+                    </li>              
                     <li class="dropdown">
                         <a href="#" class="dropdown">Penulis</span></a>
                         <ul class="dropdown-menu dropdown-hover">                            
-                            <li><a href="{{ url('/penulis/terbaru') }}">Terbaru</a></li>
-                            <li><a href="{{ url('/penulis/populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/penulis/favorit') }}">Terfavorit</a></li>
-                            <li><a href="{{ url('/penulis/produktif') }}">Terproduktif</a></li>
+                            <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
+                            <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
+                            <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
+                            <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
                         </ul>
                     </li>                    
-
-                    @if(Auth::check())
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                    <li class="dropdown">
-                        <a href="{{ url('/buqu') }}">Buqu</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/buqu/pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu/terpopuler') }}">Buqu Terpopuler</a></li>
-                            <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
-                            <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
-                        </ul>
-                    </li>
-                    @else
                     <li class="dropdown">
                         <a href="{{ url('/buqu/pilihan') }}">Buqu</a>
                         <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/buqu/pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu/terpopuler') }}">Buqu Terpopuler</a></li>
+                            <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
+                            <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
                             <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
                             <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
                         </ul>
                     </li>
-                    @endif
-                    @elseif(!Auth::check())
-                    <li class="dropdown">
-                        <a href="{{ url('/buqu/pilihan') }}">Buqu</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/buqu/pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu/terpopuler') }}">Buqu Terpopuler</a></li>
-                            <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
-                            <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
-                        </ul>
-                    </li>
-                    @endif
                     <li class="dropdown">
                         <a href="{{ url('/semua-topik') }}">Topik</a>
                         <ul class="dropdown-menu dropdown-hover  multi-column columns-4">

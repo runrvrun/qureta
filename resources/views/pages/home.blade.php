@@ -71,7 +71,7 @@
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
-@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
 <span class="verified-user"></span>
 @endif
 </div>
@@ -252,7 +252,7 @@ $recommended_writers = get_recommended_user();
                 <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>    
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
-@if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
+@if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'partner' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
 <span class="verified-user"></span>
 @endif
 </div>

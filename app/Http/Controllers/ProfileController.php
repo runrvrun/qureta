@@ -43,6 +43,9 @@ class ProfileController extends Controller {
 	    Auth::logout();
             return redirect('/login');
 	}
+        if(!isset($request->recommended)){
+            $request->recommended=0;
+        }
         $this->validate($request, [
             'name' => 'required',
             'profesi' => 'required|max:20'
@@ -66,7 +69,7 @@ class ProfileController extends Controller {
         $user = User::findOrFail($request->user_id);           
         $user->update($requestData);
 
-        $profile_fields = array('tempatlahir', 'tanggallahir', 'profesi', 'short_bio', 'email', 'kota', 'minat', 'pendidikan', 'website', 'twitter', 'linkedin');
+        $profile_fields = array('tempatlahir', 'tanggallahir', 'profesi', 'short_bio', 'email', 'kota', 'minat', 'pendidikan', 'website', 'twitter', 'linkedin','recommended');
         //TODO: buat lebih dinamis dengan $key (maybe)
 
         $request->tanggallahir = Carbon::parse($request->tanggallahir)->format('Y-m-d H:i:s');        
@@ -167,12 +170,11 @@ class ProfileController extends Controller {
     public function terbaru($limit = 52) {
         //penulis yang baru pertama membuat tulisan yang terbaru
         $pagetitle = 'Penulis Terbaru';        
-        $users = DB::select("SELECT * FROM (
-SELECT MIN(p.published_at) published_at, u.id, u.name, u.username, u.user_image, u.role, p.post_author, p.post_slug, p.post_title
-FROM users u INNER JOIN posts p ON p.post_author = u.id 
-WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
-GROUP BY u.id, u.name, u.username, u.user_image, u.role, p.post_author, p.post_slug, p.post_title
-)a ORDER BY published_at DESC LIMIT ".$limit);
+        $users = DB::select("SELECT u.id, u.name, u.user_image, u.username, p.*
+FROM users u
+LEFT JOIN posts p ON u.id=p.post_author 
+WHERE u.status=1 and p.id = (SELECT MIN(id) FROM posts WHERE post_author=u.id and post_status='publish' and hide=0)
+ORDER BY p.published_at DESC LIMIT 52");
 
         return view('pages.penulisterbaru', compact('pagetitle', 'users'));
     }

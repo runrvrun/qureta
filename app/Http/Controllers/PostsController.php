@@ -74,8 +74,9 @@ class PostsController extends Controller {
             Auth::logout();
             return redirect('/login');
         }
+        $draftcount = 0;
         $lomba = Competition::findOrFail($lombaid);
-        return view('posts.kirimtulisan', compact('lomba'));
+        return view('posts.kirimtulisan', compact('lomba','draftcount'));
     }
 
     public function kirimtulisanworkshop($workshopid) {
@@ -659,21 +660,6 @@ class PostsController extends Controller {
         $follower = User::find($followerid);
         $post->unbookmark($follower);
         return response()->json(['responseText' => 'Success!'], 200);
-    }
-
-    public function postwauthorautocomplete(Request $request) {
-        $query = $request->get('term','');
-        
-        $post=Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('post_title','LIKE','%'.$query.'%')->get();
-
-        $data=array();
-        foreach ($post as $p) {
-                $data[]=array('label'=>$p->post_title.' ('.$p->post_authors->name.')');
-        }
-        if(count($data))
-             return $data;
-        else
-            return ['value'=>'No Result Found','id'=>''];
     }
 
 }

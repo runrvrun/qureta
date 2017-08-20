@@ -1,4 +1,4 @@
-	@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title')
 - {{ $pagetitle }}
@@ -15,11 +15,22 @@
     <p>{{ Session::get('flash_message') }}</p>
 </div>
 @endif
-
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 <h2 class="page-title">{!! $pagetitle !!} </h2>
 <!--select view-->
 <div class="row">
-    <div class="col-md-12 select-view">       
+    <div class="col-md-12 select-view desktop-only">       
         <div class="btn-group" role="group">
             <button  type="button" id="grid" class="toggle-grid-view btn btn-default"><i class="glyphicon glyphicon-th"></i> Grid</button>
             <button  type="button" id="list" class="toggle-grid-view btn btn-default"><i class="glyphicon glyphicon-th-list"></i> List</button>                
@@ -41,7 +52,11 @@
 	    @else
             <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
             @endif
-            <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}</div>
+            <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+@if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+<span class="verified-user"></span>
+@endif
+</div>
             <div class="title">{{ get_user_profesi($row->post_author) }}</div>
             <div class="clearfix"></div>
         </div>
@@ -52,7 +67,7 @@
         <!--Article-->
         <div class="article-info">                
             <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
-            <div class="title">{!! ($row->post_status === 'publish')? '':'<small>('.$row->post_status.')</small>' !!} {{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>
+            <div class="title">{!! ($row->post_status === 'publish')? '':'<small>('.$row->post_status.')</small>' !!} {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
         </div>
        <!--Share Like Buqu-->
             <div class="article-action">
@@ -68,7 +83,7 @@
                 @endif
                 <span class="action-button"><a href="{{ url('/buqu_posts/create/'.$row->id) }}"><i class="fa fa-book"></i> {{ get_post_buqu_count($row->id) }}</a></span>
             </div>    
-            <div class="share{{ $row->id }} floating-share-box" style="display:none;"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>                 
+            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {!! $row->post_title !!}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>                 
     </div>  
         
     @if ($key%4==3)
@@ -78,7 +93,6 @@
     @endif
     @endforeach    
 </div>
-<!--span class="btn btn-default" id="load_more">Load More</span-->
 @if (method_exists($posts,'render') && $posts->lastPage()>1)
 @if(isset($querystring['sp']) && isset($querystring['q']))
 <div class="pagination-wrapper"> {!! $posts->appends(['sp' => $querystring['sp'],'q' => $querystring['q']])->render() !!} </div>
@@ -86,7 +100,18 @@
 <div class="pagination-wrapper"> {!! $posts->render() !!} </div>
 @endif
 @endif
-
+    <div class="row adsense-homepage-bottom">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 @endsection
 @section('addjs')
 <script type="text/javascript" src="slick/slick.min.js"></script>
@@ -173,7 +198,7 @@ $('.share_button').click(function () {
     var $this = $(this);
     var postid = $this.data('postid');
     $('.share' + postid).toggle();
-    $('.shareaholic-share-button.ng-scope').css('display','block');  
+    $('.shareaholic-share-button.ng-scope').css('display','block');
 });
 
 $('.share_button').click(function () {
@@ -201,25 +226,5 @@ $('.share_button').click(function () {
         }
     }
 });
-
-var pageNumber = 1;
-var articles;
-var cururl = (location.pathname+location.search).substr(1);
-var param = document.location.search.substr(1);
-var joiner = "?";
-if(param.length > 0) {joiner = "&"};
-$('#load_more').click(function () { 
-      pageNumber +=1;
-      $.ajax({
-                url: "/"+cururl+joiner+"page="+pageNumber,
-                type: "GET", 
-                error: function (exception) { 
-                    console.log(data)
-                },
-                success: function () {
-                    
-                }
-            });
-});     
 </script>
 @endsection
