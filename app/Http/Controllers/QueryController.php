@@ -23,24 +23,15 @@ class QueryController extends Controller {
         if ($request->input('q')) {
             $sp = $request->input('sp');
             $q = $request->input('q');
-//            $qarray = explode(' ', $q);
 
             if ($sp == 'artikel') {
             	$pagetitle = 'Hasil Pencarian Artikel: ' . $q .' <br/><small> <a href="' . url('/cari?sp=artikel&q='.$q) . '">Artikel </a> | <a href="' . url('/cari?sp=penulis&q='.$q) . '">Penulis </a> | <a href="' . url('/cari?sp=buqu&q='.$q) . '">Buqu </a></small>';
-//                $post1 = Post::with('post_authors')->where('post_status', 'publish')->where('published_at', '<=', Carbon::now());
-//                foreach ($qarray as $row) {
-//                    $post1->where('post_title', 'like', '%' . $row . '%');
-//                };
-//                $post2 = Post::with('post_authors')->where('post_status', 'publish')->where('published_at', '<=', Carbon::now());
-//                foreach ($qarray as $row) {
-//                    $post2->where('post_content', 'like', '%' . $row . '%');
-//                }
-//                $post2->union($post1)->orderBy('published_at', 'DESC');
-//                $posts = $post2->get(); ///paginate not working with union
                 
+                //$posts = Post::with('post_authors')->where('post_status', 'publish')->where('published_at', '<=', Carbon::now())
+                //        ->whereRaw("MATCH (post_title, post_content) AGAINST ('$q')")->paginate (20);
                 $posts = Post::with('post_authors')->where('post_status', 'publish')->where('published_at', '<=', Carbon::now())
-                        ->whereRaw("MATCH (post_title, post_content) AGAINST ('%')",$q)->paginate (20);
-                
+                        ->search($q)->paginate(20);                
+
                 $querystring['q'] = $q;
                 $querystring['sp'] = $sp;                
 

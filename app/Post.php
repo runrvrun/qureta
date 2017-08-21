@@ -4,14 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Sofa\Eloquence\Eloquence;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Post extends Model {
 
     use Sluggable;
-	use Eloquence { 
-    Sluggable::replicate insteadof Eloquence;
-	}
+    use SearchableTrait;
 
     /**
      * The database table used by the model.
@@ -22,8 +20,19 @@ class Post extends Model {
     protected $dates = [
         'published_at'
     ];
-    protected $searchableColumns = ['post_title', 'post_content'];
-
+    protected $searchable = [
+        /**
+         * Columns and their priority in search results.
+         * Columns with higher values are more important.
+         * Columns with equal values have equal importance.
+         *
+         * @var array
+         */
+        'columns' => [
+            'posts.post_title' => 10,
+            'posts.post_content' => 5,
+        ],
+    ];
     /**
      * The database primary key value.
      *

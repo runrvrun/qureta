@@ -18,7 +18,8 @@
         "cviebrock/eloquent-sluggable": "4.1",
         "kryptonit3/counter": "5.2.*",
         "cmgmyr/messenger": "~2.0",
-        "spatie/laravel-analytics": "^1.4"
+        "spatie/laravel-analytics": "^1.4",
+        "nicolaslopezj/searchable": "1.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

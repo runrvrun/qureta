@@ -83,6 +83,7 @@ Route::post('/user/follow', 'UserController@follow');
 Route::post('/user/unfollow', 'UserController@unfollow');
 Route::get('/cari', 'QueryController@search');
 Route::get('/post', 'PostsController@terbaru');
+Route::get('/artikel-terbaru', 'PostsController@terbaru');
 Route::get('/artikel-populer', 'PostsController@populer');
 Route::get('/rekam', 'PostsController@rekam')->middleware('auth');
 Route::post('/post/bookmark', 'PostsController@bookmark');

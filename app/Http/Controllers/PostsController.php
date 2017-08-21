@@ -14,6 +14,8 @@ use App\Workshop;
 use App\Competition_post;
 use App\User;
 use App\Followers;
+use App\Mail\PostReturned;
+use App\Mail\PostPublished;
 use Auth;
 use Illuminate\Http\Request;
 use Session;
@@ -31,6 +33,7 @@ use Cmgmyr\Messenger\Models\Thread;
 use Illuminate\Validation\Rule;
 use Analytics;
 use Counter;
+use Mail;
 
 class PostsController extends Controller {
 
@@ -235,8 +238,9 @@ class PostsController extends Controller {
             //counter: Kryptonit3
             Counter::count('post', $post->id);
             //counter: google analytics
-            $startDate = Carbon::createFromDate(2014, 1, 1);
+            $startDate = $post->created_at;
             $endDate = Carbon::now();
+            //$endDate = Carbon::createFromDate(2017, 8, 21);
             $metrics = 'ga%3Apageviews';
             $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
             $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);
@@ -406,7 +410,16 @@ class PostsController extends Controller {
         }
 
         if (isset($request->savepublish)) {
-            Session::flash('flash_message', 'Naskah terbit! ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
+           //send email to user
+           $data = [
+             'name' => $post->post_authors->name,
+             'title' => $requestData['post_title'],
+             'slug' => $requestData['post_slug'],
+             'message' => $requestData['moderation_message'],
+           ];
+           Mail::to($post->post_authors->email)->send(new PostPublished($data));
+           //show alert in web
+           Session::flash('flash_message', 'Naskah terbit! ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
             /* send notification to author */
             $user = User::find($post->post_author);
             \Notification::send($user, new PublishPost($post));
@@ -461,6 +474,15 @@ class PostsController extends Controller {
                 $recipients[0] = $post->post_author;
                 $thread->addParticipant($recipients);
             }
+            //send email to user
+            $data = [
+               'name' => $post->post_authors->name,
+               'title' => $requestData['post_title'],
+               'slug' => $requestData['post_slug'],
+               'message' => $requestData['moderation_message'],
+             ];
+             Mail::to($post->post_authors->email)->send(new PostReturned($data));
+            //show alert in web
             Session::flash('flash_message', 'Naskah dikembalikan ke draft.');
         } elseif (isset($request->delete)) {
             Session::flash('flash_message', 'Naskah dihapus.');

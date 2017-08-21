@@ -89,7 +89,7 @@
                         <a href="{{ url('/kirim-tulisan') }}">Tulis Artikel</a> </li>
                     <li class="nav-divider"></li>
                     <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Artikel <span class="caret"></span></a>
+                        <a href="{{ url('/artikel-terbaru') }}" data-toggle="dropdown" class="dropdown-toggle">Artikel <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
                             <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
@@ -327,7 +327,7 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">     
                     <li class="dropdown">
-                        <a href="{{ url('/artikel-populer') }}">Artikel</a>
+                        <a href="{{ url('/artikel-terbaru') }}">Artikel</a>
                         <ul class="dropdown-menu dropdown-hover">
                             <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
                             <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
