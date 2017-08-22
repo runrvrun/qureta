@@ -111,7 +111,9 @@
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Buqu <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-
+                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                            <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
+                            @endif
                             <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
                             <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
                             <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
@@ -345,8 +347,11 @@
                         </ul>
                     </li>                    
                     <li class="dropdown">
-                        <a href="{{ url('/buqu/pilihan') }}">Buqu</a>
+                        <a href="{{ url('/buqu-pilihan') }}">Buqu</a>
                         <ul class="dropdown-menu dropdown-hover">
+                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                            <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
+                            @endif
                             <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
                             <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
                             <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>

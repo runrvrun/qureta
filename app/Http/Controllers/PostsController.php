@@ -380,7 +380,7 @@ class PostsController extends Controller {
             $fileName = rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
-            Image::make($file->getRealPath())->fit(214, 128)->encode('jpg', 75)->save($uploadThumbPath . $fileName);
+            Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 75)->save($uploadThumbPath . $fileName);
             Image::make($file->getRealPath())->fit(653, 373)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
