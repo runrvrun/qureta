@@ -412,7 +412,7 @@ $recommended_writers = get_recommended_user();
     <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <div class="row topic-title">
         <div class="col-sm-12">
-            <h3>{{ HTML::link('post/populer', 'TERPOPULER')}}</h3>
+            <h3>{{ HTML::link('artikel-populer', 'TERPOPULER')}}</h3>
         </div>
     </div>
     <div class="row vertical-divider">          
@@ -446,7 +446,7 @@ $recommended_writers = get_recommended_user();
             </div>
             <!--Article-->
             <div class="article-info">                
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; <i class="fa fa-eye"></i> {{ number_format($row->view_count,0,',','.') }} views</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <!--Share Like Buqu-->

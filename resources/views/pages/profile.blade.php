@@ -10,31 +10,38 @@
         <div class="col-md-12 row profile-header-content" style="">
             <div class="col-md-2 profile-pic">
                 @if(strpos($users->user_image,'ttps://') || strpos($users->user_image,'ttp://'))
-                <img src="{{ $users->user_image }}" onerror="avaError(this);">                
+                <img src="{{ $users->user_image }}" onerror="avaError(this);">
                 @else
                 <img src="{{ URL::asset('/uploads/avatar/'.$users->user_image) }}" onerror="avaError(this);">
                 @endif
             </div>
             <div class="col-md-10 profile-about" style="width: 100%;">
-                <h2 class="username">{{ $users->name }}</h2>
-                <p style="margin-bottom: 30px;">{{ $profile['profesi'] or ''}}</p>                
-                @if(Auth::check() && $users->id !== Auth::user()->id) 
+                <h2 class="username">{{ $users->name }}
+@if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
+<small class="verified-user">&nbsp;</small>
+@endif
+</h2>
+                <p>{{ $profile['profesi'] or ''}}</p>
+                @if(isset($profile['short_bio']))
+                <p class="profile-short-bio" style="margin-bottom: 30px;">{{ $profile['short_bio'] }}</p>
+                @endif
+                @if(Auth::check() && $users->id !== Auth::user()->id)
                 <!--logged in and not own profile, show follow button-->
                 <input type="hidden" id="userid" value="{{ $users->id }}" />
                 <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
                 <input type="hidden" id="userid" value="{{ $users->id }}" />
                 <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
                 @if (isFollowing($users->id))
-                <div class="col-md-2 text-center">                    
+                <div class="col-md-2 text-center">
                     <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-check"></i> Following</button>
                 </div>
                 @else
-                <div class="col-md-2 text-center">                    
+                <div class="col-md-2 text-center">
                     <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-user-plus"></i> Follow</button>
                 </div>
                 @endif
                 @else
-                <div class="col-md-2 text-center">                    
+                <div class="col-md-2 text-center">
                     <a href="{{url('/login')}}"><button class="btn-default" style="" id="btnFollowUser"> <i class="fa fa-user-plus"></i> Follow</button></a>
                 </div>
                 @endif
@@ -51,99 +58,64 @@
     </div>
 </div>
 <hr class="rowspace">
-<div class="col-md-8 col-md-offset-2">             
+<div class="col-md-8 col-md-offset-2">
     <ul class="nav nav-tabs" id="myTab">
-        <li id="profiletab" class="active"><a href="#profile" data-toggle="tab">Profil</a></li>
-        <li id="tulisantab"><a href="#tulisan" data-toggle="tab">Tulisan</a></li>
+        <li id="tulisantab" class="active"><a href="#tulisan" data-toggle="tab">Tulisan</a></li>
         <li id="buqutab"><a href="#buqu" data-toggle="tab">Buqu</a></li>
-        <!--<li id="pengikuttab"><a href="#pengikut" data-toggle="tab">Pengikut</a></li>-->
-
     </ul>
 
     <div class="tab-content" id="tab-content">
-        <div class="tab-pane active" id="profile">
-            <hr class="rowspace">            
-            @if(Auth::check())
-            @if(Auth::user()->id === $users->id || Auth::user()->role === 'admin')
-            <div class="row pull-right">
-                <a href="{{ url('profile/edit/'.$users->id) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Profil</a>
-            </div>
-            @endif
-            @endif
-            <div class="row profile profile-shortbio">
-                <div class="col-sm-10 col-sm-offset-1 content" style="text-align: left;">                    
-                    @if(isset($profile['short_bio']))
-                    {{ $profile['short_bio'] }}
-                    @elseif (Auth::check() && (Auth::user()->role === 'admin' || $users->id == Auth::user()->id))
-                    <!--<span><a href="#" class="nocontent" data-pk="{{ $users->id }}" data-value="" id="short_bio">Kamu belum mempunyai biodata singkat, klik disini untuk menulis biodata singkat.</a></span>-->
-                    @endif
-                </div>
-                <div class="col-sm-1">        
-                    @if(Auth::check() && (Auth::user()->role === 'admin' || $users->id == Auth::user()->id))
-                    <!--<i class="fa fa-pencil profile-edit-button"></i>-->
-                    @endif
-                </div>
-            </div>            
-            <div class="row vertical-divider">                
-                <div class="article col-sm-3 grid-group-item">                                
-                    <!--Image-->
-                    <div class="article-image">
-                        <a href="#"><img src="{{ URL::asset('/uploads/post/thumb/noimage.jpg') }}" style="visibility: hidden" /></a>
-                    </div>       
-                </div>       
-            </div>       
-        </div>
-        <div class="tab-pane" id="tulisan">            
+        <div class="tab-pane active" id="tulisan">
             <hr class="rowspace">
             <div class="row vertical-divider">
-                @foreach ($posts as $key=>$row)                       
-                <div class="article col-sm-3 grid-group-item">                                
+                @foreach ($posts as $key=>$row)
+                <div class="article col-sm-3 grid-group-item">
                     <!--Image-->
                     <div class="article-image">
                         <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
-                    </div>       
+                    </div>
                     <!--Article-->
-                    <div class="article-info">                
+                    <div class="article-info">
                         <div class="info">{{ $row->created_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                         <div class="title">{{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>
                     </div>
                     <!--Share Like Buqu-->
                     <div class="article-action">
                         <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                        @if(Auth::check()) 
+                        @if(Auth::check())
                         @if (isLikingBuqu($row->id))
                         <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                         @else
                         <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                         @endif
-                        @else                
+                        @else
                         <span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span>
                         @endif
                         <span class="action-button"><a href="{{ url('/buqu_posts/create/'.$row->id) }}"><i class="fa fa-book"></i> {{ get_post_buqu_count($row->id) }}</a></span>
-                    </div>    
-                    <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>                 
+                    </div>
+                    <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
 
-                </div>         
+                </div>
                 @if ($key%4==3)
             </div>
             <hr class="row-divider">
             <div class="row vertical-divider">
                 @endif
-                @endforeach    
+                @endforeach
             </div>
             @if (method_exists($posts,'render') && $posts->lastPage()>1)
             <div class="pagination-wrapper"> {!! $posts->render() !!} </div>
             @endif
-        </div>      
+        </div>
         <div class="tab-pane" id="buqu">
             <hr class="rowspace">
             <div class="row vertical-divider">
-                @foreach ($buqus as $key=>$row)                       
-                <div class="article col-sm-3 grid-group-item">        
+                @foreach ($buqus as $key=>$row)
+                <div class="article col-sm-3 grid-group-item">
                     <!--Buqu-->
                     <!--Buqu-->
                     <div id="id-title" class="buqu-info">
-                        <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img style="width: 100%;height: auto;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" alt="{{ $row->buqu_image }}" onerror="buquError(this);" /></a>    
+                        <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img style="width: 100%;height: auto;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" alt="{{ $row->buqu_image }}" onerror="buquError(this);" /></a>
 
                         <div class="col-md-12 title" style="position: absolute;width:100%;height: 100%;top:0;margin: 0 auto;">
                             <div class="col-md-12 penulis" style="position: absolute; top:10;text-align: center;margin: 0 auto;;width: 100%;font-size: 15px;">
@@ -158,80 +130,80 @@
                     <div class="article-action">
                         <span class="action-button"><i class="fa fa-newspaper-o"></i> {{ get_buqu_post_count($row->id) }}</span>
                         <span class="action-button"><a class="share_buttonbuqu" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counterbuqu{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                        @if(Auth::check()) 
+                        @if(Auth::check())
                         @if (isLikingBuqu($row->id))
                         <span class="action-button"><a class="active btnLikeBuqu" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counterbuqu{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                         @else
                         <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLikeBuqu" title="Like"><i class="fa fa-heart"></i> <span class="like-counterbuqu{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                         @endif
-                        @else                
+                        @else
                         <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
                         @endif
-                    </div>    
+                    </div>
                     <br>
-                    <div class="sharebuqu{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/buqu/'.$row->buqu_slug) }}' data-image='{{ url('/buqu/'.$row->buqu_image) }}'></div></div>                      
+                    <div class="sharebuqu{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/buqu/'.$row->buqu_slug) }}' data-image='{{ url('/buqu/'.$row->buqu_image) }}'></div></div>
 
-                </div>         
+                </div>
                 @if ($key%4==3)
             </div>
 
             <hr class="row-divider">
             <div class="row topic-title">
                 @endif
-                @endforeach    
+                @endforeach
             </div>
             @if (method_exists($buqus,'render') && $buqus->lastPage()>1)
             <div class="pagination-wrapper"> {!! $buqus->render() !!} </div>
             @endif
-        </div>      
+        </div>
         <div class="tab-pane" id="pengikut">
             <hr class="rowspace">
             <div class="row">
-                @foreach ($followers as $key=>$row)                       
-                <div class="article col-sm-3 grid-group-item">            
+                @foreach ($followers as $key=>$row)
+                <div class="article col-sm-3 grid-group-item">
                     <!--Author-->
                     <div class="user-info">
-                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->followers->user_image) }}" onerror="avaError(this);" /></div>    
+                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->followers->user_image) }}" onerror="avaError(this);" /></div>
                         <div class="name">{{ HTML::link('/profile/'.$row->followers->username, $row->followers->name)}}</div>
                         <div class="title">{{ get_user_profesi($row->followers->id) }}</div>
                         <div class="jumlah">{{ get_user_profesi($row->followers->id) }}</div>
-                    </div>            
+                    </div>
                 </div>
                 @if ($key%4==3)
             </div>
             <hr class="row-divider">
             <div class="row">
                 @endif
-                @endforeach    
+                @endforeach
             </div>
             @if (method_exists($followers,'render') && $followers->lastPage()>1)
             <div class="pagination-wrapper"> {!! $followers->render() !!} </div>
             @endif
-        </div>      
+        </div>
         <div class="tab-pane" id="mengikuti">
             <hr class="rowspace">
             <hr class="rowspace">
             <div class="row">
                 @foreach ($followings as $key=>$row)
-                <div class="article col-sm-3 grid-group-item">            
+                <div class="article col-sm-3 grid-group-item">
                     <!--Author-->
                     <div class="user-info">
-                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->users->user_image) }}" onerror="avaError(this);" /></div>    
+                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->users->user_image) }}" onerror="avaError(this);" /></div>
                         <div class="name">{{ HTML::link('/profile/'.$row->users->username, $row->users->name)}}</div>
                         <div class="title">{{ get_user_profesi($row->users->id) }}</div>
-                    </div>            
+                    </div>
                 </div>
                 @if ($key%4==3)
             </div>
             <hr class="row-divider">
             <div class="row">
                 @endif
-                @endforeach    
+                @endforeach
             </div>
             @if (method_exists($followings,'render') && $followings->lastPage()>1)
             <div class="pagination-wrapper"> {!! $followings->render() !!} </div>
             @endif
-        </div>      
+        </div>
     </div>
 </div>
 
@@ -247,28 +219,28 @@
                 <div class="tab-pane" id="pengikut">
                     <hr class="rowspace">
                     <div class="row">
-                        @foreach ($followers as $key=>$row)                       
-                        <div class="article col-sm-3 grid-group-item">            
+                        @foreach ($followers as $key=>$row)
+                        <div class="article col-sm-3 grid-group-item">
                             <!--Author-->
                             <div class="user-info">
-                                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->followers->user_image) }}" onerror="avaError(this);" /></div>    
+                                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->followers->user_image) }}" onerror="avaError(this);" /></div>
                                 <div class="name">{{ HTML::link('/profile/'.$row->followers->username, $row->followers->name)}}</div>
                                 <div class="title">{{ get_user_profesi($row->followers->id) }}</div>
 
                             </div>
-                            <br>            
+                            <br>
                         </div>
                         @if ($key%4==3)
                     </div>
 
                     <div class="row">
                         @endif
-                        @endforeach    
+                        @endforeach
                     </div>
                     @if (method_exists($followers,'render') && $followers->lastPage()>1)
                     <div class="pagination-wrapper"> {!! $followers->render() !!} </div>
                     @endif
-                </div>  
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -290,21 +262,21 @@
                     <hr class="rowspace">
                     <div class="row">
                         @foreach ($followings as $key=>$row)
-                        <div class="article col-sm-3 grid-group-item">            
+                        <div class="article col-sm-3 grid-group-item">
                             <!--Author-->
                             <div class="user-info">
-                                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->users->user_image) }}" onerror="avaError(this);" /></div>    
+                                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->users->user_image) }}" onerror="avaError(this);" /></div>
                                 <div class="name">{{ HTML::link('/profile/'.$row->users->username, $row->users->name)}}</div>
                                 <div class="title">{{ get_user_profesi($row->users->id) }}</div>
-                            </div>     
-                            <br>       
+                            </div>
+                            <br>
                         </div>
                         @if ($key%4==3)
                     </div>
 
                     <div class="row">
                         @endif
-                        @endforeach    
+                        @endforeach
                     </div>
                     @if (method_exists($followings,'render') && $followings->lastPage()>1)
                     <div class="pagination-wrapper"> {!! $followings->render() !!} </div>
@@ -356,56 +328,6 @@ $(document).ready(function () {
         $('#mengikutitab').addClass('active');
         $('#mengikuti').addClass('active');
     }
-
-    /* profile inline edit. bootstrap editable */
-    $.fn.editable.defaults.mode = 'inline';
-    $('#short_bio').editable({
-        type: 'textarea',
-        rows: 3,
-        url: '/profile/inlineupdate'
-    });
-    $('#profesi').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: 'Profesi',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
-    $('#phone_number').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: '+62',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
-    $('#kota').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: 'Kota/Kabupaten',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
-    $('#website').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: 'http://alamat-website.com',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
-    $('#twitter').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: 'https://twitter.com/handler',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
-    $('#linkedin').editable({
-        type: 'text',
-        url: '/profile/inlineupdate',
-        placeholder: 'https://www.linkedin.com/in/nama-dan-id',
-        emptytext: 'Klik untuk edit',
-        emptyclass: 'nocontent'
-    });
 });
 
 $('#btnFollowUser').click(function () {

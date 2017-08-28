@@ -29,7 +29,7 @@ Route::get('karir', function () {
 Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function() {
     // main page for the admin section (app/views/admin/dashboard.blade.php)
 //    Route::get('/', function() {
-//        return View::make('admin.index');        
+//        return View::make('admin.index');
 //    });
     Route::get('/', 'PostsController@pendingposts');
     Route::get('/pendingposts', 'PostsController@pendingposts');
@@ -51,16 +51,16 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/users/search', 'Admin\\UsersController@search');
     Route::get('/users/changepassword/{a}', 'Admin\\UsersController@changeform');
     Route::post('/users/changepass', 'Admin\\UsersController@changepassword');
-    Route::resource('/users', 'Admin\\UsersController');    
+    Route::resource('/users', 'Admin\\UsersController');
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
-    Route::resource('/statistics', 'Admin\\StatisticsController');    
-    Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');    
+    Route::resource('/statistics', 'Admin\\StatisticsController');
+    Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
 });
 
-     Route::resource('messages', 'MessagesController');  
+     Route::resource('messages', 'MessagesController');
      Route::get('messageautocomplete',array('as'=>'messageautocomplete','uses'=>'MessagesController@autoComplete'));
-     Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'UserController@autoComplete'));     
+     Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'UserController@autoComplete'));
 
 
 Route::get('/kirim-tulisan', 'PostsController@kirimtulisan')->middleware('auth');
@@ -90,6 +90,7 @@ Route::post('/post/bookmark', 'PostsController@bookmark');
 Route::post('/post/unbookmark', 'PostsController@unbookmark');
 Route::post('/post/ajaximageupload','PostsController@ajaximageupload');
 Route::get('/jejak', 'PostsController@jejak');
+Route::post('/post/incrementviewcounter', 'PostsController@incrementviewcounter');
 Route::post('/post/incrementsharecounter', 'PostsController@incrementsharecounter');
 Route::post('/post/incrementlikecounter', 'PostsController@incrementlikecounter');
 Route::post('/post/decrementlikecounter', 'PostsController@decrementlikecounter');

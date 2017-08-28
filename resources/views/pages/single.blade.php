@@ -51,11 +51,10 @@
 @endif
             </div>
     <div class="title">{{ get_user_profesi($post->post_author) }}</div>
-    <div class="info">{{ $post->published_at ? $post->published_at->format('j M Y'): '' }}</div>
+    <div class="info">{{ $post->published_at ? $post->published_at->format('j M Y'): '' }} &middot; <i class="fa fa-eye"></i> {{ number_format($post->view_count,0,',','.') }} views</div>
 	@if(Auth::check() && Auth::user()->role == 'admin')
     <div class="info">
-	&middot; <i class="fa fa-eye"></i> Dibaca {{ number_format($post->view_count,0,',','.') }}{{ Counter::count('post', $post->id) }} kali
-    </div>
+</div>
 	@endif
 </div>
 <div class="clearfix"></div>
@@ -70,7 +69,8 @@
 @endif
 <div class="article-single title">
     <div class="info"><small><i class="fa fa-tag"></i> {{ $category->category_title or '' }}</small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
-    <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1><input type="hidden" id="postid" value="{{ $post->id }}" />
+    <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1>
+    <input type="hidden" id="postid" value="{{ $post->id }}" />
 </div>
 
 <div class="article-single content @if(!Auth::check() && $post->require_login) require-login @endif">
@@ -138,7 +138,32 @@
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
 <script>
- $(document).ready(function (e) {
+$(document).ready(function (e) {
+    //count view
+    var postid = document.getElementById('postid').value;
+    var token = '{{{ csrf_token() }}}';
+    var data = {"_token": token, "id": postid};
+    if (cookies_enabled()) {
+        if ($.cookie("qureta_view_" + postid)) {
+            // cookie exist, already count view, do nothing
+        } else {
+            // add share counter
+            $.ajax({
+                url: "/post/incrementviewcounter",
+                type: "POST",
+                data: data,
+                error: function (exception) {
+                    console.log(data)
+                },
+                success: function () {
+                  var date = new Date();
+                  var minutes = 5;//cookie expire in 60 minutes
+                  date.setTime(date.getTime() + (minutes * 60 * 1000));
+                  $.cookie("qureta_view_" + postid, postid, {expires: date});
+                }
+            });
+        }
+    }
     //froala inline image default center
     //have to do this in JS because there is no way to select parent in CSS
     $('.fr-dib').parent().css({

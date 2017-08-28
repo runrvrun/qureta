@@ -68,7 +68,7 @@ class PostsController extends Controller {
             Auth::logout();
             return redirect('/login');
         }
-	$draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();            
+	$draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
         return view('posts.kirimtulisan',compact('draftcount'));
     }
 
@@ -234,9 +234,9 @@ class PostsController extends Controller {
 	    $category = Category::where('id',$categoryid->meta_value)->first();
 
             //counter: manual
-            $requestData['view_count'] = $post->view_count + 1;
+            //$requestData['view_count'] = $post->view_count + 1;///increment view count dipindah ke frontend pakai jquery ajax. single.php
             //counter: Kryptonit3
-            Counter::count('post', $post->id);           
+            Counter::count('post', $post->id);
             //hit google analytics once every hour, so api call limit won't reached
             if((Carbon::parse($post->created_at)->diffInSeconds(Carbon::now()) % 60) < 30 ){
 	    try {
@@ -246,19 +246,19 @@ class PostsController extends Controller {
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), date("d"))->addDays(rand(1,99));
                 $metrics = 'ga%3Apageviews,ga%3Avisits';
                 $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
-                $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);     
+                $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);
 	        if($analytics->rows[0][1] > $post->view_count){
                     //update view count with count from analytics
                     $post->view_count = $analytics->rows[0][1];
                     //update the counter in database too
                     $requestData['view_count'] = $analytics->rows[0][1];
+                    $post->update($requestData);
                 }
             }catch (\Exception $e) {
                 //return $e->getMessage();
-            }     
+            }
         }
-            $post->update($requestData);
-	   
+
             return view('pages.single', compact('post', 'buqus', 'related', 'category', 'populer'));
         } else {
             return redirect('/');
@@ -474,7 +474,7 @@ class PostsController extends Controller {
                             'last_read' => new Carbon,
                         ]
                 );
-                // Recipients            
+                // Recipients
                 $recipients[0] = $post->post_author;
                 $thread->addParticipant($recipients);
             }
@@ -607,11 +607,11 @@ class PostsController extends Controller {
             if($visitorid){
             $pageids = DB::table('kryptonit3_counter_page_visitor')->where('visitor_id', $visitorid->id)->pluck('page_id');
             $postids = DB::table('kryptonit3_counter_page')->whereIn('id', $pageids)->where('identifier_name', 'post')->orderBy('id', 'DESC')->take(12)->pluck('identifier_id');
-            $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $postids)->get();            
-            
+            $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $postids)->get();
+
             return view('pages.artikel', compact('pagetitle', 'posts'));
             }else{
-                return view('blank.artikel');                
+                return view('blank.artikel');
             }
         } else {
             return view('blank.artikel');
@@ -632,6 +632,12 @@ class PostsController extends Controller {
         $topik = $request->input('topik');
         echo $topik;
         //return Redirect::route('/topik/'.$topik);
+    }
+
+    public function incrementviewcounter(Request $request) {
+        $id = $request->id;
+        DB::table('posts')->whereId($id)->increment('view_count');
+        return response()->json(['responseText' => 'Success!'], 200);
     }
 
     public function incrementsharecounter(Request $request) {

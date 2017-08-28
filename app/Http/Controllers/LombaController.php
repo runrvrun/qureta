@@ -97,10 +97,11 @@ class LombaController extends Controller
     public function post_peserta($competitionid)
     {
         if(Auth::check()){
-            $competition_posts = Competition_post::select(DB::raw('*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->where('competition_id', $competitionid)->orderBy('id', 'DESC')->paginate(25);
-
+            $competition_posts = Competition_post::with('comps', 'composts')->where('competition_id',$competitionid)->join('posts','posts.id', '=', 'competition_posts.post_id')->where('post_status', '=', 'publish')->orderBy('posts.published_at','DESC')->get();
             return view('pages.post_peserta', compact('competition_posts'));
-        }
+            } 
+           
+        
         else{
             return redirect('/login');
         }

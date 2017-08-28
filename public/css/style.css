@@ -1,7 +1,7 @@
 body{
     margin-left: 2%;
-    background-color: #fff;    
-    margin-top: 0px;    
+    background-color: #fff;
+    margin-top: 0px;
     font-family: Oswald,'Open Sans',sans-serif;
 }
 .desktop-only{
@@ -19,7 +19,7 @@ body{
 #app-navbar-collapse1 a{
     color: #fff;
 }
-#app-navbar-collapse1 > ul {     
+#app-navbar-collapse1 > ul {
     background-color:#286090;
     text-align: center;
 }
@@ -134,7 +134,7 @@ hr .hr-home{
 }
 
 a:link,a:hover,a:visited{
-    text-decoration: none;    
+    text-decoration: none;
 }
 .navbar-brand{
     margin: 7px 0 0 0;
@@ -178,7 +178,7 @@ div.content.profile-page{
     margin: 15px 0;
     padding: 10px 0;
     bottom: 0;
-    background-color: #fff;    
+    background-color: #fff;
     border-top: 1px solid #bbb;
     border-bottom: 1px solid #bbb;
 }
@@ -187,7 +187,7 @@ div.content.profile-page{
     text-align: center;
     bottom: 0;
     height: 20px;
-    background-color: #fff;    
+    background-color: #fff;
 }
 
 #footerbottom p{
@@ -217,7 +217,7 @@ div.content.profile-page{
 .foot-links li a:link,.foot-links li a:hover,.foot-links li a:visited{
     color: #666;
     font-size: 14px;
-    text-decoration: none;    
+    text-decoration: none;
 }
 
 .foot-links .fa{
@@ -232,7 +232,7 @@ div.content.profile-page{
     top: -40px;
 }
 
-.navbar-nav li .boxed-text-allcaps{    
+.navbar-nav li .boxed-text-allcaps{
     border: 1px solid;
     border-radius: 5px;
     text-transform: uppercase;
@@ -309,9 +309,9 @@ form#navBarSearchForm{
 }
 
 .user-info {
-    min-height: 50px;    
+    min-height: 50px;
     color: #222222;
-    font-size: 15px; 
+    font-size: 15px;
     position: relative;
 }
 
@@ -320,13 +320,13 @@ form#navBarSearchForm{
     float:left;
     width:40px;
     height:40px;
-    border-radius: 50%;    
+    border-radius: 50%;
 }
 
 .user-info img {
     width:40px;
     height:40px;
-    border-radius: 50%;    
+    border-radius: 50%;
 }
 
 .user-info .name {
@@ -338,7 +338,7 @@ form#navBarSearchForm{
     text-overflow: ellipsis;
     width: calc(100% - 60px);
     overflow: hidden;
-    transition: all 0.5s ease;    
+    transition: all 0.5s ease;
 }
 
 .recommended-user .article{
@@ -348,7 +348,7 @@ form#navBarSearchForm{
 .recommended-user .article .user-info{
     padding: 15px;
     border: 1px solid #eee;
-    border-radius: 5px;    
+    border-radius: 5px;
     min-height: 112px;
 }
 
@@ -358,14 +358,14 @@ form#navBarSearchForm{
 
 .user-info > .name a {
     color: #979899;
-    transition: all 0.5s ease;    
+    transition: all 0.5s ease;
 }
 
 .user-info > .name a:hover {
     color: #979899;
 }
 
-div.user-info div.name a{    
+div.user-info div.name a{
     color: #000;
 }
 
@@ -377,18 +377,18 @@ div.user-info div.name a{
     white-space: nowrap;
     text-overflow: ellipsis;
     width: calc(100% - 60px);
-    overflow: hidden;    
+    overflow: hidden;
 }
 
 .user-info .info{
     float: left;
     margin: 0 10px;
     font-size: 12px;
-    color: #777777;    
+    color: #777777;
 }
 
 .article-info.lomba{
-    text-align: left;   
+    text-align: left;
 }
 .article-info.lomba .periode{
     color: #55acee;
@@ -396,9 +396,9 @@ div.user-info div.name a{
 }
 .article-info {
     color: #222222;
-    font-size: 15px;    
+    font-size: 15px;
     position: relative;
-    text-align: center;      
+    text-align: center;
 }
 .article-info > .title a:hover, .article-info > .related-article a:hover {
     color: #979899;
@@ -410,7 +410,7 @@ div.user-info div.name a{
 .article-info > .related-article{
     font-color:#000;
     text-align: left;
-}.article-info .info{        
+}.article-info .info{
     margin: 0;
     font-size: 12px;
     color: #777777;
@@ -441,7 +441,7 @@ div.user-info div.name a{
 }
 
 .article-info.single{
-    text-align: left; 
+    text-align: left;
 
 }
 
@@ -450,12 +450,12 @@ div.user-info div.name a{
 }
 
 .article-single.title h1{
-    font-size: 24px;   
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
 }
 .article-single.content p, .article-single.content ul li, .article-single.content ol li{
-    font-size: 16px;  
+    font-size: 16px;
     line-height: 25px;
     font-family: Helvetica, serif;
 }
@@ -463,13 +463,13 @@ div.user-info div.name a{
 height:500px;overflow: hidden; text-overflow: ellipsis;
 }
 
-.fr-box.fr-basic.fr-top .fr-wrapper{    
-    font-size: 16px;  
+.fr-box.fr-basic.fr-top .fr-wrapper{
+    font-size: 16px;
     font-family: Helvetica, serif;
 }
 
 .article-image{
-    border-radius: 2%;    
+    border-radius: 2%;
     overflow: hidden;
 }
 
@@ -477,7 +477,7 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
     width: 100%;
 }
 
-.article-single.title .info{        
+.article-single.title .info{
     margin: 0;
     font-size: 16px;
     color: #777777;
@@ -487,8 +487,8 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
 
 
 .article-action{
-    text-align: center;  
-    color: #777777;    
+    text-align: center;
+    color: #777777;
     padding-top: 10px;
 }
 
@@ -498,10 +498,10 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
 
 .buqu-info {
     color: #222222;
-    font-size: 15px;    
+    font-size: 15px;
     position: relative;
-    text-align: center;   
-    border-radius: 2%;    
+    text-align: center;
+    border-radius: 2%;
     overflow: hidden;
 
 }
@@ -510,7 +510,7 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
     width: 100%;
 }
 
-.buqu-info .info{        
+.buqu-info .info{
     margin: 0;
     font-size: 12px;
     color: #777777;
@@ -518,7 +518,7 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
 
 .buqu-info .title{
 
-    font-weight: bold;    
+    font-weight: bold;
 
     /*-webkit-line-clamp: 2;*/ /* number of lines to show */
     line-height: 16px;        /* fallback */
@@ -529,7 +529,7 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
     box-sizing: border-box;
     color: #000;
     padding-bottom: 10%;
-    min-height: 30px;  
+    min-height: 30px;
     position: absolute;
     width: 100%;
 
@@ -541,8 +541,8 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
 .buqu-info .title .author{
     font-weight: normal;
     font-size: 15px;
-    margin-top: -160%;  
-    position: relative;  
+    margin-top: -160%;
+    position: relative;
 }
 
 .buqu-info > .title > .title-buqu{
@@ -563,30 +563,30 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
 }
 
 .buqu-action{
-    text-align: center;  
-    color: #777777;    
+    text-align: center;
+    color: #777777;
 }
 
 .buqu-action span{
     margin: 2px;
 }
 
-.buqu-action{    
+.buqu-action{
     font-size: 11px;
 }
 
-.buqu-action .name {    
+.buqu-action .name {
     color: #54C6B1;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;        
+    overflow: hidden;
 }
 
 .main-slider img{
     width: 100%;
 }
 
-.slide{    
+.slide{
     position: relative;
 }
 
@@ -596,7 +596,7 @@ height:500px;overflow: hidden; text-overflow: ellipsis;
     text-align: center;
     bottom: 0;
     min-height: 80px;
-    padding: 20px;  
+    padding: 20px;
     position: absolute;
     width: 100%;
     z-index: 2;
@@ -630,7 +630,7 @@ h2.page-title{
 
 .publish-action .delete-text{
     color: #a00;
-    float: left;    
+    float: left;
 }
 .publish-action .delete-text:hover{
     color: red;
@@ -650,11 +650,11 @@ h2.page-title{
     overflow: auto;
 }
 
-nav.admin-nav li a{    
+nav.admin-nav li a{
     background-color: #eee;
     color: #333;
 }
-nav.admin-nav li a:hover{    
+nav.admin-nav li a:hover{
     background-color: #3E95E0;
     color: #fff;
 }
@@ -683,7 +683,7 @@ nav.admin-nav li a:hover{
 .navbar-avatar img{
     width:30px;
     height:30px;
-    border-radius: 50%;        
+    border-radius: 50%;
 }
 
 .message-list .well{
@@ -733,7 +733,7 @@ ul.ui-autocomplete li{
 
 .fa-facebook-square {
     color:#3b5998;
-} 
+}
 .fa-instagram {
     color:#fbad50;
 }
@@ -804,7 +804,7 @@ ul.ui-autocomplete li{
     margin-left: 7px;
     padding: 0px 10px 1px 10px;
     height:18px;
-    border-radius: 8px;        
+    border-radius: 8px;
 }
 .btn-rounded.active, .btn-default.btn-rounded:hover{
     background-color: #bbb;
@@ -850,7 +850,7 @@ ul.ui-autocomplete li{
     border-radius: 2px;
     color: white;
     padding: 1px 3px;
-    font-size: 10px;  
+    font-size: 10px;
     position: relative; /* Position the badge within the relatively positioned button */
     top: 1;
     right: 7px;
@@ -911,8 +911,8 @@ ul.ui-autocomplete li{
     padding: 3px;
 }
 
-.dropdown-menu.notification li:last-child { 
-    border-bottom: none; 
+.dropdown-menu.notification li:last-child {
+    border-bottom: none;
 }
 
 .unread-message{
@@ -949,26 +949,26 @@ ul.ui-autocomplete li{
 }
 
 .message-bubble.me {
-    float: left;   
+    float: left;
     background-color: #C1FFD9;
 }
 
 .message-bubble.me::before {
     box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
-    left: -9px;           
+    left: -9px;
     background-color: #C1FFD9;
 }
 
 .message-bubble.you {
     /*float: right;*/
-    float: left;    
+    float: left;
 }
 
 .message-bubble.you::before {
     /*box-shadow: 2px -2px 2px 0 rgba( 178, 178, 178, .4 );
-    right: -9px;*/    
+    right: -9px;*/
     box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
-    left: -9px;               
+    left: -9px;
 }
 
 .fa.fa-star.fav{
@@ -976,11 +976,11 @@ ul.ui-autocomplete li{
 }
 
 .fa.fa-star.fav:hover{
-    color: #EFE856;  
+    color: #EFE856;
 }
 
 .fa.fa-star.fav.active{
-    color: #ecbb09;    
+    color: #ecbb09;
 }
 
 .fa.fa-star.otherfav.active{
@@ -1034,7 +1034,7 @@ br .break-buqu-mobile{
 }
 
 .logo-login img{
-    margin:-5% 0 30px 0;    
+    margin:-5% 0 30px 0;
     width: 70%;
 }
 .login-input{
@@ -1081,7 +1081,7 @@ div.container.content{
 .foot-links li a:link,.foot-links li a:hover,.foot-links li a:visited{
     color: #666;
     font-size: 15px;
-    text-decoration: none;    
+    text-decoration: none;
 }
 
 .row.vertical-divider [class*='col-']:not(:last-child):after {
@@ -1107,7 +1107,7 @@ div.container.content{
 }
 
 
-.slide img{    
+.slide img{
     width: 750px;
     height: 406px;
 }
@@ -1127,31 +1127,31 @@ div.container.content{
 {
     width: 100%;
     background-color: #fff;
-    margin-bottom: 10px;    
+    margin-bottom: 10px;
     border: none;
 }
 
-.article.list-group-item .user-info{       
+.article.list-group-item .user-info{
     float: left;
     margin-left: 1%;
     width: 74%;
 }
-.article.list-group-item .article-image{        
+.article.list-group-item .article-image{
     float: left;
     width: 25%;
 }
 .article.list-group-item .article-info{
-    text-align: left;    
+    text-align: left;
     float: left;
     margin-left: 1%;
     width: 74%;
 }
 .article.list-group-item .article-action{
-    text-align: left;    
+    text-align: left;
     float: left;
     margin-left: 1%;
     width: 74%;
-}    
+}
 
 .article.list-group-item .buqu-info img
 {
@@ -1159,11 +1159,11 @@ div.container.content{
 }
 
 .article.list-group-item .buqu-info{
-    text-align: left;    
+    text-align: left;
 }
 
 .article.list-group-item .buqu-action{
-    text-align: left;    
+    text-align: left;
 }
 
 hr.displaynone{
@@ -1193,8 +1193,12 @@ hr.displaynone{
     width: 100%;
 }
 
+.profile-short-bio{
+  max-width: 100%;
+}
+
 @media only screen and (min-width: 768px), (-webkit-max-device-pixel-ratio: 1.25), (max-resolution: 120dpi) {
-    /* For desktop: */    
+    /* For desktop: */
     body{
         background-color: #fff;
         margin: 0 auto;
@@ -1204,11 +1208,11 @@ hr.displaynone{
     }
     .mobile-only{
         display: none;
-    }   
+    }
     .navbar-fixed-top{
         margin-bottom: 0px;
     }
-    .navbar-lower{    
+    .navbar-lower{
         display: block;
         top: 50px;
         transition: top 0.2s ease-in-out;
@@ -1226,7 +1230,7 @@ hr.displaynone{
     }
     .navbar-brand{
         margin: 0 auto;
-        position: relative;        
+        position: relative;
     }
 
     .button-login{
@@ -1239,7 +1243,7 @@ hr.displaynone{
     }
     .social-login > a{
         width:30%;
-    }    
+    }
     .login-input{
         width: 30%;
     }
@@ -1248,7 +1252,7 @@ hr.displaynone{
         margin-top: 0px;
         padding-top: 10px;
     }
-    
+
     .profile-header-content {
         display: table;
     }
@@ -1279,7 +1283,7 @@ hr.displaynone{
         color: #262626;
         background-color: #999;
     }
-    
+
     .row.vertical-divider [class*='col-']:not(:last-child):after {
         display:block;
     }
@@ -1290,8 +1294,11 @@ hr.displaynone{
     .homepage .adsense-homepage-top{
         margin-top:0px;
     }
-    
+
     .fb-comments span, .fb-comments iframe{
        width:550px !important;
+    }
+    .profile-short-bio{
+      max-width: 75%;
     }
 }
