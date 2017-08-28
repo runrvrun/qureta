@@ -188,16 +188,14 @@ class PostsController extends Controller {
 
         $requestCat = ['post_id' => $post_id, 'meta_name' => 'post_category', 'meta_value' => $category_id];
         Post_metum::create($requestCat);
-        if ($fcategory_id != '') {
+        if ($fcategory_id > 0) {
             $requestFCat = ['post_id' => $post_id, 'meta_name' => 'post_fcategory', 'meta_value' => $fcategory_id];
             Post_metum::create($requestFCat);
         }
 
-        if (isset($request->lomba_id)) {
-            $lomba = \App\Competition::find($request->lomba_id);
-            $compost = ['post_id' => $post_id, 'competition_id' => $request->lomba_id];
+        if (isset($request->post_competition)) {
+            $compost = ['post_id' => $post_id, 'competition_id' => $request->post_competition];
             \App\Competition_post::create($compost);
-            $addmsg = 'Naskah anda telah diikutsertakan dalam lomba: ' . $lomba->competition_title;
         }
 
         if (isset($request->savepending)) {
@@ -235,26 +233,32 @@ class PostsController extends Controller {
             $categoryid = Post_metum::where('meta_name', 'post_category')->where('post_id', $post->id)->first();
 	    $category = Category::where('id',$categoryid->meta_value)->first();
 
+            //counter: manual
+            $requestData['view_count'] = $post->view_count + 1;
             //counter: Kryptonit3
-            Counter::count('post', $post->id);
-            //counter: google analytics
-            $startDate = $post->created_at;
-            $endDate = Carbon::now();
-            //$endDate = Carbon::createFromDate(2017, 8, 21);
-            $metrics = 'ga%3Apageviews';
-            $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
-            $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);
-            //update view count with count from analytics
-            $post->view_count = $analytics->rows[0][1];
-            //update the counter in database too
-            $requestData['view_count'] = $analytics->rows[0][1];
+            Counter::count('post', $post->id);           
+            //hit google analytics once every hour, so api call limit won't reached
+            if((Carbon::parse($post->created_at)->diffInSeconds(Carbon::now()) % 60) < 30 ){
+	    try {
+                //counter: google analytics
+                $startDate = $post->created_at;
+                //$endDate = Carbon::now();
+                $endDate = Carbon::createFromDate(date("Y"), date("m"), date("d"))->addDays(rand(1,99));
+                $metrics = 'ga%3Apageviews,ga%3Avisits';
+                $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
+                $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);     
+	        if($analytics->rows[0][1] > $post->view_count){
+                    //update view count with count from analytics
+                    $post->view_count = $analytics->rows[0][1];
+                    //update the counter in database too
+                    $requestData['view_count'] = $analytics->rows[0][1];
+                }
+            }catch (\Exception $e) {
+                //return $e->getMessage();
+            }     
+        }
             $post->update($requestData);
-
-            //debug analytics counter
-            if(Auth::check() && Auth::user()->role='admin'){
-                //print_r($analytics->rows[0][1]);dd($analytics);
-            }
-
+	   
             return view('pages.single', compact('post', 'buqus', 'related', 'category', 'populer'));
         } else {
             return redirect('/');
@@ -286,7 +290,7 @@ class PostsController extends Controller {
         if ($post) {
             $category = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->pluck('meta_value')->first();
             $fcategory = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_featured_category')->pluck('meta_value')->first();
-            $competition = Competition_post::with('competition')->where('post_id', $post->id)->first();
+            $competition = Competition_post::with('competition')->where('post_id', $post->id)->where('competition_id','>',0)->first();
             if (Auth::check()) {
                 if ($post->post_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
                     return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition'));
@@ -395,16 +399,16 @@ class PostsController extends Controller {
         $requestCat = ['post_id' => $post->id, 'meta_name' => 'post_category', 'meta_value' => $request->post_category];
         Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->delete();
         Post_metum::create($requestCat);
-        ///delete featured_category
+        ///featured_category
         Post_metum::where('post_id', $post->id)->where('meta_name', 'post_featured_category')->delete();
-        if ($request->post_fcategory != '') {
+        if ($request->post_fcategory > 0) {
             $requestFCat = ['post_id' => $post->id, 'meta_name' => 'post_featured_category', 'meta_value' => $request->post_fcategory];
             Post_metum::create($requestFCat);
         }
 
         ///ikutkan lomba by admin
         Competition_post::where('post_id', $post->id)->delete();
-        if ($request->post_competition != '') {
+        if ($request->post_competition > 0) {
             $requestCompPost = ['post_id' => $post->id, 'competition_id' => $request->post_competition];
             Competition_post::create($requestCompPost);
         }

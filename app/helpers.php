@@ -85,7 +85,9 @@ function get_dd_categories() {
 }
 
 function get_dd_fcategories() {
-    return App\Featured_category::pluck('category_title', 'id');
+    $opt = App\Featured_category::pluck('category_title', 'id');
+    $opt->prepend('- ', 0);
+    return $opt;
 }
 
 function isFollowing($userid) {
@@ -172,9 +174,12 @@ function get_dd_competition($includeid=null) {
     //return App\Competition::pluck('competition_title', 'id');
 
     if($includeid){
-        return App\Competition::where('id',$includeid)->orwhere('competition_startdate','<=',Carbon::today()->toDateString())->Where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
-    }
-    return App\Competition::where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
+        $opt = App\Competition::where('id',$includeid)->orwhere('competition_startdate','<=',Carbon::today()->toDateString())->Where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
+    }else{
+        $opt = App\Competition::where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
+    }    
+    $opt->prepend('- ', 0);
+    return $opt;
 }
 
 function update_user_post_count($user_id) {

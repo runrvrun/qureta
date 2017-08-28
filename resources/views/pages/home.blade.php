@@ -239,7 +239,7 @@ $recommended_writers = get_recommended_user();
     <!--recommended writers-->
     <div class="row topic-title">
         <div class="col-sm-12">
-            <h3>{{ HTML::link('/penulis/favorit', 'PENULIS FAVORIT')}}</h3>
+            <h3>{{ HTML::link('/penulis-favorit', 'PENULIS FAVORIT')}}</h3>
         </div>
     </div>
     <div class="row recommended-user">

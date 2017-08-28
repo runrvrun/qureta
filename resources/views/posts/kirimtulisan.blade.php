@@ -46,8 +46,8 @@
 
             @if(isset($lomba))
             <div class="form-group {{ $errors->has('post_title') ? 'has-error' : ''}}">
-                {!! Form::hidden('lomba_id', $lomba->id) !!}
-                <h4>Kirim tulisan untuk lomba: <strong>{{ $lomba->competition_title }}</strong></h4>
+                <label>Lomba</label>
+		{!! Form::select('post_competition', get_dd_competition(), $lomba->id, ['class' => 'form-control']) !!}                
             </div>
             @endif
 

@@ -68,14 +68,15 @@
             {!! Form::hidden('post_id', $post->id) !!}
             {!! Form::hidden('post_status', $post->post_status) !!}
             
-            @if(isset($competition->competition->id) || Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+            @if(isset($competition))
             <div class="form-group">                
                 <label>Lomba</label>
-                @if(isset($competition))
-                {!! Form::select('post_competition', get_dd_competition($competition->competition->id), $competition->competition->id, ['class' => 'form-control', 'placeholder'=>' - ']) !!}
-                @else
-                {!! Form::select('post_competition', get_dd_competition(), null, ['class' => 'form-control', 'placeholder'=>' - ']) !!}
-                @endif
+                {!! Form::select('post_competition', get_dd_competition($competition->competition->id), $competition->competition->id, ['class' => 'form-control']) !!}                
+            </div>
+            @elseif(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+            <div class="form-group">                
+                <label>Lomba</label>
+                {!! Form::select('post_competition', get_dd_competition(), null, ['class' => 'form-control']) !!}            
             </div>
             @endif
 
@@ -94,6 +95,7 @@
                 {!! $errors->first('post_title', '<p class="help-block">:message</p>') !!}                        
             </div>
             <div class="form-group {{ $errors->has('post_subtitle') ? 'has-error' : ''}}">
+                <label for="post_title">Sub-judul</label>
                 {!! Form::text('post_subtitle', null, ['class' => 'form-control', 'placeholder' => 'Sub-judul', $readonly]) !!}
                 {!! $errors->first('post_subtitle', '<p class="help-block">:message</p>') !!}
             </div>
@@ -111,6 +113,7 @@
                 {!! $errors->first('post_image', '<p class="help-block">:message</p>') !!}
             </div>
             <div class="form-group {{ $errors->has('post_image_credit') ? 'has-error' : ''}}">
+                <label for="post_title">Sumber foto/ilustrasi</label>
                 {!! Form::text('post_image_credit', null, ['class' => 'form-control', 'placeholder' => 'Sumber foto/ilustrasi', $readonly]) !!}
                 {!! $errors->first('post_image_credit', '<p class="help-block">:message</p>') !!}
             </div>
@@ -121,11 +124,11 @@
 
             <div class="form-group form-inline">                
                 <div class="col-md-3">Topik {!! Form::select('post_category', get_dd_categories(), $category, ['class' => 'form-control', $readonly]) !!}</div>
+                <div class="col-md-3">
                 @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                <div class="col-md-3">Topik Redaksi {!! Form::select('post_fcategory', get_dd_fcategories(), $fcategory, ['class' => 'form-control', 'placeholder'=>' - ']) !!}</div>                                
-                @else
-                <div class="col-md-5">&nbsp;</div>
+                Topik Redaksi {!! Form::select('post_fcategory', get_dd_fcategories(), $fcategory, ['class' => 'form-control']) !!}
                 @endif
+                </div>
                 <div class="col-md-6">     
                     {!! Form::hidden('post_status', null) !!}         
                     @if ($post->post_status === 'draft' || $post->post_status === 'pending')
