@@ -18,7 +18,7 @@
             <div class="col-md-10 profile-about" style="width: 100%;">
                 <h2 class="username">{{ $users->name }}
 @if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
-<small class="verified-user">&nbsp;</small>
+<small class="verified-user" style="width:15px">&nbsp;</small>
 @endif
 </h2>
                 <p>{{ $profile['profesi'] or ''}}</p>
@@ -53,6 +53,11 @@
                 <div class="col-md-2 text-center">
                     <div><p>{{$jml_followers}}<br><a href="#myModal" data-toggle="modal">  Followers</a></p></div>
                 </div>
+                @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                <div class="col-md-2 text-center">
+                    <a href="{{url('/profile/edit/'.$users->id)}}"><button class="btn-warning"> <i class="fa fa-pencil"></i> Edit Profile </button></a>
+                </div>
+                @endif
             </div>
         </div>
     </div>

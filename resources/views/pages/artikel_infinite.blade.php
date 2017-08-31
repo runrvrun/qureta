@@ -41,16 +41,9 @@
     @if($posts->count() == 0)
 	<br/><br/><p>Tidak ada hasil</p>
     @endif
-<div class="row vertical-divider">
-    @include('widgets.article_row') 
+<div id="results">
+    <div class="ajax-loading"><img src="{{ asset('images/loading.gif') }}" /></div>
 </div>
-@if (method_exists($posts,'render') && $posts->lastPage()>1)
-@if(isset($querystring['sp']) && isset($querystring['q']))
-<div class="pagination-wrapper"> {!! $posts->appends(['sp' => $querystring['sp'],'q' => $querystring['q']])->render() !!} </div>
-@else
-<div class="pagination-wrapper"> {!! $posts->render() !!} </div>
-@endif
-@endif
     <div class="row adsense-homepage-bottom">
         <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Qresponsive -->
@@ -67,16 +60,6 @@
 @section('addjs')
 <script type="text/javascript" src="slick/slick.min.js"></script>
 <script>
-$(document).ready(function (e) {
-    /** force crop thumbnails **/
-    var articleimage = $('.article-image');
-    var width = articleimage.width();
-    articleimage.css('height', width * 157 / 262);
-    var articleimage = $('.article-image.sidebar');
-    var width = articleimage.width();
-    articleimage.css('height', width * 157 / 262);
-});
-
 function cookies_enabled()
 {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false;
@@ -177,5 +160,43 @@ $('.share_button').click(function () {
         }
     }
 });
+</script>
+<script>
+var page = 1; //track user scroll as page number, right now page number is 1
+load_more(page); //initial content load
+$(window).scroll(function() { //detect page scroll
+    if($(window).scrollTop() + $(window).height() >= $(document).height()-170) { //if user scrolled from top to bottom of the page
+        page++; //page number increment
+        load_more(page); //load content
+    }
+});
+function load_more(page){
+  $.ajax(
+        {
+            url: '?page=' + page,
+            type: "get",
+            datatype: "html",
+            beforeSend: function()
+            {
+                $('.ajax-loading').show();
+            }
+        })
+        .done(function(data)
+        {
+            if(data.length == 0){
+            console.log(data.length);
+
+                //notify user if nothing to load
+                $('.ajax-loading').html("Tidak ada tulisan lagi");
+                return;
+            }
+            $('.ajax-loading').hide(); //hide loading animation once data is received
+            $("#results").append(data); //append data into #results element
+        })
+        .fail(function(jqXHR, ajaxOptions, thrownError)
+        {
+              alert('No response from server');
+        });
+ }
 </script>
 @endsection

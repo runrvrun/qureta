@@ -36,7 +36,7 @@ class Competition_post extends Model {
     }
 
     public function posts() {
-        return $this->hasMany('App\Post');
+        return $this->belongsTo('App\Post','post_id');
     }
     
     public function comps() {

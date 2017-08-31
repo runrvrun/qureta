@@ -514,11 +514,16 @@ class PostsController extends Controller {
         return redirect('posts');
     }
 
-    public function terbaru() {
+    public function terbaru(Request $request) {
         $pagetitle = 'Artikel Terbaru';
         $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->paginate(12);
 
-        return view('pages.artikel', compact('pagetitle', 'posts'));
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('widgets.article_row', compact('posts'));;
+        }
+
+        return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
     public function showcategoryposts($permalink) {
