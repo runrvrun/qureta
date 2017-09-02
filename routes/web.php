@@ -29,7 +29,7 @@ Route::get('karir', function () {
 Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function() {
     // main page for the admin section (app/views/admin/dashboard.blade.php)
 //    Route::get('/', function() {
-//        return View::make('admin.index');
+//        return View::make('admin.index');        
 //    });
     Route::get('/', 'PostsController@pendingposts');
     Route::get('/pendingposts', 'PostsController@pendingposts');
@@ -51,17 +51,18 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/users/search', 'Admin\\UsersController@search');
     Route::get('/users/changepassword/{a}', 'Admin\\UsersController@changeform');
     Route::post('/users/changepass', 'Admin\\UsersController@changepassword');
-    Route::resource('/users', 'Admin\\UsersController');
+    Route::resource('/users', 'Admin\\UsersController');    
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
-    Route::resource('/statistics', 'Admin\\StatisticsController');
-    Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');
+    Route::resource('/statistics', 'Admin\\StatisticsController');    
+    Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');    
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
 });
 
-     Route::resource('messages', 'MessagesController');
+     Route::resource('messages', 'MessagesController');  
      Route::get('messageautocomplete',array('as'=>'messageautocomplete','uses'=>'MessagesController@autoComplete'));
-     Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'UserController@autoComplete'));
-
+     Route::get('userautocomplete',array('as'=>'userautocomplete','uses'=>'UserController@autoComplete'));     
+     Route::get('postwauthorautocomplete',array('as'=>'postwauthorautocomplete','uses'=>'PostsController@postwauthorautocomplete'));   
+     Route::get('compostautocomplete/{competitionid}',array('as'=>'compostautocomplete','uses'=>'Admin\\Competition_postsController@autocomplete'));
 
 Route::get('/kirim-tulisan', 'PostsController@kirimtulisan')->middleware('auth');
 Route::get('/kirim-tulisan/lomba/{a}', 'PostsController@kirimtulisanlomba')->middleware('auth');

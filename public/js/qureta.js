@@ -53,7 +53,7 @@ $(document).ready(function (e) {
     });
 
     /* notification mark as read*/
-    $('#notif-button').click(function (event) {        
+    $('#notif-button').click(function (event) {
         var $this = $(this);
         var userid = $this.data('userid');
         var token = $this.data('csrf_token');
@@ -80,7 +80,7 @@ var delta = 5;
 var navbarHeight = $('#main-menu').outerHeight();
 
 $(window).scroll(function (event) {
-    didScroll = true;
+      didScroll = true;
 });
 
 setInterval(function () {
@@ -94,11 +94,13 @@ function hasScrolled() {
     var st = $(this).scrollTop();
 
     // Make sure they scroll more than delta
-    if (Math.abs(lastScrollTop - st) <= delta)
+    if (Math.abs(lastScrollTop - st) <= delta){
         return;
+      }
 
     // If they scrolled down and are past the navbar, add class .nav-up.
     // This is necessary so you never see what is "behind" the navbar.
+
     if (st > lastScrollTop && st > navbarHeight) {
         // Scroll Down
         $('#main-menu').removeClass('nav-down').addClass('nav-up');

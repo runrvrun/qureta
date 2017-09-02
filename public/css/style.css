@@ -228,10 +228,6 @@ div.content.profile-page{
     z-index: 99;
 }
 
-.nav-up {
-    top: -40px;
-}
-
 .navbar-nav li .boxed-text-allcaps{
     border: 1px solid;
     border-radius: 5px;
@@ -1206,6 +1202,7 @@ hr.displaynone{
     body{
         background-color: #fff;
         margin: 0 auto;
+        padding-top:90px;
     }
     .desktop-only{
         display: block;
@@ -1218,15 +1215,22 @@ hr.displaynone{
     }
     .navbar-lower{
         display: block;
+        position: fixed;
         top: 50px;
         transition: top 0.2s ease-in-out;
-        margin-bottom: 50px;
         background: #eee;
+        width: 100%;
         min-height: 20px;
         z-index: 98;
     }
     .navbar-lower .navbar-nav > li > a{
         padding: 6px 15px;
+    }
+    .navbar-lower .navbar-collapse ul li{
+        margin: 0px 10px; */
+    }
+    .nav-up {
+        top: -40px;
     }
     #navBarSearchForm input[type=text]{
         width:300px;

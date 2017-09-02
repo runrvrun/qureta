@@ -192,11 +192,16 @@ class BuqusController extends Controller {
         return redirect('buqu');
     }
 
-    public function terbaru() {
+    public function terbaru(Request $request) {
         $pagetitle = 'Buqu Terbaru';
         $buqus = Buqus::orderBy('id', 'DESC')->paginate(20);
 
-        return view('pages.buqu', compact('pagetitle', 'buqus'));
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('widgets.buqu_row', compact('buqus'));;
+        }
+        
+        return view('pages.buqu_infinite', compact('pagetitle', 'buqus'));
     }
 
     public function populer($limit = 20) {
@@ -263,15 +268,15 @@ class BuqusController extends Controller {
     }
 
     public function feature(Request $request) {
-        $id = $request->postid;                
+        $id = $request->postid;
         $buqu = Buqus::find($id);
         $requestData['featured_at'] = Carbon::now()->toDateTimeString();
-        $buqu->update($requestData);        
+        $buqu->update($requestData);
         return response()->json(['responseText' => 'Success!'], 200);
     }
 
     public function unfeature(Request $request) {
-        $id = $request->postid;        
+        $id = $request->postid;
         $buqu = Buqus::find($id);
         $buqu->featured_at = null;
         $buqu->save();

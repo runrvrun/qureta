@@ -323,7 +323,7 @@
             </ul>           
         </div>
     </nav>
-    <nav class="navbar navbar-default navbar-lower">
+    <nav class="navbar navbar-default navbar-lower" id="main-menu">
         <div class="container">
             <div class="collapse navbar-collapse" id="app-navbar-collapse3">
                 <!-- Left Side Of Navbar -->

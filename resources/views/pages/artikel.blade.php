@@ -41,9 +41,7 @@
     @if($posts->count() == 0)
 	<br/><br/><p>Tidak ada hasil</p>
     @endif
-<div class="row vertical-divider">
     @include('widgets.article_row') 
-</div>
 @if (method_exists($posts,'render') && $posts->lastPage()>1)
 @if(isset($querystring['sp']) && isset($querystring['q']))
 <div class="pagination-wrapper"> {!! $posts->appends(['sp' => $querystring['sp'],'q' => $querystring['q']])->render() !!} </div>

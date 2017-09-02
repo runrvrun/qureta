@@ -42,8 +42,8 @@
 	<br/><br/><p>Tidak ada hasil</p>
     @endif
 <div id="results">
-    <div class="ajax-loading"><img src="{{ asset('images/loading.gif') }}" /></div>
 </div>
+    <div class="ajax-loading"><img src="{{ asset('images/loading.gif') }}" /></div>
     <div class="row adsense-homepage-bottom">
         <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Qresponsive -->
@@ -195,7 +195,7 @@ function load_more(page){
         })
         .fail(function(jqXHR, ajaxOptions, thrownError)
         {
-              alert('No response from server');
+              //alert('No response from server');
         });
  }
 </script>

@@ -64,7 +64,7 @@
                             {!! Form::text('ranktitle[0]', isset($ranktitle[0])? $ranktitle[0]:'Pemenang 1', ['class' => 'form-control']) !!}                            
                         </div>
                         <div class="col-md-5">
-                            {!! Form::text('rankpost_search0', isset($posts[$rankpost[0]])? $posts[$rankpost[0]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search0')) !!}
+                            {!! Form::text('rankpost_search0', (isset($rankpost[0]) && isset($posts[$rankpost[0]]))? $posts[$rankpost[0]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search0')) !!}
 	                    {!! Form::hidden('rankpost[0]', isset($rankpost[0])? $rankpost[0]:null) !!}
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                             {!! Form::text('ranktitle[1]', 'Pemenang 2', ['class' => 'form-control']) !!}
                         </div>
                         <div class="col-md-5">
-                            {!! Form::text('rankpost_search1', isset($posts[$rankpost[1]])? $posts[$rankpost[1]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search1')) !!}
+                            {!! Form::text('rankpost_search1', (isset($rankpost[1]) && isset($posts[$rankpost[1]]))? $posts[$rankpost[1]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search1')) !!}
 	                    {!! Form::hidden('rankpost[1]', isset($rankpost[1])? $rankpost[1]:null) !!}
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                             {!! Form::text('ranktitle[2]', 'Pemenang 3', ['class' => 'form-control']) !!}
                         </div>
                         <div class="col-md-5">
-                            {!! Form::text('rankpost_search2', isset($posts[$rankpost[2]])? $posts[$rankpost[2]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search2')) !!}
+                            {!! Form::text('rankpost_search2', (isset($rankpost[2]) && isset($posts[$rankpost[2]]))? $posts[$rankpost[2]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search2')) !!}
 	                    {!! Form::hidden('rankpost[2]', isset($rankpost[2])? $rankpost[2]:null) !!}
                         </div>
                     </div>
