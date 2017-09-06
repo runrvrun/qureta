@@ -169,7 +169,7 @@ class PostsController extends Controller {
             $uploadThumbPath = public_path('/uploads/post/thumb/');
 
             $extension = 'jpg';
-            $fileName = rand(11111, 99999) . '.' . $extension;
+            $fileName = rand(111, 99999) . $request->file('post_image')->getClientOriginalName() . '.' . $extension;
 
             $file = $request->file('post_image');
             Image::make($file->getRealPath())->resize(350, null, function ($constraint) {
@@ -381,7 +381,7 @@ class PostsController extends Controller {
             $uploadThumbPath = public_path('/uploads/post/thumb/');
 
             $extension = 'jpg';
-            $fileName = rand(11111, 99999) . '.' . $extension;
+            $fileName = rand(111, 99999) . $request->file('post_image')->getClientOriginalName() . '.' . $extension;
 
             $file = $request->file('post_image');
             Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 75)->save($uploadThumbPath . $fileName);
@@ -526,13 +526,18 @@ class PostsController extends Controller {
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
-    public function showcategoryposts($permalink) {
+    public function showcategoryposts($permalink, Request $request) {
         $category = Category::where('category_slug', '=', $permalink)->first();
         $pagetitle = 'Topik: ' . $category->category_title;
         $post_metum = Post_metum::where('meta_name', '=', 'post_category')->where('meta_value', '=', $category->id)->orderBy('created_at', 'DESC')->pluck('post_id');
         $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
 
-        return view('pages.artikel', compact('pagetitle', 'posts'));
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('widgets.article_row', compact('posts'));;
+        }
+
+        return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
     public function showsemuatopik() {
