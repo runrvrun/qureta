@@ -584,11 +584,28 @@ class PostsController extends Controller {
         }
     }
 
-    public function populer($limit = 12) {
+    public function populer(Request $request) {
         $pagetitle = 'Artikel Terpopuler';
-        $posts = get_popular_post($limit);
 
-        return view('pages.artikel', compact('pagetitle', 'posts'));
+        $posts = Post::with('post_authors')
+            ->where('post_status', 'publish')->where('hide', 0)
+            ->where('published_at','<=',Carbon::now())
+            ->where('published_at','>=',Carbon::now()->subDays(3))
+            ->orderBy('view_count', 'DESC')->paginate(12);
+
+        if($posts->currentPage() == 1){
+        $stickypopuler = Post::with('post_authors')->whereHas('post_metum', function($query) {
+                    $query->where('meta_name', 'post_featured_category')->where('meta_value', '11');
+                })->where('sticky',1)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->get();
+        $posts = $stickypopuler->merge($posts);
+        }
+
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('widgets.article_row', compact('posts'));;
+        }
+
+        return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
     public function rekam() {
@@ -629,18 +646,24 @@ class PostsController extends Controller {
         return view('blank.artikel');
     }
 
-    public function showfcategoryposts($permalink) {
+    public function showfcategoryposts($permalink, Request $request) {
         $category = Featured_category::where('category_slug', '=', $permalink)->first();
         $pagetitle = 'Topik: ' . $category->category_title;
         $post_metum = Post_metum::where('meta_name', '=', 'post_featured_category')->where('meta_value', '=', $category->id)->orderBy('created_at', 'DESC')->pluck('post_id');
         $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
 
-        return view('pages.artikel', compact('pagetitle', 'posts'));
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('widgets.article_row', compact('posts'));;
+        }
+
+        return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
     public function gototopik() {
-        $topik = $request->input('topik');
-        echo $topik;
+        ///kayaknya ini ga kepake deh, delete aja
+        //$topik = $request->input('topik');
+        //echo $topik;
         //return Redirect::route('/topik/'.$topik);
     }
 
