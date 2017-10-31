@@ -78,10 +78,8 @@ class Workshop_postsController extends Controller {
     }
 
      public function files($id, $user_id) {
-        $query = ['workshop_id' => $id, 'user_id' => $user_id];
-        $workshop = Workshop_files::where($query)->get();
+        $workshop = Workshop_files::where('workshop_id',$id)->where('user_id',$user_id)->get();
         $id = $id;
-        
         return view('admin.workshops.files_peserta', compact('workshop','id'));
     }
 

@@ -56,6 +56,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::resource('/statistics', 'Admin\\StatisticsController');    
     Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');    
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
+    Route::get('/hiddenposts', 'PostsController@hiddenposts');    
 });
 
      Route::resource('messages', 'MessagesController');  

@@ -11,9 +11,12 @@ use App\User;
 use Illuminate\Http\Request;
 use Session;
 use Carbon;
+use Illuminate\Foundation\Auth\RegistersUsers;
+
 
 class WorkshopController extends Controller {
 
+use RegistersUsers;	
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +40,18 @@ class WorkshopController extends Controller {
         return view('admin.workshops.create');
     }
 
+    public function register_peserta() {
+        return view('admin.workshops.register_peserta');
+    }
+
+    public function input_register_peserta(array $data) {
+        return User::create([
+            'name' => $data['name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -50,9 +65,9 @@ class WorkshopController extends Controller {
             'workshop_author' => 'required'
         ]);
         $requestData = $request->all();
-
-        $requestData['workshop_startdate'] = Carbon::parse($requestData['workshop_startdate'])->format('Y-m-d H:i:s');
-        $requestData['workshop_enddate'] = Carbon::parse($requestData['workshop_enddate'])->format('Y-m-d H:i:s');
+ 
+        $requestData['workshop_startdate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_startdate'])->format('Y-m-d H:i:s');
+        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s'); 
 
         Workshop::create($requestData);
 
@@ -89,9 +104,14 @@ class WorkshopController extends Controller {
     }
 
     public function peserta($id) {
-        $workshop = Workshop_post::where('workshop_id',$id)->orderBy('id','DESC')->get();
+        $workshop = Workshop_post::where('workshop_id',$id)->orderBy('name','ASC')->paginate(10);
         
         return view('admin.workshops.peserta', compact('workshop'));
+    }
+
+    public function admin_kirim_tulisan_workshop($id) {
+        $workshop = Workshop::findOrFail($id);
+        return view('admin.workshops.admin_kirim_tulisan_workshop', compact('workshop'));
     }
 
     /**
@@ -108,8 +128,8 @@ class WorkshopController extends Controller {
         ]);
         $requestData = $request->all();
 
-        $requestData['workshop_startdate'] = Carbon::parse($requestData['workshop_startdate'])->format('Y-m-d H:i:s');
-        $requestData['workshop_enddate'] = Carbon::parse($requestData['workshop_enddate'])->format('Y-m-d H:i:s');
+        $requestData['workshop_startdate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_startdate'])->format('Y-m-d H:i:s');
+        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s'); 
 
         $workshop = Workshop::findOrFail($id);
         $workshop->update($requestData);

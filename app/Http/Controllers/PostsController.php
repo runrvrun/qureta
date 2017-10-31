@@ -169,7 +169,7 @@ class PostsController extends Controller {
             $uploadThumbPath = public_path('/uploads/post/thumb/');
 
             $extension = 'jpg';
-            $fileName = rand(111, 99999) . $request->file('post_image')->getClientOriginalName() . '.' . $extension;
+            $fileName = rand(11111, 99999) . '_'. rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
             Image::make($file->getRealPath())->resize(350, null, function ($constraint) {
@@ -381,7 +381,7 @@ class PostsController extends Controller {
             $uploadThumbPath = public_path('/uploads/post/thumb/');
 
             $extension = 'jpg';
-            $fileName = rand(111, 99999) . $request->file('post_image')->getClientOriginalName() . '.' . $extension;
+            $fileName = rand(11111, 99999) . '_' . rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
             Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 75)->save($uploadThumbPath . $fileName);
@@ -421,7 +421,10 @@ class PostsController extends Controller {
              'slug' => $requestData['post_slug'],
              'message' => $requestData['moderation_message'],
            ];
+	 //check if email valid (and not name/id if from facebook)
+           if(filter_var($post->post_authors->email, FILTER_VALIDATE_EMAIL )){
            Mail::to($post->post_authors->email)->send(new PostPublished($data));
+           }
            //show alert in web
            Session::flash('flash_message', 'Naskah terbit! ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
             /* send notification to author */
@@ -485,7 +488,10 @@ class PostsController extends Controller {
                'slug' => $requestData['post_slug'],
                'message' => $requestData['moderation_message'],
              ];
+	   //check if email valid (and not name/id if from facebook)
+             if(filter_var($post->post_authors->email, FILTER_VALIDATE_EMAIL )){
              Mail::to($post->post_authors->email)->send(new PostReturned($data));
+             }
             //show alert in web
             Session::flash('flash_message', 'Naskah dikembalikan ke draft.');
         } elseif (isset($request->delete)) {
@@ -496,7 +502,14 @@ class PostsController extends Controller {
             Session::flash('flash_message', 'Naskah disimpan. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
         }
         update_user_post_count($post->post_author);
-        return redirect('/edit-tulisan/' . $post->post_slug);
+	
+	if (isset($request->savepublish)) {
+            return redirect('/admin/pendingposts');
+        } elseif (isset($request->savedraft)) {
+            return redirect('/admin/pendingposts');
+        } else {
+            return redirect('/edit-tulisan/' . $post->post_slug);
+        }
     }
 
     /**
@@ -551,6 +564,14 @@ class PostsController extends Controller {
     public function pendingposts() {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('post_status', 'pending')->paginate(25);
+
+            return view('admin.pendingposts.index', compact('posts'));
+        }
+    }
+
+    public function hiddenposts() {
+        if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+            $posts = Post::with('post_authors')->where('hide', '1')->paginate(25);
 
             return view('admin.pendingposts.index', compact('posts'));
         }

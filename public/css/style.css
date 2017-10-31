@@ -38,6 +38,10 @@ body{
     display: none;
 }
 
+blockquote {
+    border-left: 0px solid #eee;
+}
+
 #btnFollowUser {
     background: transparent;
     color: #fff;
@@ -455,6 +459,10 @@ div.user-info div.name a{
     line-height: 25px;
     font-family: Helvetica, serif;
 }
+.article-single.title a{
+    color: #777777;
+}
+
 .require-login{
 height:500px;overflow: hidden; text-overflow: ellipsis;
 }

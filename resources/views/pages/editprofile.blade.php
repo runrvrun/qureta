@@ -151,6 +151,9 @@
                             {!! $errors->first('recommended', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+@else
+{{ Form::hidden('recommended_id',null) }}
+{{ Form::hidden('recommended',null) }}
 @endif
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-4">

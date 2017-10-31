@@ -53,13 +53,17 @@ class BuqusController extends Controller {
      * @return \Illuminate\View\View
      */
     public function create() {
+        $this->middleware('auth');
+
+        if (Auth::guest()) {
+            return redirect()->guest('login');
+        }
+
 	if(is_banned(Auth::user()->id)){
 	    Auth::logout();
             return redirect('/login');
 	}
-        if (Auth::guest()) {
-            return redirect()->guest('login');
-        }
+
         return view('buqus.create');
     }
 

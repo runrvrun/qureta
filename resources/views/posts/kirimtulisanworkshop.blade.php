@@ -92,19 +92,21 @@
                         </div>
                     </div>
 
+                     <div class="form-group {{ $errors->has('files2') ? 'has-error' : ''}}">
+                        <div class="col-md-4"></div>
+			<div class="col-md-6">
+                           {!! Form::file('files2[]', array('multiple'=>true), ['class' => 'btn btn-primary','required' => 'required']) !!}
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-4">
                             {!! Form::submit('Daftar Workshop', ['class' => 'btn btn-primary']) !!}
                         </div>
                     </div>
                     {!! Form::close() !!}
-
-
-                    
-                </div>
-                 
+                </div>                 
             </div>
-           
         </div>
     </div>
 </div>

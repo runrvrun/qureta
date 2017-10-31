@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon;
 use Session;
+use App\Log;
 
 class LoginController extends Controller {
     /*
@@ -47,17 +48,36 @@ use AuthenticatesUsers;
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             // Authentication passed...
             if (Auth::user()->banned_until < Carbon::now()){
+	      Session::put('qureta_fullname',Auth::user()->name);
+
                 return redirect()->intended('/');                
-            }else{
+            }
+           
+            else{
                 Auth::logout(); 
                 Session::flash('alert-type','alert-danger');
                 Session::flash('flash_message','Login gagal. Akses Anda diblokir.');               
                 return redirect('login');
             }
-        }else{
+             $log = Log::create([
+            'username' => $data['email'],
+            'activity' => 'Login',
+            'time' => Carbon::now(),
+        ]);
+        }
+        else{
                 Session::flash('alert-type','alert-danger');
                 Session::flash('flash_message','Username atau password salah'); 
             return redirect('login');
         }
+    }
+
+    public function showLoginForm()
+    {
+        if(!session()->has('url.intended'))
+        {
+            session(['url.intended' => url()->previous()]);
+        }
+        return view('auth.login');     
     }
 }

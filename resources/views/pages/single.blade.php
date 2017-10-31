@@ -68,7 +68,7 @@
 <div class="post-image-credit"><small>{{ $post->post_image_credit }}</small></div>
 @endif
 <div class="article-single title">
-    <div class="info"><small><i class="fa fa-tag"></i> {{ $category->category_title or '' }}</small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
+    <div class="info"><small><i class="fa fa-tag"></i> <a href="{{ '/topik/'.$category->category_slug }}">{{ $category->category_title or '' }}</a></small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
     <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1>
     <input type="hidden" id="postid" value="{{ $post->id }}" />
 </div>
@@ -168,7 +168,11 @@ $(document).ready(function (e) {
     //have to do this in JS because there is no way to select parent in CSS
     $('.fr-dib').parent().css({
         'text-align' : 'center'
-    });
+    }); 
+        //fix youtube iframe cropped
+        if (window.screen.availWidth < 640) { 
+            $('iframe').width('100%');
+        } 
 });
 
     $(document).ready(function (e) {

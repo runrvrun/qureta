@@ -27,18 +27,14 @@ class WorkshopController extends Controller {
      * @return \Illuminate\View\View
      */
     public function index($workshopid = null) {
-         if (Auth::check()) {
-            $pagetitle = 'Workshop';
-         $workshops = Workshop::where('workshop_startdate','<=',Carbon::now()->format('Y-m-d H:i:s'))->where('workshop_enddate','>=',Carbon::now()->format('Y-m-d H:i:s'))->paginate(25);
+	$pagetitle = 'Workshop';
+        $workshops = Workshop::where('workshop_startdate','<=',Carbon::now()->format('Y-m-d H:i:s'))->where('workshop_enddate','>=',Carbon::now()->format('Y-m-d H:i:s'))->orderBy('workshop_enddate')->orderBy('workshop_startdate')->orderBy('workshop_title')->paginate(25);           
+        if (Auth::check()) {
             $user_id = Auth::user()->id;
-           $cek_file = Workshop_files::where('user_id',$user_id);//->whereNotNull('workshop_id',$workshopid);
+            $cek_file = Workshop_files::where('user_id',$user_id)->whereNotNull('workshop_id',$workshopid);
             return view('pages.workshop', compact('pagetitle','workshops','user_id','cek_file'));
         }
-        else{
-         $pagetitle = 'Workshop';
-	$workshops = Workshop::where('workshop_startdate','<=',Carbon::now()->format('Y-m-d H:i:s'))->where('workshop_enddate','>=',Carbon::now()->format('Y-m-d H:i:s'))->paginate(25);
-         return view('pages.workshop', compact('pagetitle','workshops'));
-        }
+        return view('pages.workshop', compact('pagetitle','workshops'));
     }
 
     /**
@@ -62,35 +58,41 @@ class WorkshopController extends Controller {
             ]);
         $input = $request->all();
         $email = $request['email'];
-         $name = $request['name'];
-        $files = Input::file('files');
+        $name = $request['name'];
+        $files1 = Input::file('files');
+        $files2 = Input::file('files2');
+        //handle kalau file 2 ga diisi, biar ga error saat merge
+	if(!is_array($files2)){
+            $files2 = array();
+        }
+        $files = array_merge($files1,$files2);
         $file_count = count($files);
         $uploadcount = 0;
     
         foreach($files as $file) 
         {
               $rules = array('file' => 'required|max:10000|mimes:doc,docx,pdf');
-              $rules2 = array('email' => 'unique:workshop_members,email'); //'required|mimes:png,gif,jpeg,txt,pdf,doc'
+              //$rules2 = array('email' => 'unique:workshop_members,email); //'required|mimes:png,gif,jpeg,txt,pdf,doc'
               $validator = Validator::make(array('file'=> $file), $rules);
-              $validator2 = Validator::make(array('email'=> $email), $rules2);
+              //$validator2 = Validator::make(array('email'=> $email), $rules2);
 
-              if($validator->passes() && $validator2->passes())
+              if($validator->passes())// && $validator2->passes())
                 {
                     $destinationPath = 'uploads/tulisan';
-                    $filename = $file->getClientOriginalName();
+                    $filename = $input['workshop_id'].'_'.rand().'_'.$file->getClientOriginalName();
                     $upload_success = $file->move($destinationPath, $filename);
                     $uploadcount ++;
                     $input['files'] = $filename;
                     $input['original_filename'] = $filename;
                     $input['filename'] = $file->getFilename().'.'.$filename;
                     
-                    Workshop_files::create($input);
+                    $wf = Workshop_files::create($input);
                 }
-                elseif($validator->passes() && $validator2->fails())
-                {
-                     Session::flash('flash_message', 'Email Ini Sudah Terdaftar');
-                   return Redirect::back()->withInput(Input::all());
-                }
+                //elseif($validator->passes() && $validator2->fails())
+                //{
+                //     Session::flash('flash_message', 'Email Ini Sudah Terdaftar');
+                //   return Redirect::back()->withInput(Input::all());
+                //}
 
 
                 else
