@@ -7,6 +7,7 @@ use App\Post_metum;
 use App\Post;
 use App\Buqus;
 use App\Banner;
+use App\Course;
 use Carbon;
 
 class HomeController extends Controller {
@@ -26,8 +27,9 @@ class HomeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
+
         ///get last 4 featured post for each category
-        //aktual        
+        //aktual
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '1');
                 })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(5)->get();
@@ -70,13 +72,15 @@ class HomeController extends Controller {
         ///get most popular buqus
          $buqus = Buqus::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
 
+        ///get latest kuliah qureta
+        $kuliah = Course::orderBy('created_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(8)->get();
 
-        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus'));
+        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah'));
     }
 
 public function hometest() {
         ///get last 4 featured post for each category
-        //aktual        
+        //aktual
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '1');
                 })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->take(5)->get();

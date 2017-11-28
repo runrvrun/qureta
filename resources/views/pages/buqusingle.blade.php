@@ -6,7 +6,18 @@
 
 @section('content')
 <?php Carbon::setLocale('id'); ?>
-
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 <div class="clearfix"></div>
 @if(Auth::check())
 <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
@@ -89,7 +100,7 @@
             </div>       
             <!--Article-->
             <div class="article-info">                            
-                <div class="title">{{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>
+                <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <!--Share Like Buqu-->
             <div class="article-action">
@@ -120,6 +131,18 @@
     @endif    
 </div>
 <div class="clearfix"></div>
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 @endsection
 
 @section('addjs')

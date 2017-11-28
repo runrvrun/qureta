@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-10">
             <div class="panel panel-default">
-                <div class="panel-heading">Naskah Lomba: {{ $competition_posts[0]->comps->competition_title or '' }}</div>
+                <div class="panel-heading">Naskah Lomba: {{ (count($competition_posts) > 0 )? $competition_posts[0]->comps->competition_title : '' }} </div>
                 <div class="panel-body">
 
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->
@@ -27,21 +27,18 @@
                             </thead>
                             <tbody>
 @if(count($competition_posts) == 0)
-<tr><td>Tidak ada hasil</td></tr>
+<tr><td> Tidak ada hasil </td></tr>
 @endif
                             @foreach($competition_posts as $item)
                             @if(Auth::user()->role === 'admin')
                                 @if($item->composts)
                                 <tr>
-                                 <td data-order="desc">                                        
-                                        @if(Auth::check()) 
+                                 <td data-order="desc">    
+					@if ($item->composts->post_status == 'publish')
                                         @if (isLikingCompost($item->id))
                                         <a class="btnLike active" data-postid="{{ $item->id }}"><i class="fa fa-star fav active myfav fa-2x"></i></a>
                                         @else
                                         <a data-postid="{{ $item->id }}" class="btnLike"><i class="fa fa-star fav myfav fa-2x"></i></i></a>
-                                        @endif
-                                        @else                
-                                        <a><i class="fa fa-star fav myfav fa-2x"></i></a>
                                         @endif
                                         @if(Auth::user()->role == 'admin')
                                         <?php $otherfav = getOherLikeCompost($item->id); ?>
@@ -50,6 +47,9 @@
                                         <a title="{{ $of->users->name }}"><i class="fa fa-star fav otherfav active fa-2x"></i></a>
                                         @endforeach
                                         @endif
+                                        @endif
+                                        @else
+					   {{ '('.$item->composts->post_status.')' }}
                                         @endif
                                     </td>
                                     <td>{!! HTML::link('/post/'.$item->composts['post_slug'],$item->composts['post_title']) !!}</td>

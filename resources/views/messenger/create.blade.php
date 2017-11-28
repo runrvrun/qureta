@@ -10,9 +10,10 @@
 <div class="col-md-6">
     <div class="form-group">
         {!! Form::label('recipient', 'To', ['class' => 'control-label']) !!}
-        {!! Form::text('recipient', $username, ['class' => 'form-control', 'id' => 'recipient', 'data-role' => 'tagsinput']) !!}
+       
+        {!! Form::text('recipient', null, array('placeholder' => 'Search User','class' => 'form-control','id'=>'search_text')) !!}
         <br>
-        <input class="typeahead form-control" style="margin:0px auto;width:300px;" type="text">
+        
     </div>
     
     <!-- Subject Form Input -->
@@ -54,24 +55,33 @@ $(document).ready(function() {
 </script>
 
 <script>
-$(document).ready(function() {
-    var Username = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: '/messages/create',
-      remote: {
-          url: '/find/%QUERY',
-          wildcard: '%QUERY'
-      }
-  });
 
-    $('#remote .typeahead').typeahead(null, {
-     name: 'username',
-    display: 'value',
-    source: Username
-});
-  });
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="{{URL::asset('js/typeahead.bundle.js')}}"></script>
+<script src="http://demo.expertphp.in/js/jquery.js"></script>
+<script src="http://demo.expertphp.in/js/jquery-ui.min.js"></script>
+<script>
+   $(document).ready(function() {
+    src = "{{ route('messageautocomplete') }}";
+     $("#search_text").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: src,
+                dataType: "json",
+                data: {
+                    term : request.term
+                },
+                success: function(data) {
+                    response(data);
+                   
+                }
+            });
+        },
+        minLength: 1,
+       
+    });
+});
+</script>
+
 @endsection

@@ -35,7 +35,7 @@
                 {!! Form::label('post_id', 'Post', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
                     {!! Form::hidden('post_id', null, ['class' => 'form-control']) !!}
-                    {{ $competition_post->composts->post_title }}
+                    {!! $competition_post->composts->post_title !!}
                     {!! $errors->first('post_id', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>

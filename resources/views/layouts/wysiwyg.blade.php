@@ -2,8 +2,8 @@
 <html lang="en">
     <head>
         @include('includes.head')        
-        @yield('addcss')  
         @include('includes.wysiwyg_head')
+        @yield('addcss')
     </head>
     <body>
         @include('includes.header')

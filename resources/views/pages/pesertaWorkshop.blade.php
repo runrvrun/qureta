@@ -12,17 +12,17 @@
     <div class="row">
         <div class="col-md-10">
             <div class="panel panel-default">
-                <div class="panel-heading">Peserta Workshop</div>
+                <div class="panel-heading">Pendaftar Workshop</div>
                 <div class="panel-body">
 
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->
                     <!--                        <br/>
                                             <br/>-->
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table id="table-peserta" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th> Nama</th><th>Alamat</th><th>Tanggal Daftar</th>
+                                    <th> Nama</th><th>Alamat</th><th>Email</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,15 +33,13 @@
                                    
                                    <td>{{ $item->address }}</td>
                                
-                                    <td>{{ $item->tgl_daftar }}</td>
+                                    <td>{{ $item->email }}</td>
                                    
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        @if (method_exists($workshop,'render') && $workshop->lastPage()>1)
-                        <div class="pagination-wrapper"> {!! $workshop->render() !!} </div>
-                        @endif
+                       
                     </div>
 
                 </div>
@@ -52,38 +50,13 @@
 @endsection
 
 @section('addjs')
-<script>
-    $('.btnLike').click(function () {
-        var $this = $(this);
-        $this.toggleClass('active');
-        $this.children("i").toggleClass('active');
-        var postid = $this.data('postid');
-        var followerid = document.getElementById('followerid').value;
-        var token = '{{{ csrf_token() }}}';
-        var data = {"_token": token, "postid": postid, "followerid": followerid};
-        if ($this.hasClass('active')) {
-            $.ajax({
-                url: "/admin/competition_posts/like",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                }
-            });
-        } else {
-            $.ajax({
-                url: "/admin/competition_posts/unlike",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                }
-            });
-        }
-    });
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#table-peserta').DataTable();
+} );
 </script>
+
 @endsection

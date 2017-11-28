@@ -6,13 +6,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\Model;
-//use Sofa\Eloquence\Eloquence;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable {
 
     use Notifiable;
-    use Messagable;    
-   // use Eloquence;
+    use Messagable;
+    use HasPushSubscriptions;
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +33,7 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
-    
+
     function posts(){
         return $this->hasMany('App\Post', 'post_author');
     }

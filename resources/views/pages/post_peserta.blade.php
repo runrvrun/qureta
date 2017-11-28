@@ -11,15 +11,15 @@
     @endif
     <div class="row">
         <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <div class="panel-body">
+            
+                
+               
 
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->
                     <!--                        <br/>
                                             <br/>-->
-                    <div class="table">
-                        <table class="table table-striped">
+                    <div class="table" style="width: 100%;">
+                        <table id="table-peserta" class="table table-striped" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th> Penulis </th><th> Judul </th><th>Tanggal Terbit</th>
@@ -32,7 +32,11 @@
                                 <td>{{ $item->composts->post_authors['name'] }}</td>
                                     <td class="judul-post-lomba"><div>{{ HTML::link('/post/'.$item->composts['post_slug'],$item->composts['post_title']) }}</div></td>
                                    
-                                   <td>{{$item->composts['published_at']}}</td>
+                                   @if($item->composts['published_at'] != '')
+                                   <td class="tanggal-publish"><div>{{$item->composts['published_at']->format('d-M-Y')}}</div></td>
+                                   @else
+                                   <td class="tanggal-publish"><div>Belum Terbit</div></td>
+                                   @endif
                                 </tr>
                                 @else
                                 <tr>
@@ -42,18 +46,24 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        @if (method_exists($competition_posts,'render') && $competition_posts->lastPage()>1)
-                        <div class="pagination-wrapper"> {!! $competition_posts->render() !!} </div>
-                        @endif
+                      
                     </div>
 
-                </div>
-            </div>
+                
+            
         </div>
     </div>
 </div>
 @endsection
 
 @section('addjs')
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#table-peserta').DataTable();
+} );
+</script>
 
 @endsection

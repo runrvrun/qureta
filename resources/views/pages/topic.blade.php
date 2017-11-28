@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 <!--select view-->
 <div class="row">
     <div class="col-md-12 select-view">       
@@ -204,23 +216,16 @@
             </div>
         </div>
     </div>
-<!--replace error image-->
-<script>
-    function imgError(image) {
-        image.onerror = "";
-        image.src = "/uploads/noimage.jpg";
-        return true;
-    }
-    function avaError(image) {
-        image.onerror = "";
-        image.src = "/uploads/avatar/noavatar.jpg";
-        return true;
-    }
-    function buquError(image) {
-        image.onerror = "";
-        image.src = "/uploads/buqu/nocover.jpg";
-        return true;
-    }
-</script>
-
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 @endsection

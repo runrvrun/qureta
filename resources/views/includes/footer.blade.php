@@ -31,9 +31,9 @@
                 <ul class="foot-links">
                     <li><a href="{{ url('/page/tentang-qureta') }}">Tentang Qureta</a></li>
                     <li><a href="{{ url('/page/lomba-esai') }}">Lomba Esai</a></li>
-                    <li><a href="{{ url('/page/buqu') }}">Buqu</a></li>
                     <li><a href="{{ url('/page/kerjasama') }}">Kerjasama</a></li>
-                    <li><a href="{{ url('/page/iklan') }}">Iklan</a></li>                
+                    <li><a href="{{ url('/page/iklan') }}">Iklan</a></li>          
+                    <li><a href="{{ url('/page/karir') }}">Karir</a></li>      
                 </ul>
             </div>
             <div class="col-lg-15 col-lg-3">
@@ -89,4 +89,4 @@
     <script type="text/javascript" src="{{ URL::asset('jquery-cookie/jquery.cookie.js') }}"></script>
     <script type="text/javascript" src="/js/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
-    <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js') }}"></script>
+    <script data-cfasync="false" src="{{ URL::asset('js/qureta.js?v=3') }}"></script>

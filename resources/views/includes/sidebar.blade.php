@@ -15,6 +15,7 @@
             <!--Article-->   
               
            <div class="judul">{{ HTML::link('/post/'.$rel->post_slug, $rel->post_title)}}</div>
+           <div class="user-info"><div class="info"><i class="fa fa-eye"></i> {{ number_format($rel->view_count,0,',','.') }} views</div></div>
            
         </div>
 

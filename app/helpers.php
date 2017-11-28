@@ -30,7 +30,9 @@ function get_buqu_post_count($buquid) {
 }
 
 function get_competition_post_count($competitionid) {
-    return App\Competition_post::where('competition_id', '=', $competitionid)->where('post_id','>',0)->whereNotNull('post_id')->count();
+    return App\Competition_post::where('competition_id', '=', $competitionid)->where('post_id','>',0)->whereNotNull('post_id')->whereHas('composts', function($query) {
+                    $query->where('post_status', 'publish');
+                })->count();
 }
 
 function get_workshop_post_count($id) {

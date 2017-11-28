@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-{{ Carbon::setLocale('id') }}
+<?php Carbon::setLocale('id') ?>
 <div class="col-md-10">
     <h2 class="page-title">{{ $thread->subject }}</h2>
     <p>Penerima: 

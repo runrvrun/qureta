@@ -27,9 +27,9 @@
 <span class="verified-user"></span>
 @endif
 </div>
-            <div class="title">{{ get_user_profesi($row->id) }}</div>            
+            <div class="title">{{ get_user_profesi($row->post_author) }}</div>            
             <div class="title">Tulisan: {{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>    
-            <div class="title">Diterbitkan: {{ Carbon::parse($row->published_at)->diffForHumans() }}</div>
+            <div class="title" style="margin-left: 50px">Diterbitkan: {{ Carbon::parse($row->published_at)->diffForHumans() }}</div>
         </div>  
         <hr>
          <div class="clearfix"></div>          

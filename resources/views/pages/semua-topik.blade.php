@@ -15,7 +15,18 @@
     <p>{{ Session::get('flash_message') }}</p>
 </div>
 @endif
-
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 <h2 class="page-title">{!! $pagetitle !!} </h2>
 <!--select view-->
 <div class="row">
@@ -52,7 +63,18 @@
     @endif
     @endforeach    
 </div>
-
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 @endsection
 @section('addjs')
 

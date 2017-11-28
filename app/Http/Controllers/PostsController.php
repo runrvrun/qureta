@@ -502,7 +502,7 @@ class PostsController extends Controller {
             Session::flash('flash_message', 'Naskah disimpan. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
         }
         update_user_post_count($post->post_author);
-	
+
 	if (isset($request->savepublish)) {
             return redirect('/admin/pendingposts');
         } elseif (isset($request->savedraft)) {
@@ -563,9 +563,17 @@ class PostsController extends Controller {
 
     public function pendingposts() {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
-            $posts = Post::with('post_authors')->where('post_status', 'pending')->paginate(25);
+            $posts = Post::with('post_authors')->where('post_status', 'pending')->orderBy('updated_at','DESC')->paginate(25);
 
             return view('admin.pendingposts.index', compact('posts'));
+        }
+    }
+
+    public function publishposts() {
+        if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+            $posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
+
+            return view('admin.publishposts.index', compact('posts'));
         }
     }
 

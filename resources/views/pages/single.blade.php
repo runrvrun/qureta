@@ -85,7 +85,7 @@
     @endif
 <hr/>
 
-<div class="row">
+<div class="row" id="endofpost">
         <div class='shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626'></div>
 </div>
 <div class="clearfix"></div>
@@ -168,11 +168,11 @@ $(document).ready(function (e) {
     //have to do this in JS because there is no way to select parent in CSS
     $('.fr-dib').parent().css({
         'text-align' : 'center'
-    }); 
+    });
         //fix youtube iframe cropped
-        if (window.screen.availWidth < 640) { 
+        if (window.screen.availWidth < 640) {
             $('iframe').width('100%');
-        } 
+        }
 });
 
     $(document).ready(function (e) {
@@ -331,5 +331,104 @@ $(document).ready(function (e) {
             });
         }
     });
+
+    //show push notification request when finish reading
+    var reachend = false;
+    $(window).scroll(function(){
+      // detect if the element is scrolled into view
+      function elementScrolled(elem)
+      {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+        var elemTop = $(elem).offset().top;
+        return ((elemTop <= docViewBottom) && (elemTop >= docViewTop));
+      }
+
+      if(reachend==false && elementScrolled('#endofpost')) {
+          reachend = true;
+          // push notification
+          registerServiceWorker();
+          askPermission();
+          subscribeUserToPush();
+      }
+    });
+
+    function registerServiceWorker() {
+      return navigator.serviceWorker.register('/js/sw.js')
+      .then(function(registration) {
+        console.log('Service worker successfully registered.');
+        return registration;
+      })
+      .catch(function(err) {
+        console.error('Unable to register service worker.', err);
+      });
+    }
+    function askPermission() {
+      return new Promise(function(resolve, reject) {
+        const permissionResult = Notification.requestPermission(function(result) {
+          resolve(result);
+        });
+
+        if (permissionResult) {
+          permissionResult.then(resolve, reject);
+        }
+      })
+      .then(function(permissionResult) {
+        if (permissionResult !== 'granted') {
+          throw new Error('We weren\'t granted permission.');
+        }
+      });
+    }
+    function subscribeUserToPush() {
+      return navigator.serviceWorker.register('/js/sw.js')
+      .then(function(registration) {
+        const subscribeOptions = {
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            "{{env('VAPID_PUBLIC_KEY')}}"
+          )
+        };
+        return registration.pushManager.subscribe(subscribeOptions);
+      })
+      .then(function(pushSubscription) {
+        console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+        sendSubscriptionToBackEnd(JSON.parse(JSON.stringify(pushSubscription)));
+        return pushSubscription;
+      });
+    }
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+    function sendSubscriptionToBackEnd(subscription) {
+      var userid = {{ (Auth::check())? Auth::user()->id:4100}};
+      var endpoint = subscription.endpoint;
+      var publickey = subscription.keys.p256dh;
+      var authtoken =  subscription.keys.auth;
+      var token = '{{{ csrf_token() }}}';
+      var data = {"_token": token, "user_id": userid, "endpoint": endpoint, "public_key": publickey, "auth_token": authtoken};
+
+      $.ajax({
+          url: "/api/save-subscription",
+          type: "POST",
+          data: data,
+          error: function (exception) {
+              console.log(data)
+          },
+          success: function () {
+              console.log("Subscription successfully saved to backend.")
+          }
+      });
+    }
 </script>
 @endsection

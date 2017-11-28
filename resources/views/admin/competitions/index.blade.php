@@ -9,12 +9,13 @@
 </div>
 @endif
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">Competitions</div>
                     <div class="panel-body">
-
+                         @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
                         <a href="{{ url('/admin/competitions/create') }}" class="btn btn-primary btn-xs" title="Add New Competition"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>
+                        @endif
                         <br/>
                         <br/>
                         <div class="table-responsive">
@@ -26,19 +27,20 @@
                                 </thead>
                                 <tbody>
                                 @foreach($competitions as $item)
+                                 @if(Auth::user()->role === 'admin')
                                     <tr>
                                         <td>{{ $item->id }}</td>
                                         <td>{{ HTML::link('/admin/competition_posts/'.$item->id,$item->competition_title) }}</td><td>
-                                            @if ($item->competition_startdate > Carbon::today()->toDateString())
+                                            @if ($item->competition_startdate >= Carbon::today()->toDateString())
                                             Akan Datang
-                                            @elseif ($item->competition_enddate < Carbon::today()->toDateString())
-                                            Ditutup
-                                            @else
+                                            @elseif ($item->competition_startdate <= Carbon::today()->toDateString() && $item->competition_enddate >= Carbon::today()->toDateString())
                                             Sedang Berlangsung
+                                            @else
+                                            Ditutup
                                             @endif
                                         </td>
                                         <td>{{ HTML::link('/admin/competition_posts/'.$item->id,get_competition_post_count($item->id)) }}</td>
-                                        <td>{{ $item->competition_startdate }}</td><td>{{ $item->competition_enddate }}</td>
+                                        <td>{{ $item->competition_startdate->format('d/m/Y H:i') }}</td><td>{{ $item->competition_enddate->format('d/m/Y H:i') }}</td>
                                         <td style="white-space:nowrap;">
                                             <a href="{{ url('/admin/competitions/' . $item->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Competition"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
                                             {!! Form::open([
@@ -55,6 +57,42 @@
                                             {!! Form::close() !!}
                                         </td>
                                     </tr>
+                                    @elseif(Auth::user()->role === 'editor')
+                                    <tr>
+                                        <td>{{ $item->id }}</td>
+                                        <td>{{ HTML::link('/admin/competition_posts/'.$item->id,$item->competition_title) }}</td><td>
+                                            @if ($item->competition_enddate >= Carbon::today()->toDateString())
+                                            Sedang Berlangsung
+                                            @elseif ($item->competition_startdate > Carbon::today()->toDateString())
+                                            Akan Datang
+                                            @else
+                                            Ditutup
+                                            @endif
+                                        </td>
+                                        <td>{{ HTML::link('/admin/competition_posts/'.$item->id,get_competition_post_count($item->id)) }}</td>
+                                        <td>{{ $item->competition_startdate->format('d/m/Y H:i') }}</td><td>{{ $item->competition_enddate->format('d/m/Y H:i') }}</td>
+                                        <td style="white-space:nowrap;">
+                                            <a href="{{ url('/admin/competitions/' . $item->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Competition"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
+                                           
+                                        </td>
+                                    </tr>
+                                    @else
+                                     <tr>
+                                        <td>{{ $item->id }}</td>
+                                        <td>{{ HTML::link('/admin/competition_posts/'.$item->id,$item->competition_title) }}</td><td>
+                                            @if ($item->competition_enddate >= Carbon::today()->toDateString())
+                                            Sedang Berlangsung
+                                            @elseif ($item->competition_startdate > Carbon::today()->toDateString())
+                                            Akan Datang
+                                            @else
+                                            Ditutup
+                                            @endif
+                                        </td>
+                                        <td>{{ HTML::link('/admin/competition_posts/'.$item->id,get_competition_post_count($item->id)) }}</td>
+                                        <td>{{ $item->competition_startdate->format('d/m/Y H:i') }}</td><td>{{ $item->competition_enddate->format('d/m/Y H:i') }}</td>
+                                       
+                                    </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>

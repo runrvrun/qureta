@@ -11,7 +11,7 @@
         <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/emoticons.min.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/entities.min.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/file.min.js') }}"></script>
-        <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/font_size.min.js') }}"></script>
+        <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/font_size.min.js?v=1') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/fullscreen.min.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('froala/js/plugins/image.min.js') }}"></script>
         <!--script type="text/javascript" src="{{ URL::asset('froala/js/plugins/image_manager.min.js') }}"></script-->

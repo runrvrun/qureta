@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-{{ Carbon::setLocale('id') }}
+<?php Carbon::setLocale('id') ?>
 <h2 class="page-title">{{ $pagetitle }}</h2>
 <div class="row vertical-divider">
     @foreach ($lombas as $key=>$row)                       

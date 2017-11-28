@@ -1,28 +1,26 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading">user {{ $user->id }}</div>
+                    <div class="panel-heading">Post {{ $post->id }}</div>
                     <div class="panel-body">
-                        @if(Auth::user()->role === 'admin')    
-                        <a href="{{ url('admin/users/' . $user->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit user"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
+
+                        <a href="{{ url('posts/' . $post->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
                         {!! Form::open([
                             'method'=>'DELETE',
-                            'url' => ['admin/users', $user->id],
+                            'url' => ['posts', $post->id],
                             'style' => 'display:inline'
                         ]) !!}
                             {!! Form::button('<span class="glyphicon glyphicon-trash" aria-hidden="true"/>', array(
                                     'type' => 'submit',
                                     'class' => 'btn btn-danger btn-xs',
-                                    'title' => 'Delete user',
+                                    'title' => 'Delete Post',
                                     'onclick'=>'return confirm("Confirm delete?")'
                             ))!!}
                         {!! Form::close() !!}
-                        @else
-                        @endif
                         <br/>
                         <br/>
 
@@ -30,9 +28,9 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th>ID</th><td>{{ $user->id }}</td>
+                                        <th>ID</th><td>{{ $post->id }}</td>
                                     </tr>
-                                    <tr><th> Username </th><td> {{ $user->username }} </td></tr><tr><th> Name </th><td> {{ $user->name }} </td></tr><tr><th> Email </th><td> {{ $user->email }} </td></tr>
+                                    <tr><th> Post Author </th><td> {{ $post->post_author }} </td></tr><tr><th> Post Title </th><td> {{ $post->post_title }} </td></tr><tr><th> Post Subtitle </th><td> {{ $post->post_subtitle }} </td></tr>
                                 </tbody>
                             </table>
                         </div>

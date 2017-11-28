@@ -8,7 +8,10 @@
 @section('content')
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-        <h2>Daftar</h2>
+       
+            <h2>Daftar</h2>
+        
+        <br>
         <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
             {{ csrf_field() }}
 
@@ -16,7 +19,7 @@
                 <label for="name" class="col-md-3 control-label">Nama Lengkap</label>
 
                 <div class="col-md-6">
-                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" autofocus>
+                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required="" autofocus>
 
                     @if ($errors->has('name'))
                     <span class="help-block">
@@ -30,7 +33,7 @@
                 <label for="username" class="col-md-3 control-label">Username</label>
 
                 <div class="col-md-6">
-                    <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" autofocus>
+                    <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required="" autofocus>
 
                     @if ($errors->has('username'))
                     <span class="help-block">
@@ -58,7 +61,7 @@
                 <label for="password" class="col-md-3 control-label">Password</label>
 
                 <div class="col-md-6">
-                    <input id="password" type="password" class="form-control" name="password">
+                    <input id="password" type="password" class="form-control" name="password" required="">
 
                     @if ($errors->has('password'))
                     <span class="help-block">
@@ -72,7 +75,7 @@
                 <label for="password-confirm" class="col-md-3 control-label">Ulangi Password</label>
 
                 <div class="col-md-6">
-                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
+                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required="">
 
                     @if ($errors->has('password_confirmation'))
                     <span class="help-block">

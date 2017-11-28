@@ -4,12 +4,13 @@
 @endsection
 
 @section('addcss')
-<link rel="stylesheet" type="text/css" href="/slick/slick.css"/>    
+<link rel="stylesheet" type="text/css" href="/slick/slick.css"/>
 <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css"/>
 @endsection
 
 @section('content')
-@if (Session::has('flash_message'))            
+
+@if (Session::has('flash_message'))
 <div class="alert alert-success alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <p>{!! Session::get('flash_message') !!}</p>
@@ -21,27 +22,48 @@
 @endif
 
 <div class="container" style="overflow:hidden">
-    <div class="row adsense-homepage-top">
-        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- Qresponsive -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9742758471829304"
-             data-ad-slot="4756147752"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
+  <!--kuliah qureta-->
+  <div class="mobile-only spacer" style="min-height:50px;"></div>
+  <div class="row topic-title">
+      <div class="col-sm-12">
+          <h3>{{ HTML::link('https://kuliah.qureta.com', 'KULIAH QURETA')}}</h3>
+      </div>
+  </div>
+  <div class="buqu-slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
+      @foreach ($kuliah as $key=>$row)
+      @if($key<4)
+      <div class="article col-sm-3 grid-group-item">
+          <!--Author-->
+          <br>
+          <div class="user-info">
+              <div class="image"><img src="https://kuliah.qureta.com/uploads/teacher/{{ $row->teachers->url_foto }}" alt="{{ $row->teachers->url_foto }}" onerror="avaError(this);" /></div>
+              <div class="name">{{ $row->teachers->name }}</div>
+              <div class="title">{{ $row->teachers->job }}</div>
+          </div>
+          <!--Image-->
+          <div class="article-image">
+              <a href="https://kuliah.qureta.com"><img src="https://kuliah.qureta.com/uploads/course/{{ $row->url_foto }}" alt="{{ $row->url_foto }}" onerror="imgError(this);" /></a>
+          </div>
+          <!--Article-->
+          <div class="article-info">
+              <div class="title">
+                  {!! HTML::link('https://kuliah.qureta.com', $row->name)!!}
+              </div>
+          </div>
+      </div>
+      @endif
+      @endforeach
+  </div>
+  <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <!--topic row 1-->
     <div class="row topic-title">
         <div class="col-sm-12">
             <h3>{{ HTML::link('/topik-redaksi/aktual', 'AKTUAL')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider">  
-        <?php 
-            //put sticky post in random position            
+    <div class="row vertical-divider">
+        <?php
+            //put sticky post in random position
             $ori = $aktual;
             $temp = array();
             if($ori[0]->sticky){
@@ -54,21 +76,21 @@
                 }
             }
             $temp[$stickypos] = $ori[0];
-            $ori = $temp;            
+            $ori = $temp;
             ksort($ori);
-            $aktual = array_values($ori);            
+            $aktual = array_values($ori);
             }
         ?>
         @foreach ($aktual as $key=>$row)
-        @if($key<4)   
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br>
-            <div class="user-info">                
+            <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -80,15 +102,15 @@
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif         
-                </div>           
+                @endif
+                </div>
             </div>
             <!--Image-->
             <div class="article-image">
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">
                     {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}
@@ -108,9 +130,9 @@
             <h3>{{ HTML::link('/topik-redaksi/inspiratif', 'INSPIRATIF')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider">          
-        <?php 
-            //put sticky post in random position            
+    <div class="row vertical-divider">
+        <?php
+            //put sticky post in random position
             $ori = $inspiratif;
             $temp = array();
             if($ori[0]->sticky){
@@ -123,21 +145,21 @@
                 }
             }
             $temp[$stickypos] = $ori[0];
-            $ori = $temp;            
+            $ori = $temp;
             ksort($ori);
-            $inspiratif = array_values($ori);            
+            $inspiratif = array_values($ori);
             }
         ?>
         @foreach ($inspiratif as $key=>$row)
-        @if($key<4)                
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br class="break-mobile">
             <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -149,20 +171,20 @@
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif            
-                </div>        
+                @endif
+                </div>
             </div>
             <!--Image-->
             <div class="article-image">
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
-            </div>               
+            </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-        </div>     
+        </div>
         @endif
         @endforeach
     </div>
@@ -173,9 +195,9 @@
             <h3>{{ HTML::link('/topik-redaksi/jenaka', 'JENAKA')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider"> 
-        <?php 
-            //put sticky post in random position            
+    <div class="row vertical-divider">
+        <?php
+            //put sticky post in random position
             $ori = $jenaka;
             $temp = array();
             if($ori[0]->sticky){
@@ -188,21 +210,21 @@
                 }
             }
             $temp[$stickypos] = $ori[0];
-            $ori = $temp;            
+            $ori = $temp;
             ksort($ori);
-            $jenaka = array_values($ori);            
+            $jenaka = array_values($ori);
             }
         ?>
         @foreach ($jenaka as $key=>$row)
-        @if($key<4)                
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br class="break-mobile">
             <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -214,7 +236,7 @@
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif                    
+                @endif
                 </div>
             </div>
             <!--Image-->
@@ -222,12 +244,12 @@
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
-            </div>                        
+            </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-        </div>     
+        </div>
         @endif
         @endforeach
     </div>
@@ -243,34 +265,34 @@ $recommended_writers = get_recommended_user();
         </div>
     </div>
     <div class="row recommended-user">
-    @foreach($recommended_writers as $recw)          
+    @foreach($recommended_writers as $recw)
         <div class="article col-sm-3 grid-group-item">
             <div class="user-info">
                 @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))
-                <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
 @if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'partner' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
 <span class="verified-user"></span>
 @endif
 </div>
-                <div class="title">{{ get_user_profesi($recw->user->id) }}                                
+                <div class="title">{{ get_user_profesi($recw->user->id) }}
                 </div>
-                @if(Auth::check() && $recw->user->id !== Auth::user()->id) 
+                @if(Auth::check() && $recw->user->id !== Auth::user()->id)
                 <!--logged in and not own profile, show follow button-->
                 @if (isFollowing($recw->user->id))
-                <div>                    
+                <div>
                     <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
                 </div>
                 @else
-                <div>                    
+                <div>
                     <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
                 </div>
                 @endif
                 @else
-                <div>                    
+                <div>
                     <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
                 </div>
                 @endif
@@ -286,9 +308,9 @@ $recommended_writers = get_recommended_user();
             <h3>{{ HTML::link('/topik-redaksi/kiat', 'KIAT')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider">   
-        <?php 
-            //put sticky post in random position            
+    <div class="row vertical-divider">
+        <?php
+            //put sticky post in random position
             $ori = $kiat;
             $temp = array();
             if($ori[0]->sticky){
@@ -301,21 +323,21 @@ $recommended_writers = get_recommended_user();
                 }
             }
             $temp[$stickypos] = $ori[0];
-            $ori = $temp;            
+            $ori = $temp;
             ksort($ori);
-            $kiat = array_values($ori);            
+            $kiat = array_values($ori);
             }
         ?>
         @foreach ($kiat as $key=>$row)
-        @if($key<4)                
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br class="break-mobile">
             <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -327,7 +349,7 @@ $recommended_writers = get_recommended_user();
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif                    
+                @endif
                 </div>
             </div>
             <!--Image-->
@@ -335,12 +357,12 @@ $recommended_writers = get_recommended_user();
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-        </div>     
+        </div>
         @endif
         @endforeach
     </div>
@@ -351,9 +373,9 @@ $recommended_writers = get_recommended_user();
             <h3>{{ HTML::link('/topik-redaksi/fiksi', 'FIKSI')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider"> 
-        <?php 
-            //put sticky post in random position            
+    <div class="row vertical-divider">
+        <?php
+            //put sticky post in random position
             $ori = $fiksi;
             $temp = array();
             if($ori[0]->sticky){
@@ -366,21 +388,21 @@ $recommended_writers = get_recommended_user();
                 }
             }
             $temp[$stickypos] = $ori[0];
-            $ori = $temp;            
+            $ori = $temp;
             ksort($ori);
-            $fiksi = array_values($ori);            
+            $fiksi = array_values($ori);
             }
         ?>
         @foreach ($fiksi as $key=>$row)
-        @if($key<4)                
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br class="break-mobile">
             <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -392,7 +414,7 @@ $recommended_writers = get_recommended_user();
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif                    
+                @endif
                 </div>
             </div>
             <!--Image-->
@@ -400,12 +422,12 @@ $recommended_writers = get_recommended_user();
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
-            </div>                    
+            </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-        </div>     
+        </div>
         @endif
         @endforeach
     </div>
@@ -415,17 +437,17 @@ $recommended_writers = get_recommended_user();
             <h3>{{ HTML::link('artikel-populer', 'TERPOPULER')}}</h3>
         </div>
     </div>
-    <div class="row vertical-divider">          
+    <div class="row vertical-divider">
         @foreach ($posts as $key=>$row)
-        @if($key<4)                
-        <div class="article col-sm-3 grid-group-item">            
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
             <!--Author-->
             <br class="break-mobile">
             <div class="user-info">
                 @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
-                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>    
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
                 @endif
                 <div class="name">{{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
 @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
@@ -437,7 +459,7 @@ $recommended_writers = get_recommended_user();
                     @if($row->sticky)
                     <i class="fa fa-thumb-tack pull-right" style="color:#CCC"></i>
                     @endif
-                @endif                    
+                @endif
                 </div>
             </div>
             <!--Image-->
@@ -445,48 +467,48 @@ $recommended_writers = get_recommended_user();
                 <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
             </div>
             <!--Article-->
-            <div class="article-info">                
+            <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; <i class="fa fa-eye"></i> {{ number_format($row->view_count,0,',','.') }} views</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <!--Share Like Buqu-->
             <!--div class="article-action">
                 <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                @if(Auth::check()) 
+                @if(Auth::check())
                 @if (isLiking($row->id))
                 <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                 @else
                 <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                 @endif
-                @else                
+                @else
                 <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
                 @endif
                 <span class="action-button"><a href="{{ url('/buqu_posts/create/'.$row->id) }}"><i class="fa fa-book"></i> {{ get_post_buqu_count($row->id) }}</a></span>
-            </div-->         
+            </div-->
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-        </div>     
+        </div>
         @endif
         @endforeach
-    </div>   
+    </div>
     <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <!--slider and banner-->
     <div class="row topic-title">
         <div class="col-sm-12">
             <h3>{{ HTML::link('/buqu', 'BUQU')}}</h3><small><a href="{{url('/post/begini-cara-membuat-buqu-di-qureta')}}">Ingin membuat buqu? Begini caranya</a></small>
         </div>
-    </div>   
-    <div class="row">          
+    </div>
+    <div class="row">
         <div class="buqu-slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
             @foreach ($buqus as $row)
-            <div class="col-sm-3 grid-group-item">            
+            <div class="col-sm-3 grid-group-item">
                 <!--Author-->
                 <br>
 
                 <div class="panel panel-default">
-                    <div class="" >                        
+                    <div class="" >
                         <!--Buqu-->
                         <div class="buqu-info" style="width:100%;position: relative;">
-                            <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img class="img-slider" style="width:100%;display: none;max-height:100%; max-width:100%;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" onerror="buquError(this);" /></a>                            
+                            <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img class="img-slider" style="width:100%;display: none;max-height:100%; max-width:100%;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" onerror="buquError(this);" /></a>
                             <div class="col-md-12 title" style="position: absolute;width:100%;height: 100%;top:0;margin: 0 auto;">
                                 <div class="col-md-12 penulis" style="position: absolute; top:5%;text-align: center;margin: 0 auto;;width: 100%;font-size: 15px; text-shadow: 2px 2px 4px #000000;">
                                     {{ HTML::link('/profile/'.$row->buqu_authors->username, $row->buqu_authors->name)}}
@@ -499,24 +521,24 @@ $recommended_writers = get_recommended_user();
                         <div class="article-action">
                             <span class="action-button"><i class="fa fa-newspaper-o"></i> {{ get_buqu_post_count($row->id) }}</span>
                             <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                            @if(Auth::check()) 
+                            @if(Auth::check())
                             @if (isLikingBuqu($row->id))
                             <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                             @else
                             <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
                             @endif
-                            @else                
+                            @else
                             <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
                             @endif
-                        </div>    
+                        </div>
                         <div class="share{{ $row->id }}" style="display:none">
                             <div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'>
                             </div>
-                        </div>    
+                        </div>
                     </div>
-                </div> 
+                </div>
             </div>
-            @endforeach   
+            @endforeach
         </div>
     </div>
     <hr class="hr-home" style="margin-top: 30px; margin-bottom: 10px; border: 0;border-top: 1px solid #eee;">

@@ -4,7 +4,7 @@
         @include('includes.head')    
         @yield('addcss')
     </head>
-    <body>
+    <body class="homepage">
         @include('includes.header')
 
         @yield('content')

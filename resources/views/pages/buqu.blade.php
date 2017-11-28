@@ -8,6 +8,18 @@
 @if(Auth::Check())
 <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
 @endif
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 <h2 class="page-title">{!! $pagetitle !!}</h2>
     @if($buqus->count() == 0)
 	<br/><br/><p>Tidak ada hasil</p>
@@ -43,7 +55,7 @@
             <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
             @endif
         </div>    
-        <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>                         
+        <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/buqu/'.$row->buqu_slug) }}' data-image='{{ url('/buqu/'.$row->buqu_image) }}'></div></div>                         
     </div>         
     @if ($key%4==3)
 </div>
@@ -59,6 +71,18 @@
 <div class="pagination-wrapper"> {!! $buqus->render() !!} </div>
 @endif
 @endif
+    <div class="row adsense-homepage-top">
+        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Qresponsive -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9742758471829304"
+             data-ad-slot="4756147752"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 @endsection
 
 @section('addjs')

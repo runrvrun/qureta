@@ -23,6 +23,16 @@
                     'files' => true
                     ]) !!}
 
+                     <div class="form-group {{ $errors->has('full_name') ? 'has-error' : ''}}">
+                        {!! Form::label('user_image', 'Foto', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="col-md-6">
+                            @if(!empty($user->user_image))
+                            <img src="{{ URL::asset('/uploads/avatar/'.$user->user_image) }}"/>
+                            @endif
+                            {!! Form::file('user_image', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('user_image', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('username') ? 'has-error' : ''}}">
                         {!! Form::label('username', 'Username', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
@@ -44,10 +54,17 @@
                             {!! $errors->first('email', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                     <div class="form-group {{ $errors->has('phone_number') ? 'has-error' : ''}}">
+                        {!! Form::label('phone_number', 'No. Telpon', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="col-md-6">
+                            {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('phone_number', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
                         {!! Form::label('role', 'Role', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::select('role', ['user'=>'User','editor'=>'Editor','admin'=>'Administrator'], null, ['class' => 'form-control']) !!}
+                            {!! Form::select('role', ['user'=>'User','editor'=>'Editor','admin'=>'Administrator','partner'=>'Partner','premium'=>'Premium'], null, ['class' => 'form-control']) !!}
                             {!! $errors->first('role', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>

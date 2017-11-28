@@ -11,7 +11,7 @@
     <p>{{ Session::get('flash_message') }}</p>
 </div>
 @endif
-{{ Carbon::setLocale('id') }}
+<?php Carbon::setLocale('id') ?>
 <h2 class="page-title">{{ $pagetitle }}</h2>
 <br>
 <div class="row">
@@ -23,9 +23,9 @@
                                 <div class="article-info lomba">                            
                                     <h3><a href="{{$row->workshop_link }}">{{$row->workshop_title}}</a></h3>
                                     <p>{{ $row->workshop_content }}</p>
-                                    <div class="periode">Periode pendaftaran: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }} ({{ $row->workshop_enddate->diffForHumans() }})</div>
-                                    <br>
-                                    <a href="{{ url('kirim-tulisan/workshop/'.$row->id) }}" class="btn btn-warning">Edit</a>
+                                    <div class="periode">Periode pendaftaran: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }}</div>
+				<br/>				    
+				<p class="btn btn-default">Anda sudah terdaftar</p>
                                 </div>        
                             </div>         
                             <hr>
@@ -34,7 +34,7 @@
                                 <div class="article-info lomba">                            
                                     <h3><a href="{{$row->workshop_link }}">{{$row->workshop_title}}</a></h3>
                                     <p>{{ $row->workshop_content }}</p>
-                                    <div class="periode">Periode workshop: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }} ({{ $row->workshop_enddate->diffForHumans() }})</div>
+                                    <div class="periode">Periode pendaftaran: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }}</div>
                                     <br>
                                     <a href="{{ url('kirim-tulisan/workshop/'.$row->id) }}" class="btn btn-primary">Daftar Workshop</a>
                                 </div>        
@@ -46,7 +46,7 @@
                                 <div class="article-info lomba">                            
                                     <h3><a href="{{$row->workshop_link }}">{{$row->workshop_title}}</a></h3>
                                     <p>{{ $row->workshop_content }}</p>
-                                    <div class="periode">Periode workshop: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }} ({{ $row->workshop_enddate->diffForHumans() }})</div>
+                                    <div class="periode">Periode pendaftaran: {{ $row->workshop_startdate->format('j M Y') }} s.d. {{ $row->workshop_enddate->format('j M Y') }}</div>
                                     <br>
                                     <a href="{{ url('kirim-tulisan/workshop/'.$row->id) }}" class="btn btn-primary">Daftar Workshop</a>
                                 </div>        
@@ -84,6 +84,9 @@
                                             <td class="col-md-6">
                                                 <a href="{{ url('edit-workshop/'.$row->id.'/'.Auth::user()->id) }}" class="btn btn-warning">Edit</a>
                                             </td>
+                                            <td>
+                                                 <a href="{{ url('workshop/peserta/'.$row->id) }}" class="btn btn-primary">List Pendaftar</a>
+                                            </td>
                                         </tr>
                                     @else   
                                     <tr>
@@ -96,7 +99,9 @@
                                             </td> 
                                         <td class="col-md-2">
                                                 <a href="{{ url('kirim-tulisan/workshop/'.$row->id) }}" class="btn btn-primary">Daftar Workshop</a>
-
+                                            </td>
+                                             <td>
+                                                 <a href="{{ url('workshop/peserta/'.$row->id) }}" class="btn btn-primary">List Pendaftar</a>
                                         </td>  
                                     </tr>
                                     @endif
@@ -111,6 +116,10 @@
                                             </td> 
                                         <td class="col-md-2">
                                                 <a href="{{ url('kirim-tulisan/workshop/'.$row->id) }}" class="btn btn-primary">Daftar Workshop</a>
+                                        </td> 
+                                        <td>
+                                                 <a href="{{ url('workshop/peserta/'.$row->id) }}" class="btn btn-primary">List Pendaftar</a>
+                                        </td>
                                     </tr>
                                     @endif
                                 @endforeach

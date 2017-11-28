@@ -35,7 +35,7 @@
                     'files' => true
                     ]) !!}
 
-                    
+                    {{ Form::hidden('workshop_id', $workshop->workshop_id) }}
                     <div class="form-group {{ $errors->has('name') ? 'has-error' : ''}}">
                         {!! Form::label('name', 'Nama Lengkap', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
