@@ -20,8 +20,10 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'user_image', 'role', 'password', 'status', 'banned_until'
+        'username', 'name', 'email', 'user_image', 'role', 'password', 'status', 'banned_until','last_login'
     ];
+
+    protected $dates = ['last_login'];
 
     protected $searchableColumns = ['username'];
 

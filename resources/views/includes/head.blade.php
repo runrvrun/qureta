@@ -12,6 +12,7 @@
 <link href="{{ URL::asset('/font-awesome/css/font-awesome.css')}}" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css') }}" />
 
 <!-- Scripts -->
@@ -21,8 +22,8 @@ echo json_encode([
     'csrfToken' => csrf_token(),
 ]);
 ?>
-</script>        
-<!-- shareaholic script -->        
+</script>
+<!-- shareaholic script -->
 <script type='text/javascript' src='//dsms0mj1bbhn4.cloudfront.net/assets/pub/shareaholic.js' data-shr-siteid='b91b857ba0550d40b8b5b2368fa0fe13' async='async'></script>
 <!-- google analytics -->
 <script data-cfasync='false'>

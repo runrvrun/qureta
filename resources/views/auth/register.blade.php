@@ -8,10 +8,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-       
-            <h2>Daftar</h2>
-        
-        <br>
+        <h2>Daftar</h2>
         <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
             {{ csrf_field() }}
 
@@ -19,28 +16,42 @@
                 <label for="name" class="col-md-3 control-label">Nama Lengkap</label>
 
                 <div class="col-md-6">
-                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required="" autofocus>
+                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" autofocus>
 
                     @if ($errors->has('name'))
                     <span class="help-block">
                         <strong>{{ $errors->first('name') }}</strong>
                     </span>
                     @endif
-                </div>                            
+                </div>
             </div>
-            
+
+            <div class="form-group{{ $errors->has('profesi') ? ' has-error' : '' }}">
+                <label for="profesi" class="col-md-3 control-label">Profesi</label>
+
+                <div class="col-md-6">
+                    <input id="profesi" type="text" class="form-control" name="profesi" value="{{ old('profesi') }}" autofocus>
+
+                    @if ($errors->has('profesi'))
+                    <span class="help-block">
+                        <strong>{{ $errors->first('profesi') }}</strong>
+                    </span>
+                    @endif
+                </div>
+            </div>
+
             <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
                 <label for="username" class="col-md-3 control-label">Username</label>
 
                 <div class="col-md-6">
-                    <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required="" autofocus>
+                    <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" autofocus>
 
                     @if ($errors->has('username'))
                     <span class="help-block">
                         <strong>{{ $errors->first('username') }}</strong>
                     </span>
                     @endif
-                </div>                            
+                </div>
             </div>
 
             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -61,7 +72,7 @@
                 <label for="password" class="col-md-3 control-label">Password</label>
 
                 <div class="col-md-6">
-                    <input id="password" type="password" class="form-control" name="password" required="">
+                    <input id="password" type="password" class="form-control" name="password">
 
                     @if ($errors->has('password'))
                     <span class="help-block">
@@ -75,7 +86,7 @@
                 <label for="password-confirm" class="col-md-3 control-label">Ulangi Password</label>
 
                 <div class="col-md-6">
-                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required="">
+                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
 
                     @if ($errors->has('password_confirmation'))
                     <span class="help-block">
@@ -95,7 +106,7 @@
             </a>
                 </div>
             </div>
-        </form>                
+        </form>
     </div>
 </div>
 @endsection

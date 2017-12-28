@@ -6,44 +6,49 @@
                 <button type="button" class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target="#app-navbar-collapse1" aria-expanded="false" aria-controls="app-navbar-collapse1">
                     <span class="sr-only">Toggle Navigation</span>
                     <span><i class="fa fa-bars fa-2x"></i></span>
-                </button>            
+                </button>
                 <button type="button" class="btn btn-danger navbar-toggle collapsed pull-left">
                     <a href="{{ url('/kirim-tulisan') }}"><span><i class="fa fa-pencil-square-o fa-2x"></i></span></a>
-                </button>          
+                </button>
                 <button type="button" class="btn navbar-toggle collapsed pull-right">
-                    <a href="{{ url('/profile') }}"><span><i class="fa fa-user fa-2x"></i></span></a>                    
-                </button>  
-                <button type="button" class="navbar-toggle collapsed pull-right" data-toggle="collapse" data-target="#app-navbar-collapse2" aria-expanded="false" aria-controls="app-navbar-collapse2">                    
+                  @if(Auth::check())
+                    <a href="{{ url('/profile') }}" class="navbar-avatar">
+  <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" /></a>
+                  @else
+                    <a href="{{ url('/profile') }}"><span><i class="fa fa-sign-in fa-2x"></i></span></a>
+                  @endif
+                </button>
+                <button type="button" class="navbar-toggle collapsed pull-right" data-toggle="collapse" data-target="#app-navbar-collapse2" aria-expanded="false" aria-controls="app-navbar-collapse2">
                     @if(Auth::check())
                     <span class="sr-only">Toggle Navigation</span>
                     <span><i class="fa fa-bell-o fa-2x"></i></span>
                     @else
                     <a href="{{ url('/login') }}"><span><i class="fa fa-bell-o fa-2x"></i></span></a>
                     @endif
-                </button>  
+                </button>
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />  
+                    <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
                 </a>
-            </div>                                              
+            </div>
 
             <!--menu for mobile-->
             <div class="collapse navbar-collapse" id="app-navbar-collapse1">
-                <ul class="nav navbar-nav">                        
-                    {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}                        
+                <ul class="nav navbar-nav">
+                    {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
                     <div class="input-group">
-                        <input type="hidden" name="sp" value="artikel" id="search_param">  
+                        <input type="hidden" name="sp" value="artikel" id="search_param">
                         <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
                         <div class="input-group-btn">
                             <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                         </div>
                     </div>
-                    {!! Form::close() !!}                     
+                    {!! Form::close() !!}
                 </ul>
-                <ul class="nav navbar-nav"> 
+                <ul class="nav navbar-nav">
                     @if (Auth::guest())
                     <li class="dropdown">
-                        <a href="{{ url('/login') }}">Login</a>                    
+                        <a href="{{ url('/login') }}">Login</a>
                     </li>
                     <li class="nav-divider"></li>
                     @else
@@ -53,7 +58,7 @@
                             <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" />
                         </a>
 
-                        <ul class="dropdown-menu" role="menu">        
+                        <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
                                     <strong>{{ Auth::user()->name }}</strong>
                                     <br/>Lihat Profil
@@ -62,7 +67,7 @@
                             <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ url('/profile/edit') }}">Edit Profil</a></li>
-                            <li role="separator" class="divider"></li>                        
+                            <li role="separator" class="divider"></li>
                             @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
                             <li><a href="{{ url('/admin') }}">Administration</a></li>
                             <li role="separator" class="divider"></li>
@@ -84,7 +89,7 @@
                         </ul>
                     </li>
                     <li class="nav-divider"></li>
-                    @endif 
+                    @endif
                     <li class="dropdown">
                         <a href="{{ url('/kirim-tulisan') }}">Tulis Artikel</a> </li>
                     <li class="nav-divider"></li>
@@ -100,7 +105,7 @@
                     <li class="nav-divider"></li>
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Penulis <span class="caret"></span></a>
-                        <ul class="dropdown-menu">                            
+                        <ul class="dropdown-menu">
                             <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
                             <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
                             <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
@@ -191,9 +196,9 @@
                 <ul class="nav navbar-nav">
                     @foreach ($notifs as $notif)
                     @if($notif->type === 'App\Notifications\NewPost')
-                    <li>{{ $notif->data['post_author'] }} memiliki tulisan baru: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>                        
+                    <li>{{ $notif->data['post_author'] }} memiliki tulisan baru: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>
                     @elseif($notif->type === 'App\Notifications\PublishPost')
-                    <li class="notification">Selamat! Tulisan anda telah terbit: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>                        
+                    <li class="notification">Selamat! Tulisan anda telah terbit: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>
                     @endif
                     @endforeach
                 </ul>
@@ -206,7 +211,7 @@
             </div>
         </div>
     </nav>
-</div>     
+</div>
 <!--desktop header-->
 <div id="wrap" class="desktop-only">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -214,12 +219,12 @@
             <div class="navbar-header">
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />  
+                    <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
                 </a>
-            </div>                       
+            </div>
 
-            <ul class="nav navbar-nav navbar-left">                        
-                {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}                        
+            <ul class="nav navbar-nav navbar-left">
+                {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
                 <div class="input-group">
                     <div class="input-group-btn search-panel">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -228,16 +233,16 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#artikel"> <span class="glyphicon glyphicon-file"></span> Artikel</a></li>
                             <li><a href="#penulis"> <span class="glyphicon glyphicon-user"></span> Penulis</a></li>
-                            <li><a href="#buqu"> <span class="glyphicon glyphicon-book"></span> Buqu</a></li>                                        
+                            <li><a href="#buqu"> <span class="glyphicon glyphicon-book"></span> Buqu</a></li>
                         </ul>
                     </div>
-                    <input type="hidden" name="sp" value="artikel" id="search_param">  
+                    <input type="hidden" name="sp" value="artikel" id="search_param">
                     <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
                     <div class="input-group-btn">
                         <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
-                {!! Form::close() !!}                     
+                {!! Form::close() !!}
             </ul>
 
             <!-- Right Side Of Navbar -->
@@ -263,17 +268,17 @@
                         @endif
                     </a>
                     @if(isset($notifs[0]))
-                    <ul class="dropdown-menu notification" role="menu">                        
+                    <ul class="dropdown-menu notification" role="menu">
                         @foreach ($notifs as $notif)
                         @if($notif->type === 'App\Notifications\NewPost')
-                        <li>{{ $notif->data['post_author'] }} memiliki tulisan baru: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>                        
+                        <li>{{ $notif->data['post_author'] }} memiliki tulisan baru: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>
                         @elseif($notif->type === 'App\Notifications\PublishPost')
-                        <li class="notification">Selamat! Tulisan anda telah terbit: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>                        
+                        <li class="notification">Selamat! Tulisan anda telah terbit: {{ HTML::link('/post/'.$notif->data['post_slug'],$notif->data['post_title']) }}</li>
                         @endif
                         @endforeach
-                    </ul>                    
+                    </ul>
                     @else
-                    <ul class="dropdown-menu notification" role="menu">                        
+                    <ul class="dropdown-menu notification" role="menu">
                         <li>No new notification</li>
                     </ul>
                     @endif
@@ -281,7 +286,7 @@
                 @endif
                 @if (Auth::guest())
                 <li class="dropdown">
-                    <a href="{{ url('/login') }}">Login</a>                    
+                    <a href="{{ url('/login') }}">Login</a>
                 </li>
                 @else
                 <li class="dropdown">
@@ -289,7 +294,7 @@
                         <img src="{{ URL::asset('uploads/avatar/'. Auth::user()->user_image ) }}" onerror="avaError(this);" />
                     </a>
 
-                    <ul class="dropdown-menu" role="menu">        
+                    <ul class="dropdown-menu" role="menu">
                         <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
                                 <strong>{{ Auth::user()->name }}</strong>
                                 <br/>Lihat Profil
@@ -298,7 +303,7 @@
                         <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url('/profile/edit') }}">Edit Profil</a></li>
-                        <li role="separator" class="divider"></li>                        
+                        <li role="separator" class="divider"></li>
                         @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
                         <li><a href="{{ url('/admin') }}">Administration</a></li>
                         <li role="separator" class="divider"></li>
@@ -320,14 +325,14 @@
                     </ul>
                 </li>
                 @endif
-            </ul>           
+            </ul>
         </div>
     </nav>
     <nav class="navbar navbar-default navbar-lower" id="main-menu">
         <div class="container">
             <div class="collapse navbar-collapse" id="app-navbar-collapse3">
                 <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">     
+                <ul class="nav navbar-nav">
                     <li class="dropdown">
                         <a href="{{ url('/artikel-terbaru') }}">Artikel</a>
                         <ul class="dropdown-menu dropdown-hover">
@@ -336,16 +341,16 @@
                             <li><a href="{{ url('/rekam') }}">Rekam</a></li>
                             <li><a href="{{ url('/jejak') }}">Jejak</a></li>
                         </ul>
-                    </li>              
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown">Penulis</span></a>
-                        <ul class="dropdown-menu dropdown-hover">                            
+                        <ul class="dropdown-menu dropdown-hover">
                             <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
                             <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
                             <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
                             <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
                         </ul>
-                    </li>                    
+                    </li>
                     <li class="dropdown">
                         <a href="{{ url('/buqu-pilihan') }}">Buqu</a>
                         <ul class="dropdown-menu dropdown-hover">
@@ -375,7 +380,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <ul class="multi-column-dropdown">
-                                        <li>{{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}}</li> 
+                                        <li>{{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}}</li>
                                         <li>{{ HTML::link('/topik/hiburan', 'Hiburan')}}</li>
                                         <li>{{ HTML::link('/topik/hukum', 'Hukum')}}</li>
                                         <li>{{ HTML::link('/topik/keluarga', 'Keluarga')}}</li>
@@ -410,7 +415,7 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">                          
+                <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="{{ url('/lomba-esai') }}">Lomba Esai</a>
                         <ul class="dropdown-menu dropdown-hover">

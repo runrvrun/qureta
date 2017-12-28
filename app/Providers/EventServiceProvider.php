@@ -16,7 +16,7 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\SomeEvent' => [
             'App\Listeners\EventListener',
         ],
-        'auth.login' => [
+        'Illuminate\Auth\Events\Login' => [
             'App\Listeners\UpdateLastLogin'
         ]
     ];

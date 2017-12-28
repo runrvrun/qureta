@@ -46,7 +46,7 @@ function get_peserta_workshop($workshopid) {
 function get_popular_post($limit = 4) {
     $stickypopuler = App\Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '11');
-                })->where('sticky',1)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->get();                
+                })->where('sticky',1)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->get();
     $populer = App\Post::with('post_authors')
             ->where('post_status', 'publish')->where('hide', 0)
             ->where('published_at','<=',Carbon::now())
@@ -129,7 +129,7 @@ function isLikingBuqu($buquid) {
 }
 
 function isLikingCompost($competitionpostid) {
-    $follow = App\Competition_postlikes::where('competition_post_id', $competitionpostid)->where('follower_id', Auth::user()->id)->get();    
+    $follow = App\Competition_postlikes::where('competition_post_id', $competitionpostid)->where('follower_id', Auth::user()->id)->get();
     if (count($follow) > 0) {
         return true;
     } else {
@@ -164,7 +164,7 @@ function get_unread_notifications($user_id) {
     $user = App\User::find($user_id);
 
     $notifs = $user->unreadNotifications;
-    
+
     return $notifs;
 }
 
@@ -179,7 +179,7 @@ function get_dd_competition($includeid=null) {
         $opt = App\Competition::where('id',$includeid)->orwhere('competition_startdate','<=',Carbon::today()->toDateString())->Where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
     }else{
         $opt = App\Competition::where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->pluck('competition_title', 'id');
-    }    
+    }
     $opt->prepend('- ', 0);
     return $opt;
 }
@@ -187,8 +187,8 @@ function get_dd_competition($includeid=null) {
 function update_user_post_count($user_id) {
     $post_count = App\Post::where('post_author', '=', $user_id)->where('post_status', '=', 'publish')->count();
     $user = App\User::find($user_id);
-    $requestData['post_count'] = $post_count;
-    $user->update($requestData);
+    $user->post_count = $post_count;
+    $user->update();
 }
 
 function get_recommended_user() {

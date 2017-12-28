@@ -132,13 +132,17 @@ class BuqusController extends Controller {
      * @return \Illuminate\View\View
      */
     public function edit($id) {
-        $buqus = Buqus::findOrFail($id);
+        if(Auth::check()){
+          $buqus = Buqus::findOrFail($id);
 
-        if ($buqus->buqu_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
-            return view('buqus.edit', compact('buqus'));
-        } else {
-            Session::flash('flash_message', 'You are not authorized to edit this buqu');
-            return redirect('/');
+          if ($buqus->buqu_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
+              return view('buqus.edit', compact('buqus'));
+          } else {
+              Session::flash('flash_message', 'You are not authorized to edit this buqu');
+              return redirect('/');
+          }
+        }else{
+          abort(404);
         }
     }
 
@@ -204,7 +208,7 @@ class BuqusController extends Controller {
         if ($request->ajax()) {
            return view('widgets.buqu_row', compact('buqus'));;
         }
-        
+
         return view('pages.buqu_infinite', compact('pagetitle', 'buqus'));
     }
 

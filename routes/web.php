@@ -34,6 +34,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/', 'PostsController@pendingposts');
     Route::get('/pendingposts', 'PostsController@pendingposts');
     Route::get('/publishposts', 'PostsController@publishposts');
+    Route::get('/publishposts/data', 'PostsController@publishpostsData');
     Route::resource('/banners', 'Admin\\BannersController');
     Route::resource('/categories', 'Admin\\CategoriesController');
     Route::resource('/featured_categories', 'Admin\\Featured_categoriesController');
@@ -75,6 +76,8 @@ Route::get('/profile', 'ProfileController@profil')->middleware('auth');
 Route::get('/profile/edit', 'ProfileController@edit')->middleware('auth');
 Route::get('/profile/edit/{a}', 'ProfileController@edit')->middleware('auth');
 Route::patch('/profile/update', 'ProfileController@update')->middleware('auth');
+Route::get('/profile/tulisan/{a}', 'ProfileController@tulisan');
+Route::get('/profile/buqu/{a}', 'ProfileController@buqu');
 Route::get('/profile/{a}', 'ProfileController@show');
 Route::get('/profile/{a}', 'ProfileController@profil');
 Route::get('/penulis', 'ProfileController@populer');
@@ -137,4 +140,4 @@ Route::get('/peserta-lomba-esai/{a}', 'LombaController@post_peserta');
 Route::resource('admin/competition_winner', 'Admin\\Competition_winnerController');
 Route::get('/hometest', 'HomeController@hometest');
 
-//moved to routes/api Route::post('/api/save-subscription', 'PushSubscriptionController@save_subscription');
+//Route::post('/api/save-subscription', 'PushSubscriptionController@save_subscription');

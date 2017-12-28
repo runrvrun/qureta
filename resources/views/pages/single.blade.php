@@ -30,32 +30,47 @@
 
 <div class="clearfix"></div>
 @if(Auth::check())
-<input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-@if(Auth::user()->id == $post->post_author && $post->post_status === 'draft')
-<div class="row pull-right"><a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a></div>
-@elseif ((Auth::user()->id == $post->post_author && (Auth::user()->role === 'premium' || Auth::user()->role === 'partner') || Auth::user()->role === 'admin' || Auth::user()->role === 'editor'))
-<div class="row pull-right"><a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a></div>
-@endif
+  <div class="row pull-right">
+    <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+    @if(Auth::user()->id == $post->post_author && $post->post_status === 'draft')
+    <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a>
+    @elseif ((Auth::user()->id == $post->post_author && (Auth::user()->role === 'premium' || Auth::user()->role === 'partner') || Auth::user()->role === 'admin' || Auth::user()->role === 'editor'))
+    <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a>
+    @endif
+    @if(Auth::user()->role=='admin')
+        {!! Form::open([
+            'method'=>'post_title',
+            'url' => ['/api/send-notification'],
+            'style' => 'display:inline'
+        ]) !!}
+        {!! Form::hidden('title',$post->post_title) !!}
+        {!! Form::hidden('body',substr(strip_tags($post->post_content),0,200)) !!}
+        {!! Form::hidden('url',$post->post_slug) !!}
+            {!! Form::button('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" title="Push Notification"></span> Push Notification', array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-warning btn-xs',
+                    'title' => 'Delete Post',
+                    'onclick'=>'return confirm("Send push notification? (Do not send too often)")'
+            )) !!}
+        {!! Form::close() !!}
+    @endif
+  </div>
 @endif
 <div class="clearfix"></div>
 <div class="user-info">
     @if(strpos($post->post_authors->user_image,'ttps://') || strpos($post->post_authors->user_image,'ttp://'))
-    <div class="image"><img src="{{ $post->post_authors->user_image }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
+        <div class="image"><img src="{{ $post->post_authors->user_image }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
     @else
-    <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$post->post_authors->user_image) }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
+        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$post->post_authors->user_image) }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
     @endif
     <div class="name">
         {{ HTML::link('/profile/'.$post->post_authors->username, $post->post_authors->name)}}
-@if(isset($post->post_authors->role) && ($post->post_authors->role == 'premium' || $post->post_authors->role == 'partner' || $post->post_authors->role == 'admin' || $post->post_authors->role == 'editor'))
-<span class="verified-user"></span>
-@endif
-            </div>
+        @if(isset($post->post_authors->role) && ($post->post_authors->role == 'premium' || $post->post_authors->role == 'partner' || $post->post_authors->role == 'admin' || $post->post_authors->role == 'editor'))
+        <span class="verified-user"></span>
+        @endif
+    </div>
     <div class="title">{{ get_user_profesi($post->post_author) }}</div>
     <div class="info">{{ $post->published_at ? $post->published_at->format('j M Y'): '' }} &middot; <i class="fa fa-eye"></i> {{ number_format($post->view_count,0,',','.') }} views</div>
-	@if(Auth::check() && Auth::user()->role == 'admin')
-    <div class="info">
-</div>
-	@endif
 </div>
 <div class="clearfix"></div>
 <br>
@@ -78,10 +93,10 @@
 </div>
     @if(!Auth::check() && $post->require_login)
 	<div class="require-login-box well text-center">
-	<p><strong>Daftar menjadi anggota Qureta untuk membaca tulisan eksklusif <br> {!! $post->post_title !!} karya {!! $post->post_authors->name !!}</strong></p>
-	<a href="{{ url('/register') }}" class="btn btn-success btn-lg btn-block"> Daftar </a>
-	<p><small>Sudah menjadi anggota Qureta? {{ HTML::link('/login','Log in') }}</small></p>
-        </div>
+  	<p><strong>Daftar menjadi anggota Qureta untuk membaca tulisan eksklusif <br> {!! $post->post_title !!} karya {!! $post->post_authors->name !!}</strong></p>
+  	<a href="{{ url('/register') }}" class="btn btn-success btn-lg btn-block"> Daftar </a>
+  	<p><small>Sudah menjadi anggota Qureta? {{ HTML::link('/login','Log in') }}</small></p>
+  </div>
     @endif
 <hr/>
 
@@ -108,6 +123,9 @@
 @endif
 <!-- disqus comment -->
 <div class="fb-comments" data-href="v3.qureta.com/post/{{ $post->post_slug }}" data-numposts="5"></div>
+<div class="row text-center">
+  <a class="btn btn-default btn-block" id="unsub" style="display:none;margin-top:12px">Unsubscribe Notification</a>
+</div>
 @endsection
 
 @section('og')
@@ -130,6 +148,10 @@
 
 @section('addjs')
 <script type="text/javascript" src="{{URL::asset('/slick/slick.min.js')}}"></script>
+<!-- modal box for push notif request -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
@@ -333,7 +355,7 @@ $(document).ready(function (e) {
     });
 
     //show push notification request when finish reading
-    var reachend = false;
+    var reachendonce = false;
     $(window).scroll(function(){
       // detect if the element is scrolled into view
       function elementScrolled(elem)
@@ -344,17 +366,93 @@ $(document).ready(function (e) {
         return ((elemTop <= docViewBottom) && (elemTop >= docViewTop));
       }
 
-      if(reachend==false && elementScrolled('#endofpost')) {
-          reachend = true;
+      function getCookie(cname) {
+          var name = cname + "=";
+          var decodedCookie = decodeURIComponent(document.cookie);
+          var ca = decodedCookie.split(';');
+          for(var i = 0; i <ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+              }
+              if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+              }
+          }
+          return "";
+      }
+      var dontaskagain = getCookie('dontaskagain');
+      if(reachendonce==false && elementScrolled('#endofpost') && dontaskagain !== "true" && Notification.permission !== "granted") {
+          reachendonce = true;
           // push notification
-          registerServiceWorker();
-          askPermission();
-          subscribeUserToPush();
+          setTimeout(function () {
+            $.confirm({
+              theme: 'modern',
+              icon: 'fa fa-question',
+              closeIcon: 'true',
+              animation: 'scale',
+              type: 'blue',
+              title: 'Suka artikel di Qureta?',
+              content: 'Berlangganan notifikasi untuk mendapat informasi artikel terbaru'+
+              '<br/><br/><div class="checkbox"><label><input type="checkbox" id="dontaskagain"> Jangan tanya lagi</label></div>',
+              backgroundDismiss: true,
+              buttons: {
+                 ya: {
+                           text: 'Ya, tentu!',
+                           btnClass: 'btn-blue',
+                           keys: ['enter', 'shift'],
+                           action: function(){
+                               registerServiceWorker();
+                               askPermission();
+                               subscribeUserToPush();
+                           }
+                       },
+                   lainkali: {
+                             text: 'Lain kali',
+                             action: function(){
+                                 var $dontaskagain = this.$content.find('#dontaskagain');
+                                 //if dontaskagain, insert to cache, check cache before showing prompt
+                                 if($dontaskagain.prop('checked')){
+                                     document.cookie = "dontaskagain=true; expires=Thu, 18 Dec 2099 12:00:00 UTC; path=v3.qureta.com";
+                                 }
+                             }
+                         }
+              }
+          });
+        }, 10000);
       }
     });
 
+    var isSubscribed = false;
+    $(document).ready(function (e) {
+      // get subscription value
+      return navigator.serviceWorker.register('/js/sw.js?v=4')
+      .then(function(registration) {
+          registration.pushManager.getSubscription()
+            .then(function(subscription) {
+              isSubscribed = !(subscription === null);
+              //show unsubscribe button
+              if (isSubscribed) {
+                $("#unsub").text('Unsubscribe Notification');
+              } else {
+                $("#unsub").text('Subscribe Notification');
+              }
+              $("#unsub").css('display','block');
+            });
+          //handle unsubscribe/subscribe button click
+          $("#unsub").click(function () {
+            if (isSubscribed) {
+              unsubscribeUserFromPush();
+            } else {
+              subscribeUserToPush();
+            }
+          });
+        });
+    });
+
+
     function registerServiceWorker() {
-      return navigator.serviceWorker.register('/js/sw.js')
+      return navigator.serviceWorker.register('/js/sw.js?v=4')
       .then(function(registration) {
         console.log('Service worker successfully registered.');
         return registration;
@@ -380,7 +478,7 @@ $(document).ready(function (e) {
       });
     }
     function subscribeUserToPush() {
-      return navigator.serviceWorker.register('/js/sw.js')
+      return navigator.serviceWorker.register('/js/sw.js?v=4')
       .then(function(registration) {
         const subscribeOptions = {
           userVisibleOnly: true,
@@ -389,11 +487,34 @@ $(document).ready(function (e) {
           )
         };
         return registration.pushManager.subscribe(subscribeOptions);
+console.log(registration.pushManager.getSubscription());
       })
       .then(function(pushSubscription) {
         console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
         sendSubscriptionToBackEnd(JSON.parse(JSON.stringify(pushSubscription)));
+        isSubscribed = true;
+        $("#unsub").text('Unsubscribe Notification');
         return pushSubscription;
+      });
+    }
+    function unsubscribeUserFromPush() {
+      console.log('Unsubscribing...');
+      return navigator.serviceWorker.register('/js/sw.js?v=4')
+      .then(function(registration) {
+        registration.pushManager.getSubscription()
+        .then(function(subscription) {
+          if (subscription) {
+            return subscription.unsubscribe();
+          }
+        })
+        .catch(function(error) {
+          console.log('Error unsubscribing', error);
+        })
+        .then(function() {
+          console.log('User is unsubscribed.');
+          isSubscribed = false;
+          $("#unsub").text('Subscribe Notification');
+        });
       });
     }
     function urlBase64ToUint8Array(base64String) {

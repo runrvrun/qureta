@@ -31,21 +31,12 @@ class PushSubscriptionController extends Controller {
 
     public function send_notification(Request $request) {
       $requestData = $request->all();
-      if(isset($request->user_id)){
-        //push to specific user
-        $user = \App\User::findOrFail($request->user_id);
-        $user->notify(new \App\Notifications\FeaturedPost($request->title, $request->body));
-        return response()->json([
-          'success' => true
-        ]);
-      }else{
-        //push to all subscribed user
-        $pushsub = \App\Push_subscription::get();
-        foreach($pushsub as $push){
-          $a = ($push->user_id == 0) ? 4100:$push->user_id;//if 0, use 4100 (info qureta)
-          $user = \App\User::findOrFail($a);
-          $user->notify(new \App\Notifications\FeaturedPost($request->title, $request->body));
-        }
+      //push to all subscribed user
+      $pushsub = \App\Push_subscription::get();
+      foreach($pushsub as $push){
+        $a = ($push->user_id == 0) ? 4100:$push->user_id;//if 0, use 4100 (info qureta)
+        $user = \App\User::findOrFail($a);
+        $user->notify(new \App\Notifications\FeaturedPost($request->title, $request->body, url('/post/'.$request->url)));
       }
       return redirect()->back();
       //return response()->json(['responseText' => 'Push Success!'], 200);

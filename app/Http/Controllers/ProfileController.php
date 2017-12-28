@@ -55,7 +55,7 @@ class ProfileController extends Controller {
             $uploadPath = public_path('/uploads/avatar/');
 
             $extension = 'jpg';
-            $fileName = $request->user_id.'_'.rand(11111, 99999) . '.' . $extension;
+            $fileName = rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('user_image');
             Image::make($file->getRealPath())->fit(240, 240)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
@@ -155,8 +155,8 @@ class ProfileController extends Controller {
                 $profile[$row->meta_name] = $row->meta_value;
             }
         }
-        $posts = Post::where('post_author', $users->id)->where('post_status','publish')->orderBy('id', 'DESC')->paginate(12, ['*'], 'tulisanpage');
-        $buqus = Buqus::where('buqu_author', $users->id)->orderBy('id', 'DESC')->paginate(12, ['*'], 'buqupage');
+        $posts = Post::where('post_author', $users->id)->where('post_status','publish')->orderBy('published_at', 'DESC')->take(4)->get();
+        $buqus = Buqus::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(2)->get();
         $followers = Followers::join('users','follower_id','=','users.id')->where('user_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followerpage');
 
         $jml_followers = Followers::where('user_id',$users->id)->distinct('follower_id')->count('follower_id');
@@ -211,6 +211,22 @@ WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
 GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit ".$limit);
 
         return view('pages.penulisproduktif', compact('pagetitle', 'users'));
+    }
+
+    public function tulisan($username) {
+      $user = User::where('username',$username)->first();
+      $pagetitle = 'Tulisan '.$user->name;
+      $posts = Post::with('post_authors')->where('post_author',$user->id)->where('post_status', 'publish')->orderBy('id', 'DESC')->paginate(12);
+
+      return view('pages.artikel', compact('pagetitle', 'posts'));
+    }
+
+    public function buqu($username) {
+      $user = User::where('username',$username)->first();
+      $pagetitle = 'Buqu '.$user->name;
+      $buqus = Buqus::where('buqu_author',$user->id)->orderBy('id', 'DESC')->paginate(20);
+
+      return view('pages.buqu', compact('pagetitle', 'buqus'));
     }
 
 }

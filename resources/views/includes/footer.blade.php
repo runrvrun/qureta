@@ -31,9 +31,9 @@
                 <ul class="foot-links">
                     <li><a href="{{ url('/page/tentang-qureta') }}">Tentang Qureta</a></li>
                     <li><a href="{{ url('/page/lomba-esai') }}">Lomba Esai</a></li>
+                    <li><a href="{{ url('/page/buqu') }}">Buqu</a></li>
                     <li><a href="{{ url('/page/kerjasama') }}">Kerjasama</a></li>
-                    <li><a href="{{ url('/page/iklan') }}">Iklan</a></li>          
-                    <li><a href="{{ url('/page/karir') }}">Karir</a></li>      
+                    <li><a href="{{ url('/page/iklan') }}">Iklan</a></li>
                 </ul>
             </div>
             <div class="col-lg-15 col-lg-3">
@@ -79,14 +79,17 @@
 </footer>
 <footer class="footer" id="footerbottom">
     <div class="container">
-        <p>&copy; <span id="copy-name"><a href="http://www.qureta.com">Qureta.com</a></span> {{ Carbon::now()->year }}</p>                
+        <p>&copy; <span id="copy-name"><a href="http://www.qureta.com">Qureta.com</a></span> {{ Carbon::now()->year }}</p>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script data-cfasync="false" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Scripts -->
     <script src="/js/app.js"></script>
-    <script type="text/javascript" src="{{ URL::asset('bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>                
+    <script type="text/javascript" src="{{ URL::asset('bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('jquery-cookie/jquery.cookie.js') }}"></script>
     <script type="text/javascript" src="/js/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
-    <script data-cfasync="false" src="{{ URL::asset('js/qureta.js?v=3') }}"></script>
+    <!-- Datatable App scripts -->
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    @stack('scripts')    
+    <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js') }}"></script>

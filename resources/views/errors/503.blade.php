@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Be right back.</title>
+        <title>Qureta - Maintenance</title>
 
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
 
@@ -14,7 +14,7 @@
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                color: #B0BEC5;
+                color: #555;
                 display: table;
                 font-weight: 100;
                 font-family: 'Lato', sans-serif;
@@ -32,7 +32,7 @@
             }
 
             .title {
-                font-size: 72px;
+                font-size: 60px;
                 margin-bottom: 40px;
             }
         </style>
@@ -40,6 +40,8 @@
     <body>
         <div class="container">
             <div class="content">
+                <div><img src="{{ URL::asset('/images/qureta-baru.png') }}"></img></div>
+                <div class="title">We're down for maintenance.</div>
                 <div class="title">Be right back.</div>
             </div>
         </div>

@@ -34,6 +34,7 @@ use Illuminate\Validation\Rule;
 use Analytics;
 use Counter;
 use Mail;
+use Datatables;
 
 class PostsController extends Controller {
 
@@ -571,11 +572,20 @@ class PostsController extends Controller {
 
     public function publishposts() {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
-            $posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
+            //$posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
 
-            return view('admin.publishposts.index', compact('posts'));
+            //return view('admin.publishposts.index', compact('posts'));
+            return view('admin.publishposts.index_dt');
         }
     }
+    public function publishpostsData()
+     {
+         return Datatables::of(Post::select('posts.id','name','post_title','published_at','published_by','post_slug')
+         ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
+         ->addColumn('action', function ($post) {
+                  return view('admin.publishposts.actions', compact('post'))->render();
+             })->make(true);
+     }
 
     public function hiddenposts() {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {

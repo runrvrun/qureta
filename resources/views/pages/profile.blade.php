@@ -1,216 +1,177 @@
 @extends('layouts.profile')
 
+@section('addcss')
+<link rel="stylesheet" type="text/css" href="/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="/slick/slick-theme.css"/>
+@endsection
+
 @section('content')
 <?php Carbon::setLocale('id') ?>
 @if(Auth::Check())
 <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
 @endif
-<div class="container-fluid profile-header" style="background-image: url({{URL::asset('')}}); background-size: cover; background-repeat: no-repeat;background-color: #286090;">
-    <div class="container" style="">
-        <div class="col-md-12 row profile-header-content" style="">
-            <div class="col-md-2 profile-pic">
-                @if(strpos($users->user_image,'ttps://') || strpos($users->user_image,'ttp://'))
-                <img src="{{ $users->user_image }}" onerror="avaError(this);">
-                @else
-                <img src="{{ URL::asset('/uploads/avatar/'.$users->user_image) }}" onerror="avaError(this);">
-                @endif
-            </div>
-            <div class="col-md-10 profile-about" style="width: 100%;">
-                <h2 class="username">{{ $users->name }}
-@if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
-<small class="verified-user" style="width:15px">&nbsp;</small>
-@endif
-</h2>
-                <p>{{ $profile['profesi'] or ''}}</p>
-                @if(isset($profile['short_bio']))
-                <p class="profile-short-bio" style="margin-bottom: 30px;">{{ $profile['short_bio'] }}</p>
-                @endif
-                @if(Auth::check() && $users->id !== Auth::user()->id)
-                <!--logged in and not own profile, show follow button-->
-                <input type="hidden" id="userid" value="{{ $users->id }}" />
-                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-                <input type="hidden" id="userid" value="{{ $users->id }}" />
-                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-                @if (isFollowing($users->id))
-                <div class="col-md-2 text-center">
-                    <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-check"></i> Following</button>
-                </div>
-                @else
-                <div class="col-md-2 text-center">
-                    <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-user-plus"></i> Follow</button>
-                </div>
-                @endif
-                @else
-                <div class="col-md-2 text-center">
-                    <a href="{{url('/login')}}"><button class="btn-default" style="" id="btnFollowUser"> <i class="fa fa-user-plus"></i> Follow</button></a>
-                </div>
-                @endif
-                <div class="col-md-1 mobile-only">&nbsp;</div>
-                <div class="col-md-2 text-center">
-                    <div><p>{{$jml_following}}<br><a href="#myModal2" data-toggle="modal">  Following</a></p></div>
-                </div>
-
-                <div class="col-md-2 text-center">
-                    <div><p>{{$jml_followers}}<br><a href="#myModal" data-toggle="modal">  Followers</a></p></div>
-                </div>
-                @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
-                <div class="col-md-2 text-center">
-                    <a href="{{url('/profile/edit/'.$users->id)}}"><button class="btn-warning"> <i class="fa fa-pencil"></i> Edit Profile </button></a>
-                </div>
-                @endif
-            </div>
+<div class="container">
+  <div class="row" style="margin-top:35px">
+    <div class="col-md-5 col-md-offset-2">
+      <div class="row profile-main">
+        <div class="spacer" style="margin-top:20px"></div>
+        <div class="spacer mobile-only" style="margin-top:60px"></div>
+        <div class="col-md-3 profile-pic">
+            @if(strpos($users->user_image,'ttps://') || strpos($users->user_image,'ttp://'))
+            <img src="{{ $users->user_image }}" onerror="avaError(this);">
+            @else
+            <img src="{{ URL::asset('/uploads/avatar/'.$users->user_image) }}" onerror="avaError(this);">
+            @endif
         </div>
+        <div class="col-md-8" style="margin-left:10px">
+            <h2 class="username">{{ $users->name }}
+            @if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
+            <small class="verified-user" style="width:15px">&nbsp;</small>
+            @endif
+              </h2>
+              <p>{{ $profile['profesi'] or ''}}
+              @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || $users->id == Auth::user()->id))
+                  <small><a href="{{url('/profile/edit/'.$users->id)}}"><i class="fa fa-pencil"></i> Edit Profile</a></small>
+              @endif</p>
+              <hr>
+              <p style="font-style:italic;color:#777">{{ $profile['short_bio'] or ''}}</p>
+        </div>
+      </div>
+      <div class="row profile-main" style="background-color:#0776bd; padding-top:15px; padding-bottom:15px; color:#FFF;margin-bottom:10px">
+        <div class="col-md-4 text-center">
+          @if(Auth::check())
+            @if(Auth::user()->id != $users->id)
+            <input type="hidden" id="userid" value="{{ $users->id }}" />
+            <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+            <input type="hidden" id="userid" value="{{ $users->id }}" />
+            <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+            @if (isFollowing($users->id))
+            <div class="col-md-2 text-center">
+                <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-check"></i> Following</button>
+            </div>
+            @else
+            <div class="col-md-2 text-center">
+                <button class="btn-default" id="btnFollowUser" style=""> <i class="fa fa-user-plus"></i> Follow</button>
+            </div>
+            @endif
+            @endif
+          @else
+            <a href="{{url('/login')}}"><button class="btn-default" style="" id="btnFollowUser"> <i class="fa fa-user-plus"></i> Follow</button></a>
+          @endif
+        </div>
+        <div class="col-md-4 text-center">
+          {{$jml_following}} <a href="#myModal2" data-toggle="modal" style="color:#FFF">  Following</a>
+        </div>
+        <div class="col-md-4 text-center">
+          {{$jml_followers}} <a href="#myModal" data-toggle="modal" style="color:#FFF">  Followers</a>
+        </div>
+      </div>
+      <!-- POSTS -->
+      @if(count($posts) > 0)
+      <div class="row profile-main" style="background-color:#0776bd;color:#FFF;">
+        <div class="col-md-11 col-md-offset-1"><h4>Tulisan {{ $users->name }}</h4></div>
+      </div>
+      @foreach ($posts as $key=>$row)
+      <div class="row profile-main" style="padding-top:5px; padding-bottom:5px; border-bottom:thin #dedede solid;">
+          <div class="col-md-4 col-md-offset-1" >
+              <div class="article-image sidebar">
+                  <a href="{{ url('post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+              </div>
+          </div>
+          <div class="col-md-6 article-sidebar">
+             <div class="judul">{{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>
+             <div class="user-info"><div class="info"><i class="fa fa-eye"></i> {{ number_format($row->view_count,0,',','.') }} views</div></div>
+          </div>
+      </div>
+      @endforeach
+      <div class="row profile-main text-center" style="margin-bottom:10px;padding:10px;">
+        <div>{{ HTML::link('/profile/tulisan/'.$users->username,'Lihat semua tulisan') }}</div>
+      </div>
+      @endif
+      <!-- BUQU -->
+      @if(count($buqus) > 0)
+      <div class="row profile-main" style="background-color:#0776bd;color:#FFF;">
+        <div class="col-md-11 col-md-offset-1"><h4>Buqu {{ $users->name }}</h4></div>
+      </div>
+      <div class="row profile-main" style="border-bottom:thin #dedede solid;">
+        @foreach ($buqus as $row)
+          <div class="col-xs-6 grid-group-item">
+              <!--Author-->
+              <br>
+              <div class="panel panel-default">
+                  <div class="" >
+                      <!--Buqu-->
+                      <div class="buqu-info" style="width:100%;position: relative;">
+                          <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img class="img-slider" style="width:100%;max-height:100%; max-width:100%;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" onerror="buquError(this);" /></a>
+                          <div class="col-md-12 title" style="position: absolute;width:100%;height: 100%;top:0;margin: 0 auto;">
+                              <div class="col-md-12 penulis" style="position: absolute; top:5%;text-align: center;margin: 0 auto;;width: 100%;font-size: 15px; text-shadow: 2px 2px 4px #000000;">
+                                  {{ HTML::link('/profile/'.$row->buqu_authors->username, $row->buqu_authors->name)}}
+                              </div>
+                              <div class="col-md-12 judul" style="position: absolute; bottom:10%; text-shadow: 2px 2px 4px #000000;">
+                                  {{ HTML::link('/buqu/'.$row->buqu_slug, $row->buqu_title)}}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        @endforeach
+      </div>
+      <div class="row profile-main text-center" style="margin-bottom:10px;padding:10px;">
+        <div>{{ HTML::link('/profile/buqu/'.$users->username,'Lihat semua buqu') }}</div>
+      </div>
+      @endif
     </div>
-</div>
-<hr class="rowspace">
-<div class="col-md-8 col-md-offset-2">
-    <ul class="nav nav-tabs" id="myTab">
-        <li id="tulisantab" class="active"><a href="#tulisan" data-toggle="tab">Tulisan</a></li>
-        <li id="buqutab"><a href="#buqu" data-toggle="tab">Buqu</a></li>
-    </ul>
-
-    <div class="tab-content" id="tab-content">
-        <div class="tab-pane active" id="tulisan">
-            <hr class="rowspace">
-            <div class="row vertical-divider">
-                @foreach ($posts as $key=>$row)
-                <div class="article col-sm-3 grid-group-item">
-                    <!--Image-->
-                    <div class="article-image">
-                        <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
-                    </div>
-                    <!--Article-->
-                    <div class="article-info">
-                        <div class="info">{{ $row->created_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
-                        <div class="title">{{ HTML::link('/post/'.$row->post_slug, $row->post_title)}}</div>
-                    </div>
-                    <!--Share Like Buqu-->
-                    <div class="article-action">
-                        <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                        @if(Auth::check())
-                        @if (isLikingBuqu($row->id))
-                        <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                        @else
-                        <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                        @endif
-                        @else
-                        <span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span>
-                        @endif
-                        <span class="action-button"><a href="{{ url('/buqu_posts/create/'.$row->id) }}"><i class="fa fa-book"></i> {{ get_post_buqu_count($row->id) }}</a></span>
-                    </div>
-                    <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
-
-                </div>
-                @if ($key%4==3)
-            </div>
-            <hr class="row-divider">
-            <div class="row vertical-divider">
-                @endif
-                @endforeach
-            </div>
-            @if (method_exists($posts,'render') && $posts->lastPage()>1)
-            <div class="pagination-wrapper"> {!! $posts->render() !!} </div>
-            @endif
-        </div>
-        <div class="tab-pane" id="buqu">
-            <hr class="rowspace">
-            <div class="row vertical-divider">
-                @foreach ($buqus as $key=>$row)
-                <div class="article col-sm-3 grid-group-item">
-                    <!--Buqu-->
-                    <!--Buqu-->
-                    <div id="id-title" class="buqu-info">
-                        <a href="{{ url('/buqu/'.$row->buqu_slug) }}"><img style="width: 100%;height: auto;" src="{{ URL::asset('uploads/buqu/'.$row->buqu_image) }}" alt="{{ $row->buqu_image }}" onerror="buquError(this);" /></a>
-
-                        <div class="col-md-12 title" style="position: absolute;width:100%;height: 100%;top:0;margin: 0 auto;">
-                            <div class="col-md-12 penulis" style="position: absolute; top:10;text-align: center;margin: 0 auto;;width: 100%;font-size: 15px;">
-                                {{ HTML::link('/buqu/'.$row->buqu_slug, $row->buqu_authors->name)}}
-                            </div>
-                            <div class="col-md-12 judul" style="position: absolute; bottom:5%;text-align: center;margin: 0 auto;">
-                                {{ HTML::link('/buqu/'.$row->buqu_slug, $row->buqu_title)}}
-                            </div>
-                        </div>
-                    </div>
-                    <!--Share Like Buqu-->
-                    <div class="article-action">
-                        <span class="action-button"><i class="fa fa-newspaper-o"></i> {{ get_buqu_post_count($row->id) }}</span>
-                        <span class="action-button"><a class="share_buttonbuqu" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counterbuqu{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                        @if(Auth::check())
-                        @if (isLikingBuqu($row->id))
-                        <span class="action-button"><a class="active btnLikeBuqu" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counterbuqu{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                        @else
-                        <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLikeBuqu" title="Like"><i class="fa fa-heart"></i> <span class="like-counterbuqu{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                        @endif
-                        @else
-                        <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
-                        @endif
-                    </div>
-                    <br>
-                    <div class="sharebuqu{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/buqu/'.$row->buqu_slug) }}' data-image='{{ url('/buqu/'.$row->buqu_image) }}'></div></div>
-
-                </div>
-                @if ($key%4==3)
-            </div>
-
-            <hr class="row-divider">
-            <div class="row topic-title">
-                @endif
-                @endforeach
-            </div>
-            @if (method_exists($buqus,'render') && $buqus->lastPage()>1)
-            <div class="pagination-wrapper"> {!! $buqus->render() !!} </div>
-            @endif
-        </div>
-        <div class="tab-pane" id="pengikut">
-            <hr class="rowspace">
-            <div class="row">
-                @foreach ($followers as $key=>$row)
-                <div class="article col-sm-3 grid-group-item">
-                    <!--Author-->
-                    <div class="user-info">
-                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->followers->user_image) }}" onerror="avaError(this);" /></div>
-                        <div class="name">{{ HTML::link('/profile/'.$row->followers->username, $row->followers->name)}}</div>
-                        <div class="title">{{ get_user_profesi($row->followers->id) }}</div>
-                        <div class="jumlah">{{ get_user_profesi($row->followers->id) }}</div>
-                    </div>
-                </div>
-                @if ($key%4==3)
-            </div>
-            <hr class="row-divider">
-            <div class="row">
-                @endif
-                @endforeach
-            </div>
-            @if (method_exists($followers,'render') && $followers->lastPage()>1)
-            <div class="pagination-wrapper"> {!! $followers->render() !!} </div>
-            @endif
-        </div>
-        <div class="tab-pane" id="mengikuti">
-            <hr class="rowspace">
-            <hr class="rowspace">
-            <div class="row">
-                @foreach ($followings as $key=>$row)
-                <div class="article col-sm-3 grid-group-item">
-                    <!--Author-->
-                    <div class="user-info">
-                        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->users->user_image) }}" onerror="avaError(this);" /></div>
-                        <div class="name">{{ HTML::link('/profile/'.$row->users->username, $row->users->name)}}</div>
-                        <div class="title">{{ get_user_profesi($row->users->id) }}</div>
-                    </div>
-                </div>
-                @if ($key%4==3)
-            </div>
-            <hr class="row-divider">
-            <div class="row">
-                @endif
-                @endforeach
-            </div>
-            @if (method_exists($followings,'render') && $followings->lastPage()>1)
-            <div class="pagination-wrapper"> {!! $followings->render() !!} </div>
-            @endif
-        </div>
+    <div class="col-md-3">
+      <div class="row profile-side">
+      <div class="col-md-12"><h4>Penulis Lainnya</h4></div>
+      </div>
+      <?php
+      $recommended_writers = get_recommended_user();
+      ?>
+          @if(count($recommended_writers)>0)
+              @foreach($recommended_writers as $recw)
+              <div class="row profile-side" style="padding-top:7px;padding-bottom:7px; border-bottom:thin #dedede solid;">
+                  <div class="col-md-12 article grid-group-item">
+                      <div class="user-info">
+                          @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))
+                          <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
+                          @else
+                          <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
+                          @endif
+                          <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
+          @if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'partner' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
+          <span class="verified-user"></span>
+          @endif
+          </div>
+                          <div class="title">{{ get_user_profesi($recw->user->id) }}
+                          </div>
+                          @if(Auth::check() && $recw->user->id !== Auth::user()->id)
+                          <!--logged in and not own profile, show follow button-->
+                          @if (isFollowing($recw->user->id))
+                          <div>
+                              <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
+                          </div>
+                          @else
+                          <div>
+                              <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
+                          </div>
+                          @endif
+                          @else
+                          <div>
+                              <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
+                          </div>
+                          @endif
+                      </div>
+                  </div>
+              </div>
+              @endforeach
+          @endif
+        <div class="row profile-side" style="padding-top:20px;"></div>
     </div>
+  </div>
 </div>
+<div class="row" style="margin-top:35px;"></div>
 
 <!-- Modal HTML -->
 <div id="myModal" class="modal fade">
@@ -559,5 +520,29 @@ $('.share_buttonbuqu').click(function () {
         }
     }
 });
+</script>
+<script type="text/javascript" src="/slick/slick.min.js"></script>
+<!--slider (slick)-->
+<script>
+    $(document).ready(function (e) {
+        $('.buqu-slider').slick({
+            infinite: true,
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 10000,
+            pauseOnHover: true,
+            swipe: true,
+            arrows: true,
+            responsive: [{
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+    });
 </script>
 @endsection

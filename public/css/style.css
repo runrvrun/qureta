@@ -38,10 +38,6 @@ body{
     display: none;
 }
 
-blockquote {
-    border-left: 0px solid #eee;
-}
-
 #btnFollowUser {
     background: transparent;
     color: #fff;
@@ -171,7 +167,15 @@ a:link,a:hover,a:visited{
 
 div.content.profile-page{
     margin: 0 auto;
-    margin-top: 75px;
+    background-color: #dfdfdf;
+}
+
+div.content.profile-page .profile-main{
+    background-color: #FFF;
+}
+div.content.profile-page .profile-side{
+    background-color: #FFF;
+    margin:0 1px;
 }
 
 .footer {
@@ -459,10 +463,6 @@ div.user-info div.name a{
     line-height: 25px;
     font-family: Helvetica, serif;
 }
-.article-single.title a{
-    color: #777777;
-}
-
 .require-login{
 height:500px;overflow: hidden; text-overflow: ellipsis;
 }
@@ -725,8 +725,7 @@ ul.ui-autocomplete li{
     width:120px;
     padding: 4px;
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 50%;
 }
 .profile-about {
     float: none;
@@ -1197,13 +1196,11 @@ hr.displaynone{
     width: 100%;
 }
 
-.profile-short-bio{
-  max-width: 100%;
-}
-
 .ajax-loading{
   text-align: center;
 }
+
+.nowrap{white-space: nowrap;}
 
 @media only screen and (min-width: 768px), (-webkit-max-device-pixel-ratio: 1.25), (max-resolution: 120dpi) {
     /* For desktop: */
@@ -1226,17 +1223,16 @@ hr.displaynone{
         position: fixed;
         top: 50px;
         transition: top 0.2s ease-in-out;
+        margin-bottom: 50px;
         background: #eee;
         width: 100%;
-        min-height: 20px;
+        min-height: 40px;
         z-index: 98;
     }
     .navbar-lower .navbar-nav > li > a{
         padding: 6px 15px;
     }
-    .navbar-lower .navbar-collapse ul li{
-        margin: 0px 10px; */
-    }
+
     .nav-up {
         top: -40px;
     }

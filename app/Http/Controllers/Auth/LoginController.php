@@ -40,7 +40,7 @@ use AuthenticatesUsers;
     public function __construct() {
         $this->middleware('guest', ['except' => 'logout']);
     }
-    
+
     public function authenticate(Request $request)
     {
         $email = $request->email;
@@ -48,15 +48,17 @@ use AuthenticatesUsers;
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             // Authentication passed...
             if (Auth::user()->banned_until < Carbon::now()){
-	      Session::put('qureta_fullname',Auth::user()->name);
+	              Session::put('qureta_fullname',Auth::user()->name);
 
-                return redirect()->intended('/');                
+                Session::flash('alert-type','alert-info');
+                Session::flash('login_message','Halo ' . Auth::user()->name . '! Selamat menulis');
+                return redirect()->intended('/');
             }
-           
+
             else{
-                Auth::logout(); 
+                Auth::logout();
                 Session::flash('alert-type','alert-danger');
-                Session::flash('flash_message','Login gagal. Akses Anda diblokir.');               
+                Session::flash('flash_message','Login gagal. Akses Anda diblokir.');
                 return redirect('login');
             }
              $log = Log::create([
@@ -67,7 +69,7 @@ use AuthenticatesUsers;
         }
         else{
                 Session::flash('alert-type','alert-danger');
-                Session::flash('flash_message','Username atau password salah'); 
+                Session::flash('flash_message','Username atau password salah');
             return redirect('login');
         }
     }
@@ -78,6 +80,6 @@ use AuthenticatesUsers;
         {
             session(['url.intended' => url()->previous()]);
         }
-        return view('auth.login');     
+        return view('auth.login');
     }
 }

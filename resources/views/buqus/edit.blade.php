@@ -36,6 +36,15 @@
                             {!! $errors->first('buqu_title', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                    <div class="form-group {{ $errors->has('buqu_slug') ? 'has-error' : ''}}">
+                        {!! Form::label('buqu_slug', 'Buqu Slug', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="col-md-6">
+                            {!! Form::text('buqu_slug', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('buqu_slug', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    @endif
                     <div class="form-group {{ $errors->has('buqu_image') ? 'has-error' : ''}}">
                         {!! Form::label('buqu_image', 'Buqu Image', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">

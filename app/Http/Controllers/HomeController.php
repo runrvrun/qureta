@@ -73,7 +73,7 @@ class HomeController extends Controller {
          $buqus = Buqus::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
 
         ///get latest kuliah qureta
-        $kuliah = Course::orderBy('created_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(8)->get();
+        $kuliah = Course::orderBy('updated_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(8)->get();
 
         return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah'));
     }

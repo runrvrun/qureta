@@ -1,6 +1,8 @@
+var url = '/';
 self.addEventListener('push', function(event) {
   if (event.data) {
     var data = event.data.json();
+    url = data.id;
     self.registration.showNotification(data.title,{
       body: data.body,
       icon: data.icon,
@@ -12,9 +14,7 @@ self.addEventListener('push', function(event) {
   }
 });
 
-self.addEventListener('notificationclick', function(event) {
-    //let url = 'https://qureta.com/post/' + data.url;
-    let url = 'https://qureta.com';
+self.addEventListener('notificationclick', function(event) {    
     event.notification.close(); // Android needs explicit close.
     event.waitUntil(
         clients.matchAll({type: 'window'}).then( windowClients => {

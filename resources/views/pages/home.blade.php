@@ -9,19 +9,33 @@
 @endsection
 
 @section('content')
-
-@if (Session::has('flash_message'))
-<div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <p>{!! Session::get('flash_message') !!}</p>
-</div>
-@endif
-<?php Carbon::setLocale('id'); ?>
-@if(Auth::Check())
-<input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-@endif
-
 <div class="container" style="overflow:hidden">
+  @if (Session::has('flash_message'))
+  <div class="alert alert-success alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <p>{!! Session::get('flash_message') !!}</p>
+  </div>
+  @endif
+  @if (Session::has('login_message'))
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 alert alert-success alert-dismissible text-center" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p>{!! Session::get('login_message') !!}</p>
+        @if(empty( get_user_profesi(Auth::user()->id) ))
+        <small>Anggota lain ingin tahu profesi Anda {!! HTML::link('/profile/edit','[update profesi]') !!}</small>
+        @elseif(empty( Auth::user()->user_image ))
+        <small>Anggota lain penasaran seperti apa foto Anda {!! HTML::link('/profile/edit','[upload foto]') !!}</small>
+        @elseif(empty( get_user_short_bio(Auth::user()->id) ))
+        <small>Ceritakan sedikit tentang diri Anda agar orang lain tahu siapa Anda {!! HTML::link('/profile/edit','[isi biodata singkat]') !!}</small>
+        @endif
+    </div>
+  </div>
+  @endif
+  <?php Carbon::setLocale('id'); ?>
+  @if(Auth::Check())
+  <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+  @endif
   <!--kuliah qureta-->
   <div class="mobile-only spacer" style="min-height:50px;"></div>
   <div class="row topic-title">
@@ -47,7 +61,7 @@
           <!--Article-->
           <div class="article-info">
               <div class="title">
-                  {!! HTML::link('https://kuliah.qureta.com', $row->name)!!}
+                  {!! HTML::link('https://kuliah.qureta.com/course/'.$row->slug, $row->name)!!}
               </div>
           </div>
       </div>
@@ -264,7 +278,7 @@ $recommended_writers = get_recommended_user();
             <h3>{{ HTML::link('/penulis-favorit', 'PENULIS FAVORIT')}}</h3>
         </div>
     </div>
-    <div class="row recommended-user">
+    <div class="buqu-slider recommended-user" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
     @foreach($recommended_writers as $recw)
         <div class="article col-sm-3 grid-group-item">
             <div class="user-info">

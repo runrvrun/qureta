@@ -7,6 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\User;
+use Carbon;
 
 class UpdateLastLogin
 {
@@ -26,11 +27,9 @@ class UpdateLastLogin
      * @param  SomeEvent  $event
      * @return void
      */
-    public function handle(user $user)
+    public function handle($event)
     {
-        ///TODO: FIX. belum ke save last loginnya
-        $requestData['last_login'] = Carbon::now();
-        $post = Post::findOrFail($user);
-        $post->update($requestData);
+      $event->user->last_login = Carbon::now();
+      $event->user->save();
     }
 }
