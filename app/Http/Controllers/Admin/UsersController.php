@@ -20,20 +20,24 @@ class UsersController extends Controller {
      * @return \Illuminate\View\View
      */
     public function index() {
-        $users = User::orderBy('username')->paginate(25, ['*'], 'page');        
-        $penulis = User::where('post_count','>',0)->orderBy('post_count','DESC')->orderBy('username')->paginate(25, ['*'], 'penulispage');        
-        $admin = User::orderBy('username')->where('role','admin')->orWhere('role','editor')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');        
+        $users = User::orderBy('username')->paginate(25, ['*'], 'page');
+        $penulis = User::where('post_count','>',0)->orderBy('post_count','DESC')->orderBy('username')->paginate(25, ['*']);
+        $partner = User::where('role','partner')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*']);
+        $premium = User::where('role','premium')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*']);
+        $admin = User::where('role','admin')->orWhere('role','editor')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');
 
-        return view('admin.users.index', compact('users','penulis','admin'));
+        return view('admin.users.index', compact('users','penulis','admin','partner','premium'));
     }
 
     public function search(Request $request) {
-        
-        $users = User::orderBy('username')->where('username', 'like', '%' . $request->search . '%')->orWhere('name', 'like', '%' . $request->search . '%')->paginate(25);        
-        $penulis = User::where('post_count','>',0)->where('username', 'like', '%' . $request->search . '%')->orWhere('name', 'like', '%' . $request->search . '%')->orderBy('post_count','DESC')->orderBy('username')->paginate(25, ['*'], 'penulispage');        
-                
+        $users = User::orderBy('username')->where('username', 'like', '%' . $request->search . '%')->orWhere('name', 'like', '%' . $request->search . '%')->paginate(25, ['*'], 'page');
+        $penulis = User::where('post_count','>',0)->where('username', 'like', '%' . $request->search . '%')->orWhere('name', 'like', '%' . $request->search . '%')->orderBy('post_count','DESC')->orderBy('username')->paginate(25, ['*'], 'penulispage');
+        $admin = User::where('role','admin')->orWhere('role','editor')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');
+        $partner = User::where('role','partner')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');
+         $premium = User::where('role','premium')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');
+
         $querystring['search']=$request->search;
-        return view('admin.users.index', compact('users','penulis','querystring'));
+        return view('admin.users.index', compact('users','penulis','partner','premium','admin','querystring'));
     }
 
     /**
@@ -87,6 +91,21 @@ class UsersController extends Controller {
         $user = User::findOrFail($id);
 
         return view('admin.users.edit', compact('user'));
+    }
+
+    public function autoComplete(Request $request) {
+        $query = $request->get('term','');
+
+        $user=User::where('name','LIKE','%'.$query.'%')->get();
+
+        $data=array();
+        foreach ($user as $users) {
+                $data[]=array('value'=>$users->name,'id'=>$users->id);
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['value'=>'No Result Found','id'=>''];
     }
 
     /**
@@ -144,7 +163,7 @@ class UsersController extends Controller {
         $user->fill([
             'password' => Hash::make($request->newpassword)
         ])->save();
-        
+
         Session::flash('flash_message', 'Password changed');
 
         return redirect('admin/users');
