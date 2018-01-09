@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\User_metum;
 use App\Post;
-use App\Buqus;
+use App\Buqu;
 use App\Followers;
 use Session;
 use Image;
@@ -156,7 +156,7 @@ class ProfileController extends Controller {
             }
         }
         $posts = Post::where('post_author', $users->id)->where('post_status','publish')->orderBy('published_at', 'DESC')->take(4)->get();
-        $buqus = Buqus::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(2)->get();
+        $buqus = Buqu::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(2)->get();
         $followers = Followers::join('users','follower_id','=','users.id')->where('user_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followerpage');
 
         $jml_followers = Followers::where('user_id',$users->id)->distinct('follower_id')->count('follower_id');
@@ -224,7 +224,7 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
     public function buqu($username) {
       $user = User::where('username',$username)->first();
       $pagetitle = 'Buqu '.$user->name;
-      $buqus = Buqus::where('buqu_author',$user->id)->orderBy('id', 'DESC')->paginate(20);
+      $buqus = Buqu::where('buqu_author',$user->id)->orderBy('id', 'DESC')->paginate(20);
 
       return view('pages.buqu', compact('pagetitle', 'buqus'));
     }

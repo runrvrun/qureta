@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Post_metum;
 use App\Post;
-use App\Buqus;
+use App\Buqu;
 use App\Banner;
 use App\Course;
 use Carbon;
@@ -70,10 +70,10 @@ class HomeController extends Controller {
 
 
         ///get most popular buqus
-         $buqus = Buqus::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
+         $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
 
         ///get latest kuliah qureta
-        $kuliah = Course::orderBy('updated_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(8)->get();
+        $kuliah = Course::with('course_users')->orderBy('created_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(4)->get();
 
         return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah'));
     }
@@ -121,7 +121,7 @@ public function hometest() {
 
 
         ///get most popular buqus
-         $buqus = Buqus::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
+         $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
 
 
         return view('pages.hometest', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus'));

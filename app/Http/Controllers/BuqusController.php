@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Buqus;
+use App\Buqu;
 use App\Buqu_post;
 use App\Category;
 use App\Post;
@@ -26,16 +26,16 @@ class BuqusController extends Controller {
      */
     public function index() {
         if (Auth::user()->role = 'admin') {
-            $buqus = Buqus::where('buqu_author', Auth::user()->id)->paginate(25);
+            $buqus = Buqu::where('buqu_author', Auth::user()->id)->paginate(25);
         } else {
-            $buqus = Buqus::paginate(25);
+            $buqus = Buqu::paginate(25);
         }
 
         return view('buqus.index', compact('buqus'));
     }
 
     public function showpermalink($permalink) {
-        $buqu = Buqus::where('buqu_slug', '=', $permalink)->first();
+        $buqu = Buqu::where('buqu_slug', '=', $permalink)->first();
 	if($buqu == null) abort('404');
         $buqu_posts = Buqu_post::where('buqu_id', $buqu->id)->pluck('post_id');
         $posts = Post::with('post_authors')->whereIn('id', $buqu_posts)->where('post_status', 'publish')->paginate(12);
@@ -99,7 +99,7 @@ class BuqusController extends Controller {
             $requestData['buqu_image'] = $fileName;
         }
 
-        $buqu = Buqus::create($requestData);
+        $buqu = Buqu::create($requestData);
 
         Session::flash('flash_message', 'Buqu ' . $request->buqu_title . ' added!');
         Session::flash('new_buqu_id', $buqu->id);
@@ -119,7 +119,7 @@ class BuqusController extends Controller {
      * @return \Illuminate\View\View
      */
     public function show($id) {
-        $buqus = Buqus::findOrFail($id);
+        $buqus = Buqu::findOrFail($id);
 
         return view('buqus.show', compact('buqus'));
     }
@@ -133,7 +133,7 @@ class BuqusController extends Controller {
      */
     public function edit($id) {
         if(Auth::check()){
-          $buqus = Buqus::findOrFail($id);
+          $buqus = Buqu::findOrFail($id);
 
           if ($buqus->buqu_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
               return view('buqus.edit', compact('buqus'));
@@ -177,7 +177,7 @@ class BuqusController extends Controller {
             $requestData['buqu_image'] = $fileName;
         }
 
-        $buqus = Buqus::findOrFail($id);
+        $buqus = Buqu::findOrFail($id);
         $buqus->update($requestData);
 
         Session::flash('flash_message', 'Buqu updated!');
@@ -193,7 +193,7 @@ class BuqusController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id) {
-        Buqus::destroy($id);
+        Buqu::destroy($id);
 
         Session::flash('flash_message', 'Buqu deleted!');
 
@@ -202,7 +202,7 @@ class BuqusController extends Controller {
 
     public function terbaru(Request $request) {
         $pagetitle = 'Buqu Terbaru';
-        $buqus = Buqus::orderBy('id', 'DESC')->paginate(20);
+        $buqus = Buqu::orderBy('id', 'DESC')->paginate(20);
 
         //infinite scroll
         if ($request->ajax()) {
@@ -214,14 +214,14 @@ class BuqusController extends Controller {
 
     public function populer($limit = 20) {
         $pagetitle = 'Buqu Terpopuler';
-        $buqus = Buqus::orderBy('view_count', 'DESC')->take($limit)->get();
+        $buqus = Buqu::orderBy('view_count', 'DESC')->take($limit)->get();
 
         return view('pages.buqu', compact('pagetitle', 'buqus'));
     }
 
     public function pilihan($limit = 20) {
         $pagetitle = 'Buqu Pilihan';
-        $buqus = Buqus::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
+        $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
 
         return view('pages.buqu', compact('pagetitle', 'buqus'));
     }
@@ -229,7 +229,7 @@ class BuqusController extends Controller {
      public function rakbuqu() {
         if (Auth::check()) {
             $pagetitle = 'Rak Buqu';
-            $buqus = Buqus::whereHas('buqulikes', function($query) {
+            $buqus = Buqu::whereHas('buqulikes', function($query) {
                         $query->where('follower_id', Auth::user()->id);
                     })->with('buqu_authors')->orderBy('id', 'DESC')->paginate(12);
 
@@ -242,7 +242,7 @@ class BuqusController extends Controller {
     public function like(Request $request) {
         $buquid = $request->postid;
         $followerid = $request->followerid;
-        $buqu = Buqus::find($buquid);
+        $buqu = Buqu::find($buquid);
         $follower = User::find($followerid);
         $buqu->like($follower);
         return response()->json(['responseText' => 'Success!'], 200);
@@ -251,7 +251,7 @@ class BuqusController extends Controller {
     public function unlike(Request $request) {
         $buquid = $request->postid;
         $followerid = $request->followerid;
-        $buqu = Buqus::find($buquid);
+        $buqu = Buqu::find($buquid);
         $follower = User::find($followerid);
         $buqu->unlike($follower);
         return response()->json(['responseText' => 'Success!'], 200);
@@ -277,7 +277,7 @@ class BuqusController extends Controller {
 
     public function feature(Request $request) {
         $id = $request->postid;
-        $buqu = Buqus::find($id);
+        $buqu = Buqu::find($id);
         $requestData['featured_at'] = Carbon::now()->toDateTimeString();
         $buqu->update($requestData);
         return response()->json(['responseText' => 'Success!'], 200);
@@ -285,7 +285,7 @@ class BuqusController extends Controller {
 
     public function unfeature(Request $request) {
         $id = $request->postid;
-        $buqu = Buqus::find($id);
+        $buqu = Buqu::find($id);
         $buqu->featured_at = null;
         $buqu->save();
         return response()->json(['responseText' => 'Success!'], 200);

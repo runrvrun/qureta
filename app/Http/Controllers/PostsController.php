@@ -6,7 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Post_metum;
 use App\Post;
-use App\Buqus;
+use App\Buqu;
 use App\Category;
 use App\Featured_category;
 use App\Competition;
@@ -267,7 +267,7 @@ class PostsController extends Controller {
             }
         }
 
-            return view('pages.single', compact('post', 'buqus', 'related', 'category', 'populer'));
+            return view('pages.single', compact('post', 'related', 'category', 'populer'));
         } else {
             return redirect('/');
         }

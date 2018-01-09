@@ -55,6 +55,10 @@ class Post extends Model {
         return $this->hasMany('App\Post_metum');
     }
 
+    public function buqus() {
+        return $this->belongsToMany('App\Buqu')->withTimestamps();;
+    }
+
     /**
      * Return the sluggable configuration array for this model.
      *

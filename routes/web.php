@@ -122,6 +122,8 @@ Route::post('/buqu/feature', 'BuqusController@feature');
 Route::post('/buqu/unfeature', 'BuqusController@unfeature');
 Route::resource('buqus', 'BuqusController');
 Route::get('buqu_posts/create/{a}', 'Buqu_postsController@create');
+Route::post('buqu_posts/createajax', 'Buqu_postsController@createajax');
+Route::get('buqu_posts/createajax', 'Buqu_postsController@createajax');
 Route::resource('buqu_posts', 'Buqu_postsController');
 Route::resource('posts', 'PostsController');
 Route::resource('profiles', 'ProfilesController');

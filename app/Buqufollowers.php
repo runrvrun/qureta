@@ -28,7 +28,7 @@ class Buqufollowers extends Model {
     protected $fillable = ['buqu_id', 'follower_id'];
 
     function followers() {
-        return $this->belongsToMany('App\Buqus', 'buqufollowers', 'buqu_id', 'follower_id');
+        return $this->belongsToMany('App\Buqu', 'buqufollowers', 'buqu_id', 'follower_id');
     }
 
     function follow(User $buqu) {

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Buqu_post;
-use App\Buqus;
+use App\Buqu;
 use App\Post;
 use Illuminate\Http\Request;
 use Session;
@@ -43,9 +43,20 @@ class Buqu_postsController extends Controller {
             $newbuquid = null;
         }
 
-        $buqus = Buqus::where('buqu_author', Auth::user()->id)->orderBy('buqu_title')->pluck('buqu_title', 'id');
+        $buqus = Buqu::where('buqu_author', Auth::user()->id)->orderBy('buqu_title')->pluck('buqu_title', 'id');
         $posts = Post::where('id', $postid)->first();
         return view('buqu_posts.create', compact('buqus', 'posts', 'newbuquid'));
+    }
+
+    public function createajax(Request $request) {
+      $requestData = $request->all();
+
+      $buqu = Buqu::findOrFail($request->buqu_id);
+      $post = Post::findOrFail($request->post_id);
+      $post->buqus()->detach($request->buqu_id);
+      $post->buqus()->attach($request->buqu_id);
+
+      return response()->json(['responseText' => 'Success!', 'buqu_title' => $buqu->buqu_title, 'buqu_slug' => $buqu->buqu_slug], 200);
     }
 
     /**
@@ -59,7 +70,7 @@ class Buqu_postsController extends Controller {
 
         $requestData = $request->all();
 
-        $buqus = Buqus::findOrFail($request->buqu_id);
+        $buqus = Buqu::findOrFail($request->buqu_id);
         Buqu_post::create($requestData);
 
         Session::flash('flash_message', 'Buqu_post added!');
@@ -127,7 +138,7 @@ class Buqu_postsController extends Controller {
 
         return redirect('buqu_posts');
     }
-    
+
     public function deletepost(Request $request){
         $postid = $request->postid;
         $buquid = $request->buquid;

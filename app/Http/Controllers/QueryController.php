@@ -7,7 +7,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use App\Post;
 use App\User;
-use App\Buqus;
+use App\Buqu;
 use Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -45,7 +45,7 @@ class QueryController extends Controller {
                 return view('pages.penulis', compact('pagetitle', 'users', 'querystring'));
             } elseif ($sp == 'buqu') {
             	$pagetitle = 'Hasil Pencarian Buqu: ' . $q .' <br/><small> <a href="' . url('/cari?sp=artikel&q='.$q) . '">Artikel </a> | <a href="' . url('/cari?sp=penulis&q='.$q) . '">Penulis </a> | <a href="' . url('/cari?sp=buqu&q='.$q) . '">Buqu </a></small>';
-                $buqus = Buqus::where('buqu_title', 'like', '%' . $q . '%')->orderBy('id', 'DESC')->paginate(20);
+                $buqus = Buqu::where('buqu_title', 'like', '%' . $q . '%')->orderBy('id', 'DESC')->paginate(20);
                 $querystring['q'] = $q;
                 $querystring['sp'] = $sp;
 

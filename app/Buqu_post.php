@@ -11,7 +11,7 @@ class Buqu_post extends Model {
      *
      * @var string
      */
-    protected $table = 'buqu_posts';
+    protected $table = 'buqu_post';
 
     /**
      * The database primary key value.
@@ -33,6 +33,6 @@ class Buqu_post extends Model {
 
     public function posts() {
         return $this->hasMany('App\Post');
-    }    
+    }
 
 }

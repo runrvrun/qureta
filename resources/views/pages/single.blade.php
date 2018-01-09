@@ -75,7 +75,12 @@
 <div class="clearfix"></div>
 <br>
 <div class="row">
-    <div class='shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
+    <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
+    @if(Auth::check())
+    <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;" data-toggle="modal" data-target="#modaladdbuqu"><a class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
+    @else
+    <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;"><a href="{{ url('/login') }}" class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
+    @endif
 </div>
 
 <img class="article-featured-img" src="{{ URL::asset('/uploads/post/'.$post->post_image) }}" alt="{{ $post->post_image }}" onerror="imgError(this);" />
@@ -101,7 +106,12 @@
 <hr/>
 
 <div class="row" id="endofpost">
-        <div class='shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626'></div>
+        <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
+        @if(Auth::check())
+        <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;" data-toggle="modal" data-target="#modaladdbuqu"><a class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
+        @else
+        <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;"><a href="{{ url('/login') }}" class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
+        @endif
 </div>
 <div class="clearfix"></div>
 <hr/>
@@ -125,6 +135,44 @@
 <div class="fb-comments" data-href="v3.qureta.com/post/{{ $post->post_slug }}" data-numposts="5"></div>
 <div class="row text-center">
   <a class="btn btn-default btn-block" id="unsub" style="display:none;margin-top:12px">Unsubscribe Notification</a>
+</div>
+<!-- modal for add buqu -->
+@if(Auth::check())
+<div class="modal" id="modaladdbuqu" style="display: none;" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Menambahkan Artikel ke Buqu</h4>
+            </div>
+            <div class="modal-body">
+                {{ Form::hidden('addtobuqu_postid',$post->id) }}
+                Pilih Buqu {{ Form::select('addtobuqu_buquid', App\Buqu::where('buqu_author',Auth::user()->id)->pluck('buqu_title','id'), 1, ['class' => 'form-control']) }}
+            </div>
+            <div class="modal-footer">
+                <a id="btnaddtobuqu" class="btn btn-primary mr-auto">Tambahkan ke Buqu</a>
+                <a href="{{ url('/buqus/create') }}" class="btn btn-default">Buat Buqu</a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+<!-- modal selesai menambahkan buqu -->
+<div class="modal" id="modalsuccessbuqu" style="display: none;" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Menambahkan Artikel ke Buqu</h4>
+            </div>
+            <div class="modal-body" id="modalsuccessbuqubody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -352,6 +400,24 @@ $(document).ready(function (e) {
                 }
             });
         }
+    });
+
+    $('#btnaddtobuqu').click(function () {
+        $('#modaladdbuqu').modal('hide');
+        var token = '{{{ csrf_token() }}}';
+        var data = {"_token": token, "post_id": $('input[name=addtobuqu_postid]').val(), "buqu_id": $('select[name=addtobuqu_buquid] :selected').val()};
+        $.ajax({
+            url: "/buqu_posts/createajax",
+            type: "POST",
+            data: data,
+            error: function (exception) {
+                console.log(data)
+            },
+            success: function (data) {
+              $('#modalsuccessbuqubody').html('<p>Artikel telah ditambahkan ke buqu <strong>' + data['buqu_title'] + '</strong> [<a href="/buqu/' + data['buqu_slug'] + '">Lihat Buqu</a>]</p>');
+              $('#modalsuccessbuqu').modal('show');
+            }
+        });
     });
 
     //show push notification request when finish reading
