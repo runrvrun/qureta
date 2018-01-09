@@ -153,7 +153,7 @@
 
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'gif': case 'jpg': case 'png':
-            alert("Gambar Berhasil Diupload");
+            //alert("Gambar Berhasil Diupload");
             break;
         default:
             $(this).val('');

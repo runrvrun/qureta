@@ -69,7 +69,7 @@ class PostsController extends Controller {
             Auth::logout();
             return redirect('/login');
         }
-	$draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
+	      $draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
         return view('posts.kirimtulisan',compact('draftcount'));
     }
 
@@ -354,6 +354,7 @@ class PostsController extends Controller {
             unset($requestData['published_at']);
         } elseif (isset($request->delete)) {
             $requestData['post_status'] = 'delete';
+            $requestData['post_slug'] = uniqid();
             unset($requestData['published_at']);
         } elseif (isset($request->save)) {
             unset($requestData['post_status']);
@@ -529,6 +530,7 @@ class PostsController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id) {
+        Post::where('id', $id)->update(array('post_slug' => uniqid()));
         Post::destroy($id);
 
         Session::flash('flash_message', 'Post deleted!');
