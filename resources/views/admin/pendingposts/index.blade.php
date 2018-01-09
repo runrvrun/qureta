@@ -16,7 +16,6 @@
                                 </thead>
                                 <tbody>
                                 @foreach($posts as $item)
-                                  @if(Auth::user()->role === 'admin')
                                     <tr>
                                         <td>{{ $item->post_authors->name }}</td>
                                         <td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td>
@@ -32,20 +31,9 @@
                                         <td>{{ str_word_count(strip_tags($item->post_content)) }}</td>
                                         <td style="white-space:nowrap;">
                                             <a href="{{ url('/post/' . $item->post_slug) }}" class="btn btn-success btn-xs" title="View Post"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
-                                            <a href="{{ url('/edit-tulisan/' . $item->post_slug) }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>                                          
-                                        </td>
-                                    </tr>
-                                    @else
-                                    <tr>
-                                        <td>{{ $item->id }}</td>
-                                        <td>{{ $item->post_authors->name }}</td><td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td><td>{{ str_word_count(strip_tags($item->post_content)) }}</td>
-                                        <td style="white-space:nowrap;">
-                                            <a href="{{ url('/post/' . $item->post_slug) }}" class="btn btn-success btn-xs" title="View Post"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/edit-tulisan/' . $item->post_slug) }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
-
                                         </td>
                                     </tr>
-                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>

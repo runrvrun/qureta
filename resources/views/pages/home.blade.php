@@ -63,6 +63,9 @@
               <div class="title">
                   {!! HTML::link('https://kuliah.qureta.com/course/'.$row->slug, $row->name)!!}
               </div>
+              <div class="info">
+                  {{ $row->course_users->count() }} peserta
+              </div>
           </div>
       </div>
       @endif
