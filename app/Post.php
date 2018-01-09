@@ -18,7 +18,7 @@ class Post extends Model {
      */
     protected $table = 'posts';
     protected $dates = [
-        'published_at'
+        'published_at','submitted_at'
     ];
     protected $searchable = [
         /**
@@ -45,7 +45,7 @@ class Post extends Model {
      *
      * @var array
      */
-    protected $fillable = ['post_author', 'post_title', 'post_subtitle', 'post_content', 'post_status', 'comment_status', 'post_slug', 'post_image', 'post_image_credit', 'view_count', 'comment_count', 'share_count', 'like_count', 'buqu_count','hide','updated_by','updated_at','published_by','published_at','sticky','hide_adsense','require_login'];
+    protected $fillable = ['post_author', 'post_title', 'post_subtitle', 'post_content', 'post_status', 'comment_status', 'post_slug', 'post_image', 'post_image_credit', 'view_count', 'comment_count', 'share_count', 'like_count', 'buqu_count','hide','updated_by','updated_at','published_by','published_at','submitted_at','sticky','hide_adsense','require_login'];
 
     public function post_authors() {
         return $this->belongsTo('App\User', 'post_author');

@@ -22,7 +22,7 @@ class Competition_postsController extends Controller {
     public function index($competitionid = null) {
         if (isset($competitionid)) {
         	  if(Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || Auth::user()->role == 'partner'){
-                    $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('competition_id', $competitionid)->orderBy('posts.post_status', 'DESC')->orderBy('like_count', 'DESC')->get();
+                    $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('competition_id', $competitionid)->where('post_status','publish')->orderBy('posts.post_status', 'DESC')->orderBy('like_count', 'DESC')->get();
 		 
                     $competition_likes = Competition_postlikes::where('follower_id','==',Auth::user()->id)->with('comps','composts')->join('posts','posts.id', '=', 'competition_postlikes.competition_post_id')->join('competition_posts','competition_posts.competition_id','=','competition_postlikes.competition_post_id')->where('competition_id',$competitionid)->get();
         	  }else{

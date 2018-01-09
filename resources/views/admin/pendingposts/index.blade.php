@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">Naskah Masuk</div>
                     <div class="panel-body">
@@ -11,17 +11,18 @@
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th> Penulis </th><th> Judul </th><th>Sedang Diedit</th><th> Kata </th><th>Actions</th>
+                                        <th> Penulis </th><th> Judul </th><th> Dikirim </th><th>Sedang Diedit</th><th> Kata </th><th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($posts as $item)
                                   @if(Auth::user()->role === 'admin')
-                                    <tr>                                        
+                                    <tr>
                                         <td>{{ $item->post_authors->name }}</td>
                                         <td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td>
+                                        <td>{{ $item->submitted_at->format('d M Y H:i') }}</td>
                                         <td>
-                                        <?php 
+                                        <?php
                                         $last_edit_minute = Carbon::parse($item->updated_at)->diffInMinutes(Carbon::now());
                                         ?>
                                         @if($last_edit_minute == 0)
@@ -48,20 +49,12 @@
                                     </tr>
                                     @else
                                     <tr>
-                                        <td>{{ $item->post_authors->name }}</td><td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td>
-<td>
-                                        <?php 
-                                        $last_edit_minute = Carbon::parse($item->updated_at)->diffInMinutes(Carbon::now());
-                                        ?>
-                                        @if($last_edit_minute == 0)
-                                            {{ $item->updated_by }}
-                                        @endif
-                                        </td>
-<td>{{ str_word_count(strip_tags($item->post_content)) }}</td>
+                                        <td>{{ $item->id }}</td>
+                                        <td>{{ $item->post_authors->name }}</td><td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td><td>{{ str_word_count(strip_tags($item->post_content)) }}</td>
                                         <td style="white-space:nowrap;">
                                             <a href="{{ url('/post/' . $item->post_slug) }}" class="btn btn-success btn-xs" title="View Post"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/edit-tulisan/' . $item->post_slug) }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
-                                            
+
                                         </td>
                                     </tr>
                                     @endif

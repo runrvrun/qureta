@@ -53,6 +53,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/users/search', 'Admin\\UsersController@search');
     Route::get('/users/changepassword/{a}', 'Admin\\UsersController@changeform');
     Route::post('/users/changepass', 'Admin\\UsersController@changepassword');
+    Route::resource('/users/data', 'Admin\\UsersController@indexdata');
     Route::resource('/users', 'Admin\\UsersController');
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
     Route::resource('/statistics', 'Admin\\StatisticsController');

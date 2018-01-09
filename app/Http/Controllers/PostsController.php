@@ -159,6 +159,7 @@ class PostsController extends Controller {
 
         if (isset($request->savepending)) {
             $requestData['post_status'] = 'pending';
+            $requestData['submitted_at'] = Carbon::now();
             unset($requestData['published_at']);
         } elseif (isset($request->savedraft)) {
             $requestData['post_status'] = 'draft';
@@ -232,7 +233,13 @@ class PostsController extends Controller {
 
         if ($post->post_status === 'publish' || (Auth::check() && $post->post_author == Auth::user()->id) || (Auth::user() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))) {
             $categoryid = Post_metum::where('meta_name', 'post_category')->where('post_id', $post->id)->first();
-	    $category = Category::where('id',$categoryid->meta_value)->first();
+            //handle if category empty, take first category
+            if(empty($categoryid)){
+              $categoryid = Category::first()->id;
+            }else{
+              $categoryid = $categoryid->meta_value;
+            }
+	          $category = Category::where('id',$categoryid)->first();
 
             //counter: manual
             //$requestData['view_count'] = $post->view_count + 1;///increment view count dipindah ke frontend pakai jquery ajax. single.php
@@ -340,6 +347,7 @@ class PostsController extends Controller {
             }
         } elseif (isset($request->savepending)) {
             $requestData['post_status'] = 'pending';
+            $requestData['submitted_at'] = Carbon::now();
             unset($requestData['published_at']);
         } elseif (isset($request->savedraft)) {
             $requestData['post_status'] = 'draft';
@@ -564,7 +572,7 @@ class PostsController extends Controller {
 
     public function pendingposts() {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
-            $posts = Post::with('post_authors')->where('post_status', 'pending')->orderBy('updated_at','DESC')->paginate(25);
+            $posts = Post::with('post_authors')->where('post_status', 'pending')->orderBy('submitted_at','ASC')->paginate(25);
 
             return view('admin.pendingposts.index', compact('posts'));
         }
@@ -580,7 +588,7 @@ class PostsController extends Controller {
     }
     public function publishpostsData()
      {
-         return Datatables::of(Post::select('posts.id','name','post_title','published_at','published_by','post_slug')
+         return Datatables::of(Post::select('posts.id','name','post_title','view_count','published_at','published_by','post_slug')
          ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
          ->addColumn('action', function ($post) {
                   return view('admin.publishposts.actions', compact('post'))->render();

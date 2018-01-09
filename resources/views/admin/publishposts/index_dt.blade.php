@@ -14,6 +14,7 @@
                                         <th> ID </th>
                                         <th> Penulis </th>
                                         <th> Judul </th>
+                                        <th> View </th>
                                         <th> Tanggal Terbit </th>
                                         <th> Diterbitkan Oleh </th>
                                         <th> Actions </th>
@@ -34,12 +35,13 @@ $(function() {
   $('#datatable').DataTable({
       processing: true,
       serverSide: true,
-      order: [[3,'desc']],
+      order: [[4,'desc']],
       ajax: '{!! url('/admin/publishposts/data') !!}',
       columns: [
           { data: 'id', name: 'id' },
           { data: 'name', name: 'users.name' },
           { data: 'post_title', name: 'post_title' },
+          { data: 'view_count', name: 'view_count' },
           { data: 'published_at', name: 'published_at' },
           { data: 'published_by', name: 'published_by' },
           { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}

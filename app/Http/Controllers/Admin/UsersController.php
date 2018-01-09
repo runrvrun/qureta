@@ -11,6 +11,7 @@ use Hash;
 use Carbon;
 use DB;
 use App\Post;
+use Datatables;
 
 class UsersController extends Controller {
 
@@ -20,13 +21,20 @@ class UsersController extends Controller {
      * @return \Illuminate\View\View
      */
     public function index() {
-        $users = User::orderBy('username')->paginate(25, ['*'], 'page');
+        $totaluser = User::count();
         $penulis = User::where('post_count','>',0)->orderBy('post_count','DESC')->orderBy('username')->paginate(25, ['*']);
         $partner = User::where('role','partner')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*']);
         $premium = User::where('role','premium')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*']);
         $admin = User::where('role','admin')->orWhere('role','editor')->orderBy('role','ASC')->orderBy('username','ASC')->paginate(25, ['*'], 'adminpage');
 
-        return view('admin.users.index', compact('users','penulis','admin','partner','premium'));
+        return view('admin.users.index_dt', compact('totaluser','penulis','admin','partner','premium'));
+    }
+
+    public function indexdata() {
+      return Datatables::of(User::select('id','username','name','email','phone_number'))
+      ->addColumn('action', function ($item) {
+               return view('admin.users.actions', compact('item'))->render();
+          })->make(true);
     }
 
     public function search(Request $request) {
