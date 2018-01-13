@@ -111,6 +111,7 @@ class PostsController extends Controller {
                 'post_title' => 'required|regex:/^([0-9a-zA-Z].*+)$/'
             ]);
             $requestData = $request->all();
+            $requestData['word_count'] = str_word_count(strip_tags($request->post_content));
             $requestData['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
             $requestData['updated_by'] = Auth::user()->username;
 
@@ -156,6 +157,7 @@ class PostsController extends Controller {
                 // 'post_image' => 'required|mimes:png,jpeg,jpg',
         ]);
         $requestData = $request->all();
+        $requestData['word_count'] = str_word_count(strip_tags($request->post_content));
 
         if (isset($request->savepending)) {
             $requestData['post_status'] = 'pending';
@@ -531,11 +533,12 @@ class PostsController extends Controller {
      */
     public function destroy($id) {
         Post::where('id', $id)->update(array('post_slug' => uniqid()));
-        Post::destroy($id);
+        Post::where('id', $id)->update(array('post_status' => 'delete'));
+        //Post::destroy($id);
 
         Session::flash('flash_message', 'Post deleted!');
 
-        return redirect('posts');
+        return Redirect::back();
     }
 
     public function terbaru(Request $request) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Competition;
 use App\Competition_post;
 use App\Competition_postlikes;
 use App\User;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Session;
 use DB;
 use Auth;
+use Datatables;
 
 class Competition_postsController extends Controller {
 
@@ -19,11 +21,13 @@ class Competition_postsController extends Controller {
      *
      * @return \Illuminate\View\View
      */
-    public function index($competitionid = null) {
+    /*public function index($competitionid = null) {
         if (isset($competitionid)) {
         	  if(Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || Auth::user()->role == 'partner'){
-                    $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('competition_id', $competitionid)->where('post_status','publish')->orderBy('posts.post_status', 'DESC')->orderBy('like_count', 'DESC')->get();
-		 
+                    // $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('competition_id', $competitionid)->where('post_status','publish')->orderBy('posts.post_status', 'DESC')->orderBy('like_count', 'DESC')->get();
+
+                    $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('competition_id', $competitionid)->where('post_status','publish')->orderBy('posts.post_status', 'DESC')->orderBy('created_at', 'DESC')->get();
+
                     $competition_likes = Competition_postlikes::where('follower_id','==',Auth::user()->id)->with('comps','composts')->join('posts','posts.id', '=', 'competition_postlikes.competition_post_id')->join('competition_posts','competition_posts.competition_id','=','competition_postlikes.competition_post_id')->where('competition_id',$competitionid)->get();
         	  }else{
                     $competition_posts = Competition_post::select(DB::raw('competition_posts.*,(select count(1) from competition_postlikes where competition_post_id = competition_posts.id) like_count'))->with('comps', 'composts')->join('posts','posts.id', '=', 'competition_posts.post_id')->where('posts.post_status', 'publish')->where('competition_id', $competitionid)->orderBy('posts.post_status', 'DESC')->orderBy('posts.post_title', 'ASC')->get();
@@ -34,8 +38,22 @@ class Competition_postsController extends Controller {
         }
 
         return view('admin.competition_posts.index', compact('competition_posts','competition_likes'));
+    }*/
+    public function index($competitionid = null) {
+        $competition = Competition::findOrFail($competitionid);
+        return view('admin.competition_posts.index_dt',compact('competition'));
     }
-
+    public function indexdata($competitionid = null)
+     {
+         return Datatables::of(Competition_post::selectRaw('competition_posts.id, (select count(1) FROM competition_postlikes WHERE competition_post_id=competition_posts.id) vote,
+post_title, name, (select count(1) FROM posts p1 WHERE p1.post_author=posts.post_author AND post_status=\'publish\') post_count, view_count,
+word_count, DATE_FORMAT(published_at,\'%d-%m-%Y\') published_at')
+         ->join('posts','posts.id','post_id')
+         ->join('users','users.id','posts.post_author')->where('post_status', 'publish')->where('competition_id',$competitionid))
+         ->addColumn('action', function ($item) {
+                  return view('admin.competition_posts.actions', compact('item'))->render();
+             })->make(true);
+     }
     /**
      * Show the form for creating a new resource.
      *
@@ -127,8 +145,8 @@ class Competition_postsController extends Controller {
     public function like(Request $request) {
         $competitionpostid = $request->postid;
         $followerid = $request->followerid;
-        $competition_post = Competition_post::where('id',$competitionpostid)->first();                  
-        $follower = User::find($followerid);        
+        $competition_post = Competition_post::where('id',$competitionpostid)->first();
+        $follower = User::find($followerid);
         $competition_post->like($follower);
         return response()->json(['responseText' => 'Success!'], 200);
     }
@@ -137,8 +155,8 @@ class Competition_postsController extends Controller {
 	// untuk test saja
         $competitionpostid = $postid;
         $followerid = $followerid;
-        $competition_post = Competition_post::where('id',$competitionpostid)->first();                
-        $follower = User::find($followerid);        
+        $competition_post = Competition_post::where('id',$competitionpostid)->first();
+        $follower = User::find($followerid);
         $competition_post->like($follower);
         return response()->json(['responseText' => 'Success!'], 200);
     }
@@ -146,7 +164,7 @@ class Competition_postsController extends Controller {
     public function unlike(Request $request) {
         $competitionpostid = $request->postid;
         $followerid = $request->followerid;
-        $competition_post = Competition_post::where('id',$competitionpostid)->first();    
+        $competition_post = Competition_post::where('id',$competitionpostid)->first();
         $follower = User::find($followerid);
         $competition_post->unlike($follower);
         return response()->json(['responseText' => 'Success!'], 200);
@@ -154,7 +172,7 @@ class Competition_postsController extends Controller {
 
     public function autocomplete($competitionid,Request $request) {
         $query = $request->get('term','');
-        
+
         $post=Competition_post::with('composts')->where('competition_id',$competitionid)->whereHas('composts',function ($q) use($query){
     $q->where('post_title','LIKE','%'.$query.'%');
 })->get();

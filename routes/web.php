@@ -39,6 +39,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::resource('/categories', 'Admin\\CategoriesController');
     Route::resource('/featured_categories', 'Admin\\Featured_categoriesController');
     Route::resource('/competitions', 'Admin\\CompetitionsController');
+    Route::get('/competition_posts/data/{a}', 'Admin\\Competition_postsController@indexdata');
     Route::post('/competition_posts/like', 'Admin\\Competition_postsController@like');
     Route::post('/competition_posts/unlike', 'Admin\\Competition_postsController@unlike');
     //Route::get('/competition_posts/like/{a}/{b}', 'Admin\\Competition_postsController@likeget');

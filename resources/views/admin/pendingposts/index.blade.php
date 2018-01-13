@@ -32,6 +32,18 @@
                                         <td style="white-space:nowrap;">
                                             <a href="{{ url('/post/' . $item->post_slug) }}" class="btn btn-success btn-xs" title="View Post"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/edit-tulisan/' . $item->post_slug) }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
+                                            {!! Form::open([
+                                                'method'=>'DELETE',
+                                                'url' => ['/posts', $item->id],
+                                                'style' => 'display:inline'
+                                            ]) !!}
+                                                {!! Form::button('<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Delete Post" />', array(
+                                                        'type' => 'submit',
+                                                        'class' => 'btn btn-danger btn-xs',
+                                                        'title' => 'Delete Post',
+                                                        'onclick'=>'return confirm("Confirm delete?")'
+                                                )) !!}
+                                            {!! Form::close() !!}
                                         </td>
                                     </tr>
                                 @endforeach
