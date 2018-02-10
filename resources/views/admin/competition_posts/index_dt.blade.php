@@ -18,7 +18,7 @@
                         <table class="table table-bordered" id="datatable">
                             <thead>
                                 <tr>
-                                    <th> Actions </th>
+                                    <th> &nbsp; </th>
                                     <th> Vote </th>
                                     <th> Judul </th>
                                     <th> Penulis </th>
@@ -26,6 +26,7 @@
                                     <th> View </th>
                                     <th> Kata </th>
                                     <th> Terbit </th>
+                                    <th> Actions </th>
                                 </tr>
                             </thead>
                         </table>
@@ -46,15 +47,21 @@ $(function() {
       order: [[1,'desc']],
       ajax: '{!! url('/admin/competition_posts/data/'.$competition->id) !!}',
       columns: [
-          { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+          { data: 'star', name: 'star', orderable: false, searchable: false, className: 'nowrap'},
           { data: 'vote', name: 'vote', searchable: false },
           { data: 'post_title', name: 'posts.post_title' },
           { data: 'name', name: 'users.name' },
           { data: 'post_count', name: 'post_count', searchable: false },
           { data: 'view_count', name: 'view_count', searchable: false },
           { data: 'word_count', name: 'word_count', searchable: false },
-          { data: 'published_at', name: 'posts.published_at', className: 'nowrap' }
-      ]
+          { data: 'published_at', name: 'posts.published_at', className: 'nowrap' },
+          { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}
+      ],
+      fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+            $('td:eq(2)', nRow).html( '<a href="/post/' + aData.post_slug + '" target="_blank">' + aData.post_title + '</a>' );
+            $('td:eq(3)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.name + '</a>' );
+            $('td:eq(4)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.post_count + '</a>' );
+        },
   });
 });
 </script>
@@ -63,7 +70,7 @@ $(function() {
 <script type="text/javascript">
     $(document).ready(function() {
 	    $("#datatable").on("click", ".btnLike", function(){
-		   var $this = $(this);
+		      var $this = $(this);
 	        $this.toggleClass('active');
 	        $this.children("i").toggleClass('active');
 	        var postid = $this.data('postid');

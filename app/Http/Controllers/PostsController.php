@@ -593,7 +593,7 @@ class PostsController extends Controller {
     }
     public function publishpostsData()
      {
-         return Datatables::of(Post::select('posts.id','name','post_title','view_count','published_at','published_by','post_slug')
+         return Datatables::of(Post::select('posts.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
          ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
          ->addColumn('action', function ($post) {
                   return view('admin.publishposts.actions', compact('post'))->render();
@@ -604,7 +604,15 @@ class PostsController extends Controller {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('hide', '1')->paginate(25);
 
-            return view('admin.pendingposts.index', compact('posts'));
+            return view('admin.posts.index', compact('posts'));
+        }
+    }
+
+    public function lockedposts() {
+        if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+            $posts = Post::with('post_authors')->where('require_login', '1')->paginate(25);
+
+            return view('admin.posts.index', compact('posts'));
         }
     }
 

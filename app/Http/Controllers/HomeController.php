@@ -8,6 +8,7 @@ use App\Post;
 use App\Buqu;
 use App\Banner;
 use App\Course;
+use App\Newsflash;
 use Carbon;
 
 class HomeController extends Controller {
@@ -68,14 +69,14 @@ class HomeController extends Controller {
         $limit=12;
         $posts = get_popular_post($limit);
 
-
         ///get most popular buqus
          $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
-
         ///get latest kuliah qureta
-        $kuliah = Course::with('course_users')->orderBy('created_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(4)->get();
+        $kuliah = Course::with('course_users')->orderBy('updated_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(4)->get();
+        ///get newsflash
+        $newsflash = Newsflash::inRandomOrder()->first();
 
-        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah'));
+        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah','newsflash'));
     }
 
 public function hometest() {

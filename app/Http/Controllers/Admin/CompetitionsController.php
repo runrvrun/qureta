@@ -46,9 +46,8 @@ class CompetitionsController extends Controller {
             'competition_title' => 'required'
         ]);
         $requestData = $request->all();
-
-        $requestData['competition_startdate'] = Carbon::parse($requestData['competition_startdate'])->format('Y-m-d H:i:s');
-        $requestData['competition_enddate'] = Carbon::parse($requestData['competition_enddate'])->format('Y-m-d H:i:s');
+        $requestData['competition_startdate'] = Carbon::createFromFormat('d/m/Y H.i',$requestData['competition_startdate'])->format('Y-m-d H:i:s');
+        $requestData['competition_enddate'] = Carbon::createFromFormat('d/m/Y H.i',$requestData['competition_enddate'])->format('Y-m-d H:i:s');
 
         Competition::create($requestData);
 
@@ -106,8 +105,8 @@ class CompetitionsController extends Controller {
         ]);
         $requestData = $request->all();
 
-        $requestData['competition_startdate'] = Carbon::parse($requestData['competition_startdate'])->format('Y-m-d H:i:s');
-        $requestData['competition_enddate'] = Carbon::parse($requestData['competition_enddate'])->format('Y-m-d H:i:s');
+        $requestData['competition_startdate'] = Carbon::createFromFormat('d/m/Y H.i',$requestData['competition_startdate'])->format('Y-m-d H:i:s');
+        $requestData['competition_enddate'] = Carbon::createFromFormat('d/m/Y H.i',$requestData['competition_enddate'])->format('Y-m-d H:i:s');
 
         $competition = Competition::findOrFail($id);
         $competition->update($requestData);

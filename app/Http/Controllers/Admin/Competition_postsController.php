@@ -46,13 +46,15 @@ class Competition_postsController extends Controller {
     public function indexdata($competitionid = null)
      {
          return Datatables::of(Competition_post::selectRaw('competition_posts.id, (select count(1) FROM competition_postlikes WHERE competition_post_id=competition_posts.id) vote,
-post_title, name, (select count(1) FROM posts p1 WHERE p1.post_author=posts.post_author AND post_status=\'publish\') post_count, view_count,
+post_title, post_slug, username, name, (select count(1) FROM posts p1 WHERE p1.post_author=posts.post_author AND post_status=\'publish\') post_count, view_count,
 word_count, DATE_FORMAT(published_at,\'%d-%m-%Y\') published_at')
          ->join('posts','posts.id','post_id')
          ->join('users','users.id','posts.post_author')->where('post_status', 'publish')->where('competition_id',$competitionid))
          ->addColumn('action', function ($item) {
                   return view('admin.competition_posts.actions', compact('item'))->render();
-             })->make(true);
+          })->addColumn('star', function ($item) {
+                  return view('admin.competition_posts.star', compact('item'))->render();
+          })->make(true);
      }
     /**
      * Show the form for creating a new resource.

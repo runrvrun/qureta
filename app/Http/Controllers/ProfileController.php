@@ -15,6 +15,8 @@ use Image;
 use DB;
 use Illuminate\Support\Facades\Redirect;
 use Carbon;
+use App\Mail\EmailFillProfession;
+use Mail;
 
 class ProfileController extends Controller {
 
@@ -185,7 +187,7 @@ ORDER BY p.published_at DESC LIMIT 52");
         $users = DB::select("select u.id post_author, count(f.id) total_followers, u.name, u.username, u.user_image, u.role
 from followers f
 INNER JOIN users u ON f.user_id = u.id
-WHERE u.status=1 and username NOT IN ('qlomba', 'qworkshop')
+WHERE u.status=1 and username NOT IN ('qlomba', 'qworkshop','dimashendrasasmita')
 group by u.id, u.name, u.username, u.user_image, u.role  order by count(f.id) desc limit ".$limit);
 
         return view('pages.penulispopuler', compact('pagetitle', 'users'));
@@ -227,6 +229,25 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
       $buqus = Buqu::where('buqu_author',$user->id)->orderBy('id', 'DESC')->paginate(20);
 
       return view('pages.buqu', compact('pagetitle', 'buqus'));
+    }
+
+    public function EmailFillProfession() {
+      $usermeta = User_metum::where('meta_name','profesi')->pluck('user_id');
+      $users = User::select('email','name')->whereNotIn('id',$usermeta)->orderBy('id','desc')->get();
+      //$users = User::select('email','name')->where('username','runrvrun')->orWhere('username','candycalico')->get();
+
+      $i=0;
+      $emailpool = [];
+      $user100 = $users->chunk(100);
+      foreach($user100 as $user){
+        //send email to user
+        Mail::to('noreply@qureta.com')->bcc($user)->send(new EmailFillProfession());
+        foreach($user as $u){
+          echo '<pre>'; print_r($u->name.' &lt;'.$u->email.'&gt;'); echo '</pre>';
+        }
+      }
+
+      return;
     }
 
 }

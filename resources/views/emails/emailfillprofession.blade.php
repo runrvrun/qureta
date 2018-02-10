@@ -149,7 +149,7 @@
                                           <!-- /Spacing -->
                                           <tr>
                                              <td style="font-family: Helvetica, arial, sans-serif; font-size: 18px; color: #337ab7; text-align:left; line-height: 24px;">
-                                                Halo, {{ $data['name'] }}!
+                                                Halo!
                                              </td>
                                           </tr>
                                           <!-- Spacing -->
@@ -160,25 +160,13 @@
                                           <!-- content -->
                                           <tr>
                                              <td style="font-family: Helvetica, arial, sans-serif; font-size: 14px; color: #7a6e67; text-align:left; line-height: 24px;">
-                                                <p>Naskah tulisan anda "<strong>{{ $data['title'] }}</strong>" dikembalikan oleh editor dengan pesan:</p>
-                                                <p>{{ $data['message'] }}</p>
-                                                <p>&nbsp;</p>
-                                                <table width="120" height="32" bgcolor="#0275d8" align="left" valign="middle" border="0" cellpadding="0" cellspacing="0" style="border-radius:3px;" st-button="learnmore">
-                                                   <tbody>
-                                                      <tr>
-                                                         <td height="9" align="center" style="font-size:1px; line-height:1px;">&nbsp;</td>
-                                                      </tr>
-                                                      <tr>
-                                                         <td height="14" align="center" valign="middle" style="font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight:normal; text-align:center; line-height: 14px; ; -webkit-text-size-adjust:none;" st-title="fulltext-btn">
-                                                            <a style="text-decoration: none; text-align:center;" href="{{url('/edit-tulisan/' . $data['slug'] )}}">Edit Tulisan</a>
-                                                         </td>
-                                                      </tr>
-                                                      <tr>
-                                                         <td height="9" align="center" style="font-size:1px; line-height:1px;">&nbsp;</td>
-                                                      </tr>
-                                                   </tbody>
-                                                </table>
+                                                <p>Terima kasih sudah menjadi anggota Qureta. Kami sangat menghargai jika Anda berkenan menyempurnakan biodata Anda, dimulai dengan mengisi kolom profesi Anda.</p>
                                              </td>
+                                          </tr>
+                                          <tr>
+                                            <td height="14" align="center" valign="middle" style="font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight:normal;text-align:center; line-height: 14px; ; -webkit-text-size-adjust:none;" st-title="fulltext-btn">
+                                               <a style="text-decoration: none; text-align:center;" href="{{url('/profile/edit')}}">Edit Profil</a>
+                                            </td>
                                           </tr>
                                           <!-- end of content -->
                                        </tbody>

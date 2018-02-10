@@ -38,6 +38,13 @@
   @endif
   <!--kuliah qureta-->
   <div class="mobile-only spacer" style="min-height:50px;"></div>
+  @if($newsflash)
+  <div class="row topic-title">
+      <div class="col-sm-12 newsflash">
+          {{ HTML::link($newsflash->link,$newsflash->text) }}
+      </div>
+  </div>
+  @endif
   <div class="row topic-title">
       <div class="col-sm-12">
           <h3>{{ HTML::link('https://kuliah.qureta.com', 'KULIAH QURETA')}}</h3>
@@ -60,11 +67,11 @@
           </div>
           <!--Article-->
           <div class="article-info">
+              <div class="info">
+                  {{ $row->lectures->count()+1 }} video &middot; {{ $row->course_users->count() }} peserta
+              </div>
               <div class="title">
                   {!! HTML::link('https://kuliah.qureta.com/course/'.$row->slug, $row->name)!!}
-              </div>
-              <div class="info">
-                  {{ $row->course_users->count() }} peserta
               </div>
           </div>
       </div>

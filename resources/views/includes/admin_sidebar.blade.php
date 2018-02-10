@@ -12,6 +12,7 @@
             <li class="{{ Request::is('admin/pendingposts') ? 'active' : '' }}"><a href="{{ url('/admin/pendingposts') }}">Naskah Masuk</a></li>
             <li class="{{ Request::is('admin/publishposts') ? 'active' : '' }}"><a href="{{ url('/admin/publishposts') }}">Naskah Terbit</a></li>
             <li class="{{ Request::is('admin/hiddenposts') ? 'active' : '' }}"><a href="{{ url('/admin/hiddenposts') }}">Naskah Disembunyikan</a></li>
+            <li class="{{ Request::is('admin/lockedposts') ? 'active' : '' }}"><a href="{{ url('/admin/lockedposts') }}">Naskah Dikunci</a></li>
             <li class="{{ Request::is('admin/competitions') ? 'active' : '' }}"><a href="{{ url('/admin/competitions') }}">Lomba</a></li>
             <li class="{{ Request::is('admin/workshop') ? 'active' : '' }}"><a href="{{ url('/admin/workshops') }}">Workshop</a></li>
             <li class="{{ Request::is('admin/users') ? 'active' : '' }}"><a href="{{ url('/admin/users') }}">User Management</a></li>

@@ -45,7 +45,11 @@ $(function() {
           { data: 'published_at', name: 'published_at' },
           { data: 'published_by', name: 'published_by' },
           { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}
-      ]
+      ],
+      fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+            $('td:eq(2)', nRow).html( '<a href="/post/' + aData.post_slug + '" target="_blank">' + aData.post_title + '</a>' );
+            $('td:eq(1)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.name + '</a>' );
+        },
   });
 });
 </script>

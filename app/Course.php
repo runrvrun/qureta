@@ -21,5 +21,8 @@ class Course extends Model
     public function course_users() {
         return $this->hasMany('App\CourseUser');
     }
+    public function lectures() {
+        return $this->hasMany('App\Lectures');
+    }
 
 }

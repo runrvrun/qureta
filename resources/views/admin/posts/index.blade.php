@@ -5,13 +5,13 @@
         <div class="row">
             <div class="col-md-10">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Naskah Masuk</div>
+                    <div class="panel-heading">Naskah</div>
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th> Penulis </th><th> Judul </th><th> Dikirim </th><th>Sedang Diedit</th><th> Kata </th><th>Actions</th>
+                                        <th> Penulis </th><th> Judul </th><th> Status </th><th> View </th><th> Like </th><th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -19,16 +19,7 @@
                                     <tr>
                                         <td>{{ $item->post_authors->name }}</td>
                                         <td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td>
-                                        <td>{{ $item->submitted_at->format('d M Y H:i') }}</td>
-                                        <td>
-                                        <?php
-                                        $last_edit_minute = Carbon::parse($item->updated_at)->diffInMinutes(Carbon::now());
-                                        ?>
-                                        @if($last_edit_minute == 0)
-                                            {{ $item->updated_by }}
-                                        @endif
-                                        </td>
-                                        <td>{{ str_word_count(strip_tags($item->post_content)) }}</td>
+                                        <td>{{ $item->post_status }}</td><td>{{ $item->view_count }}</td><td>{{ $item->like_count }}</td>
                                         <td style="white-space:nowrap;">
                                             <a href="{{ url('/post/' . $item->post_slug) }}" class="btn btn-success btn-xs" title="View Post"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/edit-tulisan/' . $item->post_slug) }}" class="btn btn-primary btn-xs" title="Edit Post"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>

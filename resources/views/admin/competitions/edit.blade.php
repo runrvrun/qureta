@@ -42,33 +42,33 @@
                     <div class="form-group {{ $errors->has('competition_startdate') ? 'has-error' : ''}}">
                         {!! Form::label('competition_startdate', 'Mulai Lomba', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::input('datetime-local', 'competition_startdate', Carbon::parse($competition->competition_startdate)->format('Y-m-d\TH:i'), ['class' => 'form-control']) !!}
+                            {!! Form::input('text', 'competition_startdate', Carbon::parse($competition->competition_startdate)->format('d-m-Y\TH.i'), ['id'=>'competition_startdate','class' => 'form-control']) !!}
                             {!! $errors->first('competition_startdate', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('competition_enddate') ? 'has-error' : ''}}">
                         {!! Form::label('competition_enddate', 'Akhir Lomba', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
-                            {!! Form::input('datetime-local', 'competition_enddate', Carbon::parse($competition->competition_enddate)->format('Y-m-d\TH:i'), ['class' => 'form-control']) !!}
-                            {!! $errors->first('competition_enddate', '<p class="help-block">:message</p>') !!}
+                          {!! Form::input('text', 'competition_enddate', Carbon::parse($competition->competition_enddate)->format('d-m-Y\TH.i'), ['id'=>'competition_enddate','class' => 'form-control']) !!}
+                          {!! $errors->first('competition_enddate', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <hr>
                     <div class="form-group">
                         {!! Form::label('pemenang', 'Pemenang', ['class' => 'col-md-4 control-label']) !!}
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         {!! Form::label('rank[0]', '1', ['class' => 'col-md-2 control-label']) !!}
                         <div class="col-md-3">
                             {!! Form::hidden('rank[0]', 1) !!}
-                            {!! Form::text('ranktitle[0]', isset($ranktitle[0])? $ranktitle[0]:'Pemenang 1', ['class' => 'form-control']) !!}                            
+                            {!! Form::text('ranktitle[0]', isset($ranktitle[0])? $ranktitle[0]:'Pemenang 1', ['class' => 'form-control']) !!}
                         </div>
                         <div class="col-md-5">
                             {!! Form::text('rankpost_search0', (isset($rankpost[0]) && isset($posts[$rankpost[0]]))? $posts[$rankpost[0]]:null, array('placeholder' => 'Pilih pemenang','class' => 'form-control','id'=>'rankpost_search0')) !!}
 	                    {!! Form::hidden('rankpost[0]', isset($rankpost[0])? $rankpost[0]:null) !!}
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         {!! Form::label('rank[1]', '2', ['class' => 'col-md-2 control-label']) !!}
                         <div class="col-md-3">
                             {!! Form::hidden('rank[1]', 2) !!}
@@ -79,7 +79,7 @@
 	                    {!! Form::hidden('rankpost[1]', isset($rankpost[1])? $rankpost[1]:null) !!}
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         {!! Form::label('rank[2]', '3', ['class' => 'col-md-2 control-label']) !!}
                         <div class="col-md-3">
                             {!! Form::hidden('rank[2]', 3) !!}
@@ -107,7 +107,14 @@
 <script src="{{URL::asset('js/typeahead.js')}}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
-   $(document).ready(function() {       
+   $(document).ready(function() {
+     $('#competition_startdate').datetimepicker({
+     locale: 'id'
+     });
+     $('#competition_enddate').datetimepicker({
+     locale: 'id'
+     });
+
     src = "{{ route('compostautocomplete',$competition->id) }}";
      $("#rankpost_search0").autocomplete({
         source: function(request, response) {
@@ -125,7 +132,7 @@
         select: function(event, ui) {
             $('input[name="rankpost[0]"]').val(ui.item.id);
         },
-        minLength: 3,       
+        minLength: 3,
      });
      $("#rankpost_search1").autocomplete({
         source: function(request, response) {
@@ -143,7 +150,7 @@
         select: function(event, ui) {
             $('input[name="rankpost[1]"]').val(ui.item.id);
         },
-        minLength: 3,       
+        minLength: 3,
      });
      $("#rankpost_search2").autocomplete({
         source: function(request, response) {
@@ -161,7 +168,7 @@
         select: function(event, ui) {
             $('input[name="rankpost[2]"]').val(ui.item.id);
         },
-        minLength: 3,       
+        minLength: 3,
      });
 
    });
