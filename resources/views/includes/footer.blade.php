@@ -34,6 +34,7 @@
                     <li><a href="{{ url('/page/buqu') }}">Buqu</a></li>
                     <li><a href="{{ url('/page/kerjasama') }}">Kerjasama</a></li>
                     <li><a href="{{ url('/page/iklan') }}">Iklan</a></li>
+                    <li><a href="{{ url('/shop') }}">Shop</a></li>
                 </ul>
             </div>
             <div class="col-lg-15 col-lg-3">
@@ -91,5 +92,5 @@
     <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
     <!-- Datatable App scripts -->
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    @stack('scripts')    
+    @stack('scripts')
     <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js') }}"></script>

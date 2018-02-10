@@ -21,6 +21,8 @@
             <li class="{{ Request::is('admin/categories') ? 'active' : '' }}"><a href="{{ url('/admin/categories') }}">Topik</a></li>
             <li class="{{ Request::is('admin/featured_categories') ? 'active' : '' }}"><a href="{{ url('/admin/featured_categories') }}">Topik Redaksi</a></li>
             <li class="{{ Request::is('admin/statistics') ? 'active' : '' }}"><a href="{{ url('/admin/statistics') }}">Statistik</a></li>
+            <li class="{{ Request::is('admin/newsflash') ? 'active' : '' }}"><a href="{{ url('/admin/newsflash') }}">Newsflash</a></li>
+            <li class="{{ Request::is('admin/shops') ? 'active' : '' }}"><a href="{{ url('/admin/shops') }}">Shop</a></li>
             @endif
             @if(Auth::user()->role === 'partner')
              <li class="{{ Request::is('admin/competitions') ? 'active' : '' }}"><a href="{{ url('/admin/competitions') }}">Lomba</a></li>

@@ -1202,7 +1202,7 @@ hr.displaynone{
 
 .nowrap{white-space: nowrap;}
 .newsflash{margin-top:15px;}
-.newsflash a{color: #d61a1a;font-family: Helvetica,serif;}
+.newsflash a{color: #337ab7;font-family: Helvetica,serif;}
 
 @media only screen and (min-width: 768px), (-webkit-max-device-pixel-ratio: 1.25), (max-resolution: 120dpi) {
     /* For desktop: */

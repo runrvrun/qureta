@@ -59,6 +59,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
     Route::resource('/statistics', 'Admin\\StatisticsController');
     Route::resource('/newsflash', 'Admin\\NewsflashesController');
+    Route::resource('/shops', 'Admin\\ShopsController');
     Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
     Route::get('/hiddenposts', 'PostsController@hiddenposts');
@@ -97,6 +98,7 @@ Route::get('/post', 'PostsController@terbaru');
 Route::get('/artikel-terbaru', 'PostsController@terbaru');
 Route::get('/artikel-populer', 'PostsController@populer');
 Route::get('/rekam', 'PostsController@rekam')->middleware('auth');
+Route::get('/shop', 'ShopsController@index');
 Route::post('/post/bookmark', 'PostsController@bookmark');
 Route::post('/post/unbookmark', 'PostsController@unbookmark');
 Route::post('/post/ajaximageupload','PostsController@ajaximageupload');
