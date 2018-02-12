@@ -7,19 +7,6 @@
     <p>{!! Session::get('flash_message') !!}</p>
 </div>
 @endif
-
-{!! Form::open(['url' => '/admin/users/search', 'method'=>'get', 'class' => 'form-horizontal']) !!}
-<div class="row">
-    <div class="form-group form-inline">
-        <div class="col-md-10 col-md-offset-1">
-            {!! Form::text('search', null, ['class' => 'form-control', 'placeholder'=>'Search for user']) !!}
-            {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
-            {!! Form::submit('Search', ['class' => 'btn btn-default']) !!}
-        </div>
-    </div>
-</div>
-{!! Form::close() !!}
-
 <div>
     <ul class="nav nav-tabs" id="myTab">
         <li id="semuatab" class="active"><a href="#semua" data-toggle="tab">Semua ({{ $totaluser }})</a></li>

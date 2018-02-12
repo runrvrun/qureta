@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Shop;
 use Illuminate\Http\Request;
 use Session;
+use Datatables;
 
 class ShopsController extends Controller
 {
@@ -18,11 +19,15 @@ class ShopsController extends Controller
      */
     public function index()
     {
-        $shops = Shop::paginate(25);
-
-        return view('admin.shops.index', compact('shops'));
+        return view('admin.shops.index_dt');
     }
-
+    public function indexdata()
+     {
+         return Datatables::of(Shop::select('id','name','price','category','link'))
+         ->addColumn('action', function ($item) {
+                  return view('admin.shops.actions', compact('item'))->render();
+          })->make(true);
+     }
     /**
      * Show the form for creating a new resource.
      *

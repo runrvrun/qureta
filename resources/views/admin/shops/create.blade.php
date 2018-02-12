@@ -49,7 +49,7 @@
             <div class="form-group {{ $errors->has('category') ? 'has-error' : ''}}">
                 {!! Form::label('category', 'Category', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
-                    {!! Form::select('category', ['kaos'=>'Kaos','mug'=>'Mug','lainnya'=>'Lainnya'], null, ['class' => 'form-control']) !!}
+                    {!! Form::select('category', ['kaos'=>'Kaos','mug'=>'Mug','tas'=>'Tas','bantal'=>'Bantal','lainnya'=>'Lainnya'], null, ['class' => 'form-control']) !!}
                     {!! $errors->first('category', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
