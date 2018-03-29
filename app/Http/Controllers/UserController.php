@@ -115,12 +115,12 @@ class UserController extends Controller {
 
      public function autoComplete(Request $request) {
         $query = $request->get('term','');
-        
+
         $user=User::where('username','LIKE','%'.$query.'%')->orWhere('name','LIKE','%'.$query.'%')->get();
-        
+
         $data=array();
         foreach ($user as $users) {
-                $data[]=array('label'=>$users->name.' ('.$users->username.') ('.$users->email.')','id'=>$users->id);
+                $data[]=array('label'=>$users->username,'id'=>$users->id);
         }
         if(count($data))
              return $data;

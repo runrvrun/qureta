@@ -17,7 +17,7 @@
                                 <tbody>
                                 @foreach($posts as $item)
                                     <tr>
-                                        <td>{{ $item->post_authors->name }}</td>
+                                        <td>{{ HTML::link('/profile/'.$item->post_authors->username,$item->post_authors->name) }}</td>
                                         <td>{{ HTML::link('/post/' . $item->post_slug,$item->post_title) }}</td>
                                         <td>{{ $item->post_status }}</td><td>{{ $item->view_count }}</td><td>{{ $item->like_count }}</td>
                                         <td style="white-space:nowrap;">

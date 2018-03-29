@@ -557,7 +557,7 @@ class PostsController extends Controller {
         $category = Category::where('category_slug', '=', $permalink)->first();
         $pagetitle = 'Topik: ' . $category->category_title;
         $post_metum = Post_metum::where('meta_name', '=', 'post_category')->where('meta_value', '=', $category->id)->orderBy('created_at', 'DESC')->pluck('post_id');
-        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
+        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
 
         //infinite scroll
         if ($request->ajax()) {
@@ -662,7 +662,7 @@ class PostsController extends Controller {
 
         //infinite scroll
         if ($request->ajax()) {
-           return view('widgets.article_row', compact('posts'));;
+           return view('widgets.article_row_viewcount', compact('posts'));;
         }
 
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
@@ -673,7 +673,7 @@ class PostsController extends Controller {
             $pagetitle = 'Rekam';
             $posts = Post::whereHas('likes', function($query) {
                         $query->where('follower_id', Auth::user()->id);
-                    })->with('post_authors')->where('post_status', 'publish')->orderBy('id', 'DESC')->paginate(12);
+                    })->with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('id', 'DESC')->paginate(12);
 
             return view('pages.artikel', compact('pagetitle', 'posts'));
         } else {
@@ -694,7 +694,7 @@ class PostsController extends Controller {
             if($visitorid){
             $pageids = DB::table('kryptonit3_counter_page_visitor')->where('visitor_id', $visitorid->id)->pluck('page_id');
             $postids = DB::table('kryptonit3_counter_page')->whereIn('id', $pageids)->where('identifier_name', 'post')->orderBy('id', 'DESC')->take(12)->pluck('identifier_id');
-            $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $postids)->get();
+            $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->whereIn('id', $postids)->get();
 
             return view('pages.artikel', compact('pagetitle', 'posts'));
             }else{
@@ -710,7 +710,7 @@ class PostsController extends Controller {
         $category = Featured_category::where('category_slug', '=', $permalink)->first();
         $pagetitle = 'Topik: ' . $category->category_title;
         $post_metum = Post_metum::where('meta_name', '=', 'post_featured_category')->where('meta_value', '=', $category->id)->orderBy('created_at', 'DESC')->pluck('post_id');
-        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
+        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
 
         //infinite scroll
         if ($request->ajax()) {

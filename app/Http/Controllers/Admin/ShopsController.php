@@ -23,7 +23,7 @@ class ShopsController extends Controller
     }
     public function indexdata()
      {
-         return Datatables::of(Shop::select('id','name','price','category','link'))
+         return Datatables::of(Shop::select('id','name','price','category','link','updated_at'))
          ->addColumn('action', function ($item) {
                   return view('admin.shops.actions', compact('item'))->render();
           })->make(true);

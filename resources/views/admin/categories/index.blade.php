@@ -22,7 +22,7 @@
                                 @foreach($categories as $item)
                                     <tr>
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ $item->category_title }}</td><td>{{ $item->category_slug }}</td>
+                                        <td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_slug) }}</td>
                                         <td>
                                             <a href="{{ url('/admin/categories/' . $item->id) }}" class="btn btn-success btn-xs" title="View Category"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/admin/categories/' . $item->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Category"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>

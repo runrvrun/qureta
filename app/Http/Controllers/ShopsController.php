@@ -16,12 +16,16 @@ class ShopsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $kaos = Shop::where('category','kaos')->orderBy('created_at','desc')->get();
-        $mug = Shop::where('category','mug')->orderBy('created_at','desc')->get();
-        $tas = Shop::where('category','tas')->orderBy('created_at','desc')->get();
-        $bantal = Shop::where('category','bantal')->orderBy('created_at','desc')->get();
-        $lainnya = Shop::where('category','lainnya')->orderBy('created_at','desc')->get();
+        $kaos = Shop::where('category','kaos')->orderBy('updated_at','desc')->take(4)->get();
+        $mug = Shop::where('category','mug')->orderBy('updated_at','desc')->take(4)->get();
+        $tas = Shop::where('category','tas')->orderBy('updated_at','desc')->take(4)->get();
+        $bantal = Shop::where('category','bantal')->orderBy('updated_at','desc')->take(4)->get();
+        $lainnya = Shop::where('category','lainnya')->orderBy('updated_at','desc')->take(4)->get();
         return view('pages.shop', compact('kaos','mug','tas','bantal','lainnya'));
+    }
+    public function indexcategory($category) {
+        $shop = Shop::where('category',$category)->orderBy('updated_at','desc')->paginate(16);
+        return view('pages.shopcategory', compact('shop'));
     }
 
 }

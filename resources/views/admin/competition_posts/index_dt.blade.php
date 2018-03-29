@@ -44,7 +44,11 @@ $(function() {
   $('#datatable').DataTable({
       processing: true,
       serverSide: true,
+      @if(Auth::user()->role=='admin')
       order: [[1,'desc']],
+      @else
+      order: [[2,'asc']],
+      @endif
       ajax: '{!! url('/admin/competition_posts/data/'.$competition->id) !!}',
       columns: [
           { data: 'star', name: 'star', orderable: false, searchable: false, className: 'nowrap'},
@@ -58,6 +62,11 @@ $(function() {
           { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}
       ],
       fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+            @if(Auth::user()->role=='admin')
+            $('td:eq(1)', nRow).html( '<a href="#" target="_blank" title="' + aData.voter + '">' + aData.vote + '</a>' );
+            @else
+            $('td:eq(1)', nRow).html( '' );
+            @endif
             $('td:eq(2)', nRow).html( '<a href="/post/' + aData.post_slug + '" target="_blank">' + aData.post_title + '</a>' );
             $('td:eq(3)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.name + '</a>' );
             $('td:eq(4)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.post_count + '</a>' );

@@ -11,9 +11,9 @@
     <ul class="nav nav-tabs" id="myTab">
         <li id="semuatab" class="active"><a href="#semua" data-toggle="tab">Semua ({{ $totaluser }})</a></li>
         <li id="penulistab"><a href="#penulis" data-toggle="tab">Penulis ({{ $penulis->total() }})</a></li>
-        <li id="penulistab"><a href="#partner" data-toggle="tab">Partner ({{ $partner->total() }})</a></li>
-        <li id="penulistab"><a href="#premium" data-toggle="tab">Premium ({{ $premium->total() }})</a></li>
-        <li id="penulistab"><a href="#admin" data-toggle="tab">Admin & Editor ({{ $admin->total() }})</a></li>
+        <li id="partnertab"><a href="#partner" data-toggle="tab">Partner ({{ $partner->total() }})</a></li>
+        <li id="premiumtab"><a href="#premium" data-toggle="tab">Premium ({{ $premium->total() }})</a></li>
+        <li id="admintab"><a href="#admint" data-toggle="tab">Admin & Editor ({{ $admin->total() }})</a></li>
     </ul>
 
     <div class="tab-content" id="tab-content">
@@ -24,7 +24,7 @@
                         <table class="table table-borderless" id='allusertable'>
                             <thead>
                                 <tr>
-                                    <th> ID </th><th> Username </th><th> Name </th><th data-sortable="false"> Email </th><th data-sortable="false"> Phone </th><th data-sortable="false">Actions</th>
+                                    <th> Username </th><th> Name </th><th data-sortable="false"> Email </th><th data-sortable="false"> Phone </th><th data-sortable="false">Actions</th>
                                 </tr>
                             </thead>
                         </table>
@@ -32,38 +32,6 @@
                 </div>
             </div>
         </div>
-
-        <div id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Kirim Pesan</h4>
-            </div>
-            <div class="modal-body">
-            {!! Form::open(['route' => 'messages.store', 'id' => 'message-form']) !!}
-                Send to:
-                <br>
-               <input type="text" readonly="" class="form-control" name="recipient" id="frm_username">
-              <br>
-               <input type="text" readonly="" class="form-control" name="name" id="frm_name">
-               <br>
-               Subject:
-               <br>
-               <input type="text" class="form-control" name="subject" id="subject">
-               <br>
-                Message:
-                <br>
-               <textarea id="text" class="form-control" name="message" id="message"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Kirim</button>
-            </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
-</div>
 
         <div class="tab-pane" id="penulis">
             <div class="panel panel-default">
@@ -80,7 +48,7 @@
                                 @foreach($penulis as $item)
                                 @if(Auth::user()->role === 'admin')
                                 <tr>
-                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -101,7 +69,7 @@
                                 </tr>
                                 @else
                                 <tr>
-                                    <td>{{ $item->username }}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username) }}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -129,7 +97,7 @@
                 <div class="panel-body">
 
                     <div class="table-responsive">
-                        <table class="table table-borderless" id='userTable'>
+                        <table class="table table-borderless" id='userTablePartner'>
                             <thead>
                                 <tr>
                                     <th> Username </th><th> Name </th><th> Jumlah Naskah </th><th> Email </th><th> Phone </th><th>Actions</th>
@@ -139,7 +107,7 @@
                                 @foreach($partner as $item)
                                 @if(Auth::user()->role === 'admin')
                                 <tr>
-                                     <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                     <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -160,7 +128,7 @@
                                 </tr>
                                 @else
                                 <tr>
-                                    <td>{{ $item->username }}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username) }}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -198,7 +166,7 @@
                                 @foreach($premium as $item)
                                 @if(Auth::user()->role === 'admin')
                                 <tr>
-                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -219,7 +187,7 @@
                                 </tr>
                                 @else
                                 <tr>
-                                    <td>{{ $item->username }}</td><td>{{ $item->name }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username) }}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -242,12 +210,12 @@
             </div>
         </div>
 
-<div class="tab-pane" id="admin">
+        <div class="tab-pane" id="admint">
             <div class="panel panel-default">
                 <div class="panel-body">
 
                     <div class="table-responsive">
-                        <table class="table table-borderless" id='userTable'>
+                        <table class="table table-borderless" id='userTableAdmin'>
                             <thead>
                                 <tr>
                                     <th> Username </th><th> Name </th><th> Role </th><th>Actions</th>
@@ -257,7 +225,7 @@
                                 @foreach($admin as $item)
                                  @if(Auth::user()->role === 'admin')
                                 <tr>
-                                    < <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ $item->name }}</td><td>{{ $item->role }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->role }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -278,7 +246,7 @@
                                 </tr>
                                 @else
                                  <tr>
-                                    <td>{{ $item->username }}</td><td>{{ $item->name }}</td><td>{{ $item->role }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username ,$item->username) }}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->role }}</td>
                                     <td style="white-space:nowrap;">
                                         <a href="{{ url('/admin/users/changepassword/' . $item->id) }}" class="btn btn-warning btn-xs" title="Change Password"><span class="glyphicon glyphicon-erase" aria-hidden="true"/></a>
                                         <a href="{{ url('/admin/users/' . $item->id) }}" class="btn btn-success btn-xs" title="View user"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
@@ -316,40 +284,39 @@
         }
     });
 </script>
-<script>
-$('.btn-kirim-pesan').click(function(){
-    var $row = $(this).closest('tr');
-   // var rowID = $row.attr('class').split('_')[1];
-    var username =  $row.find('.td_username').text();
-    var name =  $row.find('.td_name').text();
-    //$('#frm_id').val(rowID);
-    $('#frm_username').val(username);
-    $('#frm_name').val(name);
-   $('#myModal').modal('show');
-});
-</script>
 
 <script type="text/javascript">
   $(document).ready(function() {
     $('#allusertable').DataTable({
         processing: true,
         serverSide: true,
-        order: [[1,'asc']],
+        order: [[0,'asc']],
         ajax: '{!! url('/admin/users/data') !!}',
         columns: [
-            { data: 'id', name: 'id' },
             { data: 'username', name: 'username' },
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
             { data: 'phone_number', name: 'phone_number' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}
-        ]
+        ],
+        fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+              $('td:eq(0)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.username + '</a>' );
+              $('td:eq(1)', nRow).html( '<a href="/profile/' + aData.username + '" target="_blank">' + aData.name + '</a>' );
+          },
     });
     $('#userTablePremium').DataTable({
            "order": [[ 0, "asc" ]],
            "paging":   false
     });
     $('#userTablePenulis').DataTable({
+           "order": [[ 0, "asc" ]],
+           "paging":   false
+    });
+    $('#userTableAdmin').DataTable({
+           "order": [[ 0, "asc" ]],
+           "paging":   false
+    });
+    $('#userTablePartner').DataTable({
            "order": [[ 0, "asc" ]],
            "paging":   false
     });

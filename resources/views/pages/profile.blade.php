@@ -33,6 +33,11 @@
               @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || $users->id == Auth::user()->id))
                   <small><a href="{{url('/profile/edit/'.$users->id)}}"><i class="fa fa-pencil"></i> Edit Profile</a></small>
               @endif</p>
+              @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+              @if($users->password == 'FacebookProvider')
+              <p><a href="https://facebook.com/{{$users->username}}"><i class="fa fa-facebook-official" style="font-size:24px;"></i></a></p>
+              @endif
+              @endif
               <hr>
               <p style="font-style:italic;color:#777">{{ $profile['short_bio'] or ''}}</p>
         </div>

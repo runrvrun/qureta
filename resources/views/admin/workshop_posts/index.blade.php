@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-    @if (Session::has('flash_message'))            
+    @if (Session::has('flash_message'))
     <div class="alert alert-success alert-dismissible col-md-8" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <p>{!! Session::get('flash_message') !!}</p>
@@ -28,12 +28,12 @@
                             <tbody>
                                 @foreach($workshop_posts as $item)
                                 <tr>
-                                   
-                                    <td>{{ $item->name }}</td>
-                                   
+
+                                    <td>{{ HTML::link('/profile/'.$item->username,$item->name) }}</td>
+
                                     <td>{{ $item->original_filename }}</td>
                                     <td><a href="{{ URL::to( 'uploads/tulisan/' . $item->original_filename)  }}" target="_blank"><button class="btn btn-xs btn-primary">Download</button></a></td>
-                                    
+
                                 </tr>
                                 @endforeach
                             </tbody>

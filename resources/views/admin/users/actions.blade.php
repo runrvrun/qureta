@@ -13,4 +13,4 @@
 'onclick'=>'return confirm("Confirm delete?")'
 )) !!}
 {!! Form::close() !!}
- <a href="#myModal" class="btn-kirim-pesan btn btn-success btn-xs" title="Kirim Pesan"><span class="glyphicon glyphicon-inbox" aria-hidden="true"/></a>
+ <a href="{{ url('/messages/create?u=' . $item->username ) }}"" class="btn-kirim-pesan btn btn-success btn-xs" title="Kirim Pesan"><span class="glyphicon glyphicon-inbox" aria-hidden="true"/></a>

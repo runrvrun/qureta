@@ -29,10 +29,11 @@
             <div class="title">{!! HTML::link($row->link, $row->name)!!}</div>
             <div class="info">Rp {{ number_format($row->price,0,',','.') }}</div>
         </div>
+        <hr class="mobile-only" />
     </div>
     @if($key%4 == 3)
 </div>
-<hr>
+<div class="pull-right" style="margin-top:7px;"><a href="{{url('/shop/kaos')}}">Lihat produk lainnya &raquo;</a></div>
 <div class="row">
     @endif
     @empty
@@ -59,7 +60,7 @@
     </div>
     @if($key%4 == 3)
 </div>
-<hr>
+<div class="pull-right" style="margin-top:7px;"><a href="{{url('/shop/mug')}}">Lihat produk lainnya &raquo;</a></div>
 <div class="row">
     @endif
     @empty
@@ -86,7 +87,7 @@
     </div>
     @if($key%4 == 3)
 </div>
-<hr>
+<div class="pull-right" style="margin-top:7px;"><a href="{{url('/shop/tas')}}">Lihat produk lainnya &raquo;</a></div>
 <div class="row">
     @endif
     @empty
@@ -113,7 +114,7 @@
     </div>
     @if($key%4 == 3)
 </div>
-<hr>
+<div class="pull-right" style="margin-top:7px;"><a href="{{url('/shop/bantal')}}">Lihat produk lainnya &raquo;</a></div>
 <div class="row">
     @endif
     @empty
@@ -140,16 +141,15 @@
     </div>
     @if($key%4 == 3)
 </div>
-<hr>
+<div class="pull-right" style="margin-top:7px;"><a href="{{url('/shop/lainnya')}}">Lihat produk lainnya &raquo;</a></div>
 <div class="row">
     @endif
     @empty
     @endforelse
 </div>
-<hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
 @endsection
 @section('addjs')
-<script type="text/javascript" src="slick/slick.min.js"></script>
+<script type="text/javascript" src="{{url::asset('/slick/slick.min.js')}}"></script>
 <script>
 $(document).ready(function (e) {
     $('.shop-slider').slick({
@@ -160,7 +160,8 @@ $(document).ready(function (e) {
         autoplaySpeed: 5000,
         pauseOnHover: true,
         swipe: true,
-        arrows: true,
+        dots: false,
+        arrows: false,
         responsive: [{
                 breakpoint: 768,
                 settings: {

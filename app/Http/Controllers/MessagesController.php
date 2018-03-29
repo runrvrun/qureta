@@ -60,9 +60,9 @@ class MessagesController extends Controller
      *
      * @return mixed
      */
-    public function create($username = null)
-    {       
-        return view('messenger.create', compact('users','username'));
+    public function create(Request $request)
+    {
+        return view('messenger.create', ['username'=>$request->u]);
     }
     /**
      * Stores a new message thread.
@@ -72,7 +72,7 @@ class MessagesController extends Controller
     public function store()
     {
         $input = Input::all();
-        
+
         $thread = Thread::create(
             [
                 'subject' => $input['subject'],
@@ -98,7 +98,7 @@ class MessagesController extends Controller
         if (Input::has('recipient')) {
             $recipients = explode(',',$input['recipient']);
             foreach($recipients as $k=>$r){
-                $user = User::where('username',$r)->pluck('id');                
+                $user = User::where('username',$r)->pluck('id');
                 if(isset($user)){
                     $recipients[$k] = $user[0];
                 }else{
@@ -143,7 +143,7 @@ class MessagesController extends Controller
         $participant->save();
         // Recipients
         if (Input::has('recipient')) {
-            $recipients = explode(',',$recipient);            
+            $recipients = explode(',',$recipient);
             $thread->addParticipant(Input::get('recipients'));
         }
         return redirect('messages');
@@ -151,9 +151,9 @@ class MessagesController extends Controller
 
      public function autoComplete(Request $request) {
         $query = $request->get('term','');
-        
+
         $user=User::where('username','LIKE','%'.$query.'%')->get();
-        
+
         $data=array();
         foreach ($user as $users) {
                 $data[]=array('value'=>$users->username,'id'=>$users->id);

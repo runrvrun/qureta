@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 
 
+@section('title')
+- {{ $pagetitle }}
+@endsection
+
 @section('content')
 {!! Form::open(['url' => '/admin/statistics/search', 'class' => 'form-horizontal']) !!}
 <div class="row">
@@ -12,75 +16,38 @@
         </div>
     </div>
 </div>
-<div>
- <ul class="nav nav-tabs" id="myTab">
-        <li id="topiktab" class="active"><a href="#topik" data-toggle="tab">Statistik Topik</a></li>
-        <li id="viewtab"><a href="#view" data-toggle="tab">Statistik View</a></li>  
-    </ul>
 {!! Form::close() !!}
-    <div>
-        <div class="tab-content" id="tab-content">
-            <div class="tab-pane active" id="topik">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ $pagetitle }}</div>
+                <div class="panel-body">
 
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>No</th><th> Topik </th><th> Jumlah Naskah </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $i = 0; $total =0; ?>
-                                    @foreach($categories as $item)
-                                    <?php $i++; $total += $item->counter; ?>
-                                    <tr>
-                                        <td>{{ $i }}</td><td>{{ $item->category_title }}</td><td>{{ $item->counter }}</td>
-                                    </tr>
-                                    @endforeach
-                                <tfoot><th colspan="2" style="text-align: right">Total</th><th>{{ $total }}</th></tfoot>
-                                </tbody>
-                            </table>
-                            @if (method_exists($categories,'render') && $categories->lastPage()>1)
-                            <div class="pagination-wrapper"> {!! $categories->render() !!} </div>
-                            @endif
-                        </div>
-
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>No</th><th> Topik </th><th> Jumlah Naskah </th><th> Jumlah View </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i = 0; $total =0; $totalview=0; ?>
+                                @foreach($categories as $key=>$item)
+                                <?php $total += $item->counter; $totalview += $item->viewcounter; ?>
+                                <tr>
+                                    <td>{{ $categories->firstItem() + $key }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td>{{ number_format($item->counter,0,',','.') }}</td><td>{{ number_format($item->viewcounter,0,',','.') }}</td>
+                                </tr>
+                                @endforeach
+                            <tfoot><th style="text-align: right">Total</th><th>{{ number_format($total,0,',','.') }}</th><th>{{ number_format($totalview,0,',','.') }}</th></tfoot>
+                            </tbody>
+                        </table>
+                        @if (method_exists($categories,'render') && $categories->lastPage()>1)
+                        <div class="pagination-wrapper"> {!! $categories->render() !!} </div>
+                        @endif
                     </div>
-                </div>
-            </div>
-                <div class="tab-pane" id="view">
-                <div class="panel panel-default">
-                    <div class="panel-body">
 
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>No</th><th> Topik </th><th> Jumlah View </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $i = 0; $total =0; ?>
-                                    @foreach($views as $item)
-                                    <?php $i++; $total += $item->counter; ?>
-                                    <tr>
-                                        <td>{{ $i }}</td><td>{{ $item->category_title }}</td><td>{{ $item->counter }}</td>
-                                    </tr>
-                                    @endforeach
-                                <tfoot><th colspan="2" style="text-align: right">Total</th><th>{{ $total }}</th></tfoot>
-                                </tbody>
-                            </table>
-                            @if (method_exists($categories,'render') && $categories->lastPage()>1)
-                            <div class="pagination-wrapper"> {!! $categories->render() !!} </div>
-                            @endif
-                        </div>
-
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

@@ -10,12 +10,9 @@
 <div class="col-md-6">
     <div class="form-group">
         {!! Form::label('recipient', 'To', ['class' => 'control-label']) !!}
-       
-        {!! Form::text('recipient', null, array('placeholder' => 'Search User','class' => 'form-control','id'=>'search_text')) !!}
-        <br>
-        
+        {!! Form::text('recipient', $username, ['class' => 'form-control', 'id' => 'recipient']) !!}
     </div>
-    
+
     <!-- Subject Form Input -->
     <div class="form-group">
         {!! Form::label('subject', 'Subject', ['class' => 'control-label']) !!}
@@ -26,8 +23,8 @@
     <div class="form-group">
         {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
         {!! Form::textarea('message', null, ['class' => 'form-control']) !!}
-    </div>   
-    
+    </div>
+
     <!-- Submit Form Input -->
     <div class="form-group">
         {!! Form::submit('Kirim', ['id' => 'submit', 'class' => 'btn btn-primary form-control']) !!}
@@ -37,7 +34,10 @@
 @endsection
 
 @section('addjs')
+<script src="{{URL::asset('js/typeahead.js')}}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
+//prevent keteken enter dan langsung kirim message kosong
 $(document).ready(function() {
   $('#recipient').keydown(function(event){
     if(event.keyCode == 13) {
@@ -45,43 +45,26 @@ $(document).ready(function() {
       return false;
     }
   });
-  $('.bootstrap-tagsinput').keydown(function(event){
-    if(event.keyCode == 13) {
-      event.preventDefault();
-      return false;
-    }
-  });
 });
-</script>
 
-<script>
-
+//autocomplete username
+src = "{{ route('userautocomplete') }}";
+ $("#recipient").autocomplete({
+    source: function(request, response) {
+        $.ajax({
+            url: src,
+            dataType: "json",
+            data: {
+                term : request.term
+            },
+            success: function(data) {
+                response(data);
+            }
+        });
+    },
+    select: function(event, ui) {       
+    },
+    minLength: 3,
+ });
 </script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="{{URL::asset('js/typeahead.bundle.js')}}"></script>
-<script src="http://demo.expertphp.in/js/jquery.js"></script>
-<script src="http://demo.expertphp.in/js/jquery-ui.min.js"></script>
-<script>
-   $(document).ready(function() {
-    src = "{{ route('messageautocomplete') }}";
-     $("#search_text").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: src,
-                dataType: "json",
-                data: {
-                    term : request.term
-                },
-                success: function(data) {
-                    response(data);
-                   
-                }
-            });
-        },
-        minLength: 1,
-       
-    });
-});
-</script>
-
 @endsection

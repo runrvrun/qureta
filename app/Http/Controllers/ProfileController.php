@@ -157,7 +157,7 @@ class ProfileController extends Controller {
                 $profile[$row->meta_name] = $row->meta_value;
             }
         }
-        $posts = Post::where('post_author', $users->id)->where('post_status','publish')->orderBy('published_at', 'DESC')->take(4)->get();
+        $posts = Post::where('post_author', $users->id)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->take(4)->get();
         $buqus = Buqu::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(2)->get();
         $followers = Followers::join('users','follower_id','=','users.id')->where('user_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followerpage');
 
@@ -175,7 +175,7 @@ class ProfileController extends Controller {
         $users = DB::select("SELECT u.id, u.name, u.user_image, u.username, p.*
 FROM users u
 LEFT JOIN posts p ON u.id=p.post_author
-WHERE u.status=1 and p.id = (SELECT MIN(id) FROM posts WHERE post_author=u.id and post_status='publish' and hide=0)
+WHERE u.status=1 and p.id = (SELECT MIN(id) FROM posts WHERE post_author=u.id and post_status='publish' and hide=0 and published_at < now())
 ORDER BY p.published_at DESC LIMIT 52");
 
         return view('pages.penulisterbaru', compact('pagetitle', 'users'));
@@ -198,7 +198,7 @@ group by u.id, u.name, u.username, u.user_image, u.role  order by count(f.id) de
         $pagetitle = 'Penulis Terfavorit';
         $users = DB::select("select post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
 INNER JOIN users u ON p.post_author = u.id
-WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
+WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
 group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit ".$limit);
 
         return view('pages.penulisfavorit', compact('pagetitle', 'users'));
@@ -209,7 +209,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         $pagetitle = 'Penulis Terproduktif';
         $users = DB::select("SELECT post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
 FROM posts p INNER JOIN users u ON p.post_author = u.id
-WHERE p.post_status = 'publish' AND p.hide = 0 AND u.status=1
+WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
 GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit ".$limit);
 
         return view('pages.penulisproduktif', compact('pagetitle', 'users'));
@@ -218,7 +218,7 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
     public function tulisan($username) {
       $user = User::where('username',$username)->first();
       $pagetitle = 'Tulisan '.$user->name;
-      $posts = Post::with('post_authors')->where('post_author',$user->id)->where('post_status', 'publish')->orderBy('id', 'DESC')->paginate(12);
+      $posts = Post::with('post_authors')->where('post_author',$user->id)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('id', 'DESC')->paginate(12);
 
       return view('pages.artikel', compact('pagetitle', 'posts'));
     }

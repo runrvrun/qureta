@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-    @if (Session::has('flash_message'))            
+    @if (Session::has('flash_message'))
     <div class="alert alert-success alert-dismissible col-md-8" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <p>{!! Session::get('flash_message') !!}</p>
@@ -18,7 +18,7 @@
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->
                     <!--                        <br/>
                                             <br/>-->
-                  
+
                     <div class="table-responsive">
                         <table class="table table-striped">
 
@@ -32,13 +32,13 @@
 
                                 <tr>
                                     <td><a href="{{ url( '/admin/workshops_posts/'.$item->workshop_id.'/'.$item->user_id)}}"><button class="btn btn-xs btn-primary">Lihat File</button></a></td>
-                                    <td>{{ $item->name }}</td>
+                                    <td>{{ HTML::link('/profile/'.$item->username,$item->name) }}</td>
                                    <td>{{ $item->email }}</td>
                                     <td>{{ $item->phone_number }}</td>
                                    <td>{{ $item->address }}</td>
                                    <td>{{ $item->profession }}</td>
                                    <td>{{ $item->institution }}</td>
-                                   <td>{{ $item->date_of_birth }}</td>                                  
+                                   <td>{{ $item->date_of_birth }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

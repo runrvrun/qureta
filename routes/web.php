@@ -100,6 +100,7 @@ Route::get('/artikel-terbaru', 'PostsController@terbaru');
 Route::get('/artikel-populer', 'PostsController@populer');
 Route::get('/rekam', 'PostsController@rekam')->middleware('auth');
 Route::get('/shop', 'ShopsController@index');
+Route::get('/shop/{a}', 'ShopsController@indexcategory');
 Route::post('/post/bookmark', 'PostsController@bookmark');
 Route::post('/post/unbookmark', 'PostsController@unbookmark');
 Route::post('/post/ajaximageupload','PostsController@ajaximageupload');

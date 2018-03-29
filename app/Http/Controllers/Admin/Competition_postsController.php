@@ -46,6 +46,7 @@ class Competition_postsController extends Controller {
     public function indexdata($competitionid = null)
      {
          return Datatables::of(Competition_post::selectRaw('competition_posts.id, (select count(1) FROM competition_postlikes WHERE competition_post_id=competition_posts.id) vote,
+         (select group_concat(username) FROM competition_postlikes cpl LEFT JOIN users u ON cpl.follower_id=u.id WHERE competition_post_id=competition_posts.id) voter,
 post_title, post_slug, username, name, (select count(1) FROM posts p1 WHERE p1.post_author=posts.post_author AND post_status=\'publish\') post_count, view_count,
 word_count, DATE_FORMAT(published_at,\'%d-%m-%Y\') published_at')
          ->join('posts','posts.id','post_id')
