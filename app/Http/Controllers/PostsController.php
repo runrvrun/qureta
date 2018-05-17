@@ -223,7 +223,128 @@ class PostsController extends Controller {
 
         return view('posts.show', compact('post'));
     }
+    function setArtikelTerkait(Request $request)
+    {
+        // $request = $request->all();
+        $id = $request['id'];
+        $paragraphTerkait1 = $request->has('paragraphTerkait1') ? $request['paragraphTerkait1']:'-';
+        $ArtikelTerkait1 = $request->has('ArtikelTerkait1') ? $request['ArtikelTerkait1']:'-';
+        $paragraphTerkait2 = $request->has('paragraphTerkait2') ? $request['paragraphTerkait2']:'-';
+        $ArtikelTerkait2 = $request->has('ArtikelTerkait2') ? $request['ArtikelTerkait2']:'-';
+        $paragraphTerkait3 = $request->has('paragraphTerkait3') ? $request['paragraphTerkait3']:'-';
+        $ArtikelTerkait3 = $request->has('ArtikelTerkait3') ? $request['ArtikelTerkait3']:'-';
+        $arr = array();
+        $arr = [
+            [
+                "at" => $paragraphTerkait1,
+                "id" => $ArtikelTerkait1
+            ],
+            [
+                "at" => $paragraphTerkait2,
+                "id" => $ArtikelTerkait2
+            ],
+            [
+                "at" => $paragraphTerkait3,
+                "id" => $ArtikelTerkait3
+            ]
+            ];
+            Post_metum::where('post_id', '=', $id)->where('meta_name','=','related_post')->delete();
+         $post_metum = new post_metum();
+         $post_metum->post_id = $id;
+         $post_metum->meta_name = 'related_post';
+         $post_metum->meta_value = json_encode($arr);
+         if($post_metum->save())
+         {
+             echo 'true';
+         }else
+         {
+             echo 'false';
+         }
+    }
+    function addTerkait($content,$id)
+    {
+        if(!empty($content))
+        {
+            $terkait = Post_metum::where('meta_name', 'related_post')->where('post_id', $id)->value('meta_value');
+            // $terkait = "[{\"at\": 5, \"id\":15}]";
+/**
+            $content = htmlspecialchars($content, ENT_QUOTES,'UTF-8',false);
+            $content = str_replace('&lt;p', '<p', $content);
+            $content = str_replace('&lt;/p', '</p', $content);
+            // $content = str_replace('&lt;/p&gt;', '</p>', $content);
+            $content = str_replace('&gt;', '>', $content);
 
+            //fix blockquote
+            $content = str_replace('&lt;blockquote>', '<p>&lt;blockquote&gt;</p>', $content);
+            $content = str_replace('&lt;/blockquote>', '<p>&lt;/blockquote&gt;</p>', $content);
+
+            $terkait = json_decode($terkait,true);
+            $dom = new \DOMDocument();
+            libxml_use_internal_errors(true);
+            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
+            $domx = new \DOMXPath($dom);
+            $entries = $domx->evaluate("//p");
+            $arr = array();
+            $i=0;
+
+            foreach ($entries as $entry) {
+                if(is_array($terkait) || is_object($terkait))
+                {
+                    foreach($terkait as $key => $data)
+                    {
+                        if($data['at'] != '-' and  $data['id'] != '-' and $i == $data['at'])
+                        {
+                            $slug = Post::findOrFail($terkait[$key]['id'])->post_slug;
+                            $title = Post::findOrFail($terkait[$key]['id'])->post_title;
+                            $data = '<div class="bacajuga-box">Baca Juga: <a target="'.$slug.'" href="/post/'.$slug.'">'.$title.'</a></div>';
+                            array_push($arr,$data);
+                        }
+                    }
+                }
+                $data = '<' . $entry->tagName . '>' . $entry->nodeValue .  '</' . $entry->tagName . '>';
+                array_push($arr,$data);
+                $i++;
+            }
+            if(is_array($terkait) || is_object($terkait))
+                {
+                    foreach($terkait as $key => $data)
+                    {
+                        if($data['at'] != '-' and  $data['id'] != '-' and $data['at'] > count($arr))
+                        {
+                            $slug = Post::findOrFail($terkait[$key]['id'])->post_slug;
+                            $title = Post::findOrFail($terkait[$key]['id'])->post_title;
+                            $data = '<div class="bacajuga-box">Baca Juga: <a target="'.$slug.'" href="/post/'.$slug.'">'.$title.'</a></div>';
+                            array_push($arr,$data);
+                        }
+                    }
+                }
+                 */
+            $carr = explode('</p>',$content);
+            $terkait = json_decode($terkait,true);
+
+            $arr = array();
+            foreach($carr as $key=>$citem){
+              array_push($arr,$citem);
+                array_push($arr,"</p>");
+              if(is_array($terkait) || is_object($terkait))
+              {
+                  foreach($terkait as $key2 => $data)
+                  {
+                      if($data['at'] != '-' and $data['at'] > 0 and $data['id'] != '-' and  $data['id'] > 0 and ($data['at']==$key || ($key==count($carr)-1 and $data['at']>=count($carr))) )
+                      {
+                          $slug = Post::findOrFail($terkait[$key2]['id'])->post_slug;
+                          $title = Post::findOrFail($terkait[$key2]['id'])->post_title;
+                          $data = '<div class="bacajuga-box">Baca Juga: <a target="'.$slug.'" href="/post/'.$slug.'">'.$title.'</a></div>';
+                          array_push($arr,$data);
+                      }
+                  }
+              }
+            }
+
+            return html_entity_decode(implode($arr));
+            // return print_r($content);
+        }
+    }
     public function showpermalink($permalink) {
 
         $limit = 10;
@@ -268,12 +389,12 @@ class PostsController extends Controller {
                 //return $e->getMessage();
             }
         }
-
-            return view('pages.single', compact('post', 'related', 'category', 'populer'));
-        } else {
-            return redirect('/');
-        }
+        $post['post_content'] =  $this->addTerkait($post->post_content,$post->id);
+        return view('pages.single', compact('post', 'related', 'category', 'populer'));
+    } else {
+        return redirect('/');
     }
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -300,10 +421,11 @@ class PostsController extends Controller {
         if ($post) {
             $category = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->pluck('meta_value')->first();
             $fcategory = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_featured_category')->pluck('meta_value')->first();
+            $related = Post_metum::where('post_id', $post->id)->where('meta_name', 'related_post')->value('meta_value');
             $competition = Competition_post::with('competition')->where('post_id', $post->id)->where('competition_id','>',0)->first();
             if (Auth::check()) {
                 if ($post->post_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
-                    return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition'));
+                    return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition','related'));
                 }
             } else {
                 return redirect('/');
@@ -787,4 +909,18 @@ class PostsController extends Controller {
         return response()->json(['responseText' => 'Success!'], 200);
     }
 
+    public function autoComplete(Request $request) {
+        $query = $request->get('term','');
+
+        $posts=Post::where('post_title','LIKE','%'.$query.'%')->where('post_status','=','publish')->get();
+
+        $data=array();
+        foreach ($posts as $post) {
+                $data[]=array('label'=>$post->post_title,'id'=>$post->id);
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['value'=>'No Result Found','id'=>''];
+    }
 }

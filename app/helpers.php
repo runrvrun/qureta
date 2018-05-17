@@ -50,7 +50,7 @@ function get_popular_post($limit = 4) {
     $populer = App\Post::with('post_authors')
             ->where('post_status', 'publish')->where('hide', 0)
             ->where('published_at','<=',Carbon::now())
-            ->where('published_at','>=',Carbon::now()->subDays(3))
+            ->where('published_at','>=',Carbon::now()->subDays(30))
             ->orderBy('view_count', 'DESC')->take($limit)->get();
 //->where('published_at','<=',Carbon::now())
     return $stickypopuler->union($populer);

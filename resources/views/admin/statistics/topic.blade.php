@@ -35,10 +35,10 @@
                                 @foreach($categories as $key=>$item)
                                 <?php $total += $item->counter; $totalview += $item->viewcounter; ?>
                                 <tr>
-                                    <td>{{ $categories->firstItem() + $key }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td>{{ number_format($item->counter,0,',','.') }}</td><td>{{ number_format($item->viewcounter,0,',','.') }}</td>
+                                    <td class="pull-right">{{ $categories->firstItem() + $key }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td class="pull-right">{{ number_format($item->counter,0,',','.') }}</td><td class="pull-right">{{ number_format($item->viewcounter,0,',','.') }}</td>
                                 </tr>
                                 @endforeach
-                            <tfoot><th style="text-align: right">Total</th><th>{{ number_format($total,0,',','.') }}</th><th>{{ number_format($totalview,0,',','.') }}</th></tfoot>
+                            <tfoot><th>&nbsp;</th><th style="text-align: right">Total</th><th class="pull-right">{{ number_format($total,0,',','.') }}</th><th class="pull-right">{{ number_format($totalview,0,',','.') }}</th></tfoot>
                             </tbody>
                         </table>
                         @if (method_exists($categories,'render') && $categories->lastPage()>1)

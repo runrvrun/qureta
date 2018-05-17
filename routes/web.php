@@ -134,6 +134,10 @@ Route::post('buqu_posts/createajax', 'Buqu_postsController@createajax');
 Route::get('buqu_posts/createajax', 'Buqu_postsController@createajax');
 Route::resource('buqu_posts', 'Buqu_postsController');
 Route::resource('posts', 'PostsController');
+
+Route::get('postsautocomplete',array('as'=>'postsautocomplete','uses'=>'PostsController@autoComplete'));
+Route::get('/setArtikelTerkait', array('as'=>'setArtikelTerkait','uses'=>'PostsController@setArtikelTerkait'));
+
 Route::resource('profiles', 'ProfilesController');
 Route::get('/lomba-esai', 'LombaController@index');
 Route::resource('workshop', 'WorkshopController');

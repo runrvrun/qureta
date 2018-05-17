@@ -309,11 +309,11 @@ form#navBarSearchForm{
 
 .buqu-slider .panel-default{
     border-color: #fff;
-    background-color: ;
+    /* background-color: ; */
 }
 
 .user-info {
-    min-height: 50px;
+    min-height: 40px !important;
     color: #222222;
     font-size: 15px;
     position: relative;
@@ -438,7 +438,6 @@ div.user-info div.name a{
 .article-image .sidebar > img{
     width:50%;
 }
-
 .article-sidebar > .judul a {
     color: #000;
     transition: all 0.5s ease;
@@ -457,6 +456,14 @@ div.user-info div.name a{
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+}
+.article-single img
+{
+    display: block;
+    margin: 0 auto;
+}
+.article-single span
+{
 }
 .article-single.content p, .article-single.content ul li, .article-single.content ol li{
     font-size: 16px;
@@ -1315,4 +1322,154 @@ hr.displaynone{
     .profile-short-bio{
       max-width: 75%;
     }
+}
+#sidebar-mobile
+{
+	position:fixed;
+    overflow: hidden;
+	height:100%;
+	width:78vw;
+	background-color:white;
+	z-index:100;
+	margin:0px;
+	left:-78vw;
+	opacity: 0;
+	padding: 0px 10px 10px 10px;
+	overflow:hidden;
+	border-right:1px solid #dedede;
+}
+#sidebar-overlay
+{
+	display:none;
+	left:0px;
+	z-index:90;
+	top:0px;
+	position:absolute;
+	height:100vh;
+	width:100vw;
+	background-color:rgba(0,0,0,0.8);
+	opacity:0;
+}
+@keyframes sidebar-overlay-active {
+    from
+    {
+    	opacity: 0;
+    }
+    to
+    {
+    	opacity: 1;
+    }
+}
+@keyframes sidebar-overlay-deactive {
+    from
+    {
+    	opacity: 1;
+    }
+    to
+    {
+    	opacity: 0;
+    }
+}
+.overlay-active
+{
+	display:block !important;
+	animation: sidebar-overlay-active 0.35s;
+	animation-fill-mode: forwards;
+}
+.overlay-deactive
+{
+	animation: sidebar-overlay-deactive 0.35s;
+	display:block !important;	
+}
+#sidebar-mobile li
+{
+	list-style-type: disc !important;
+	color: #333 !important;
+}
+#sidebar-mobile li a
+{
+	color:#333 !important;
+}
+.container-sidebar-mobile
+{
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height:88vh;
+}
+@keyframes sidebar-toggle {
+    from
+    {
+    	left:-78vw;
+    	opacity: 0;
+    }
+    to
+    {
+    	left:0vw;
+    	opacity: 1;
+    }
+}
+@keyframes sidebar-toggle-back {
+    from
+    {
+    	left:0vw;
+    	opacity: 1;
+    }
+    to
+    {
+    	left:-78vw;
+    	opacity: 0;
+    }
+}
+.animate-sidebar
+{
+	animation: sidebar-toggle 0.65s;
+	animation-fill-mode: forwards;
+}
+.animate-sidebar-back
+{
+	animation: sidebar-toggle-back 0.65s;
+	animation-fill-mode: forwards;
+}
+.bacajuga-box{
+    padding: 5px 10px !important;
+    margin: 10px 0px !important;
+    border-radius: 7px;
+    font-size: 17px !important;
+    font-family: Oswald,'Open Sans',sans-serif !important;
+    color: #3f3f3f;
+}
+.bacajuga-box a
+{
+    font-size: 17px !important;
+    font-family: Oswald,'Open Sans',sans-serif !important;
+}
+.artikel-slide-btn
+{
+    display: block;
+    width: 100%;
+}
+.slide-artikel-terkait
+{
+    padding: 20px;
+}
+.artikel-terkait-box
+{
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+    border:1px solid #f0f0f0;
+}
+.related-hide
+{
+    transition: opacity 0.5s;
+    opacity: 0;
+}
+.related-show
+{
+    transition: opacity 0.5s;
+    opacity: 1;
+}
+.articel-info
+{
+    color:#9c9c9c;
 }

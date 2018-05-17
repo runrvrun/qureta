@@ -20,8 +20,15 @@ class StatisticsController extends Controller {
      */
     public function index() {
         $pagetitle = 'Statistik Topik';
-        $categories = Category::select(DB::raw('category_title,(select count(1) from post_meta where meta_name = \'post_category\' AND meta_value = categories.id) counter,
-(select sum(view_count) from posts left join post_meta on posts.id=post_meta.post_id where meta_name = \'post_category\' AND meta_value = categories.id) viewcounter'))->orderBy('counter', 'DESC')->distinct()->paginate(50);
+        /*$categories = Category::select(DB::raw('category_title,(select count(1) from post_meta where meta_name = \'post_category\' AND meta_value = categories.id) counter,
+(select sum(view_count) from posts left join post_meta on posts.id=post_meta.post_id where meta_name = \'post_category\' AND meta_value = categories.id) viewcounter'))->orderBy('counter', 'DESC')->distinct()->paginate(50);*/
+        $categories = Post_metum::select(DB::raw('DISTINCT category_title, count(1) counter, sum(view_count) viewcounter'))
+                ->leftJoin('posts', 'post_meta.post_id', '=', 'posts.id')
+                ->leftJoin('categories', 'post_meta.meta_value', '=', 'categories.id')
+                ->where('meta_name','post_category')
+                ->where('post_status','publish')->where('hide','0')->where('published_at', '<=', Carbon::now())
+                ->groupBy('category_title')
+                ->orderBy('counter', 'DESC')->paginate(50);
 
         return view('admin.statistics.topic', compact('categories','pagetitle'));
     }
@@ -44,13 +51,14 @@ class StatisticsController extends Controller {
 
         $pagetitle = 'Statistik Topik ('.$startdatetitle->format('j M Y').' - '.$enddatetitle->format('j M Y').')';
 
-        $categories = Post_metum::select(DB::raw('DISTINCT category_title, count(1) counter'))
+        $categories = Post_metum::select(DB::raw('DISTINCT category_title, count(1) counter, sum(view_count) viewcounter'))
                 ->leftJoin('posts', 'post_meta.post_id', '=', 'posts.id')
                 ->leftJoin('categories', 'post_meta.meta_value', '=', 'categories.id')
                 ->where('meta_name','post_category')
+                ->where('post_status','publish')->where('hide','0')->where('published_at', '<=', Carbon::now())
                 ->whereBetween('posts.created_at',[$startdate,$enddate])
                 ->groupBy('category_title')
-                ->orderBy('counter', 'DESC')->paginate(25);
+                ->orderBy('counter', 'DESC')->paginate(50);
 
         return view('admin.statistics.topic', compact('categories','pagetitle'));
     }

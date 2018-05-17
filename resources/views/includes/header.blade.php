@@ -2,8 +2,186 @@
 <div id="wrap" class="mobile-only">
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
+			<!-- sidebar-mobile -->
+			<div id="sidebar-mobile">
+				<ul class="nav navbar-nav" style="margin:7.5px -15px 0px -15px !important;">
+					<button class="navbar-toggle collapsed pull-left" id="sidebar-button-back" onclick="sidebarBack()">
+						<i style="font-size:20px;padding-left:5px;" class="glyphicon glyphicon-arrow-left"></i>
+					</button>
+					{!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
+                    <div class="input-group">
+                        <input type="hidden" name="sp" value="artikel" id="search_param">
+                        <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+				</ul>
+				<!--<ul class="nav navbar-nav">
+                    {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
+                    <div class="input-group">
+                        <input type="hidden" name="sp" value="artikel" id="search_param">
+                        <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+                </ul>-->
+				<div class="container-sidebar-mobile">
+                <ul class="nav navbar-nav">
+                    @if (Auth::guest())
+                    <li class="dropdown">
+                        <a href="{{ url('/login') }}">Login</a>
+                    </li>
+                    <li class="nav-divider"></li>
+                    @else
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="{{ url('/profile') }}" class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" />
+                        </a>
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
+                                    <strong>{{ Auth::user()->name }}</strong>
+                                    <br/>Lihat Profil
+                                </a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ url('/profile/edit') }}">Edit Profil</a></li>
+                            <li role="separator" class="divider"></li>
+                            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+                            <li><a href="{{ url('/admin') }}">Administration</a></li>
+                            <li role="separator" class="divider"></li>
+                            @elseif (Auth::user()->role === 'partner')
+                            <li><a href="{{ url('/admin/workshops') }}">Administration</a></li>
+                            <li role="separator" class="divider"></li>
+                            @endif
+                            <li>
+                                <a href="{{ url('/logout') }}"
+                                   onclick="event.preventDefault();
+                                       document.getElementById('logout-form').submit();">
+                                    Logout
+                                </a>
+
+                                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-divider"></li>
+                    @endif
+                    <li class="dropdown">
+                        <a class="btn btn-default" style="background-color: #EB4320;color: #fff !important;margin:0px 45px !important" href="{{ url('/kirim-tulisan') }}">Tulis Artikel</a> </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="{{ url('/artikel-terbaru') }}" data-toggle="dropdown" class="dropdown-toggle">Artikel</a>
+                        <ul>
+                            <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
+                            <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
+                            <li><a href="{{ url('/rekam') }}">Rekam</a></li>
+                            <li><a href="{{ url('/jejak') }}">Jejak</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Penulis</a>
+                        <ul>
+                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                            <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
+                            <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
+                            @endif
+                            <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
+                            <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Buqu</a>
+                        <ul>
+                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                            <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
+                            @endif
+                            <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
+                            <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
+                            <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
+                            <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Topik</a>
+                        <div class="row">
+                                <div class="col-xs-5">
+                                    <ul class="dropdown">
+                                        {{ HTML::link('/topik/agama', 'Agama')}}
+                                        <br><br>
+                                        {{ HTML::link('/topik/budaya', 'Budaya')}}<br><br>
+                                        {{ HTML::link('/topik/buku', 'Buku')}}<br><br>
+                                        {{ HTML::link('/topik/cerpen', 'Cerpen')}}<br><br>
+                                        {{ HTML::link('/topik/ekonomi', 'Ekonomi')}}<br><br>
+                                        {{ HTML::link('/topik/filsafat', 'Filsafat')}}<br><br>
+                                        {{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}} <br><br>
+                                        {{ HTML::link('/topik/hiburan', 'Hiburan')}}<br><br>
+                                        {{ HTML::link('/topik/hukum', 'Hukum')}}<br><br>
+                                        {{ HTML::link('/topik/keluarga', 'Keluarga')}}<br><br>
+                                        {{ HTML::link('/topik/kesehatan','Kesehatan')}}<br><br>
+                                        {{ HTML::link('/topik/kuliner', 'Kuliner')}}
+                                    </ul>
+                                </div>
+                                <div class="col-xs-6">
+                                    <ul class="dropdown">
+                                        {{ HTML::link('/topik/lingkungan', 'Lingkungan')}}<br><br>
+                                        {{ HTML::link('/topik/media', 'Media')}}<br><br>
+                                        {{ HTML::link('/topik/olahraga', 'Olahraga')}}<br><br>
+                                        {{ HTML::link('/topik/pendidikan', 'Pendidikan')}}<br><br>
+                                        {{ HTML::link('/topik/perempuan', 'Perempuan')}}<br><br>
+                                        {{ HTML::link('/topik/politik', 'Politik')}}<br><br>
+                                        {{ HTML::link('/topik/puisi', 'Puisi')}}<br><br>
+                                        {{ HTML::link('/topik/saintek', 'Saintek')}}<br><br>
+                                        {{ HTML::link('/topik/sejarah', 'Sejarah')}}<br><br>
+                                        {{ HTML::link('/topik/seni', 'Seni')}}<br><br>
+                                        {{ HTML::link('/topik/tip-and-trick', 'Tip&trik')}}<br><br>
+                                        {{ HTML::link('/topik/wisata', 'Wisata')}}<br><br>
+                                        {{ HTML::link('/semua-topik', 'Semua Topik')}}
+                                    </ul>
+                                </div>
+
+                            </div>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Lomba Esai</a>
+                        <ul>
+                            <li><a href="{{ url('/lomba-esai') }}">Ikuti Lomba</a></li>
+                            <li><a href="{{ url('/profile/qlomba?tulisanpage=1') }}">Info Lomba</a></li>
+                            <li><a href="{{ url('/peserta-lomba-esai') }}">Peserta Lomba</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Workshop</a>
+                        <ul>
+                            <li><a href="{{ url('/workshop') }}">Daftar Workshop</a></li>
+                            <li><a href="{{ url('/profile/qworkshop?tulisanpage=1') }}">Info Workshop</a></li>
+                        </ul>
+                    </li>
+<div style="padding-bottom:25px"></div>
+                </ul>
+				</div>
+			</div>
+<div id="sidebar-overlay" onclick="sidebarBack();"></div>
+			<!-- sidebar-mobile -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target="#app-navbar-collapse1" aria-expanded="false" aria-controls="app-navbar-collapse1">
+                <!-- <button type="button" class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target="#app-navbar-collapse1" aria-expanded="false" aria-controls="app-navbar-collapse1">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span><i class="fa fa-bars fa-2x"></i></span>
+                </button> -->
+				<button class="navbar-toggle collapsed pull-left" id="sidebar-button" onclick="sidebar()">
                     <span class="sr-only">Toggle Navigation</span>
                     <span><i class="fa fa-bars fa-2x"></i></span>
                 </button>
@@ -32,7 +210,7 @@
                 </a>
             </div>
 
-            <!--menu for mobile-->
+            <!--menu for mobile
             <div class="collapse navbar-collapse" id="app-navbar-collapse1">
                 <ul class="nav navbar-nav">
                     {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
@@ -187,7 +365,24 @@
                     </li>
 
                 </ul>
-            </div>
+            </div> -->
+			<script type="text/javascript">
+			function sidebar(){
+				$('#sidebar-mobile').removeClass('animate-sidebar-back');
+				$('#sidebar-overlay').removeClass('overlay-deactive');
+				$('#sidebar-mobile').addClass('animate-sidebar');
+				$('#sidebar-overlay').addClass('overlay-active');
+			}
+			function sidebarBack(){
+				$('#sidebar-mobile').removeClass('animate-sidebar');
+				$('#sidebar-overlay').removeClass('overlay-active');
+				$('#sidebar-overlay').addClass('overlay-deactive');
+				$('#sidebar-mobile').addClass('animate-sidebar-back');
+				setTimeout(function() {
+					$('#sidebar-overlay').removeClass('overlay-deactive');
+				}, 260);
+			}
+			</script>
             <!--notif for mobile-->
             <div class="collapse navbar-collapse" id="app-navbar-collapse2">
                 @if(Auth::check())
@@ -345,8 +540,10 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown">Penulis</span></a>
                         <ul class="dropdown-menu dropdown-hover">
+                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
                             <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
                             <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
+                            @endif
                             <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
                             <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
                         </ul>
@@ -375,7 +572,6 @@
                                         <li>{{ HTML::link('/topik/cerpen', 'Cerpen')}}</li>
                                         <li>{{ HTML::link('/topik/ekonomi', 'Ekonomi')}}</li>
                                         <li>{{ HTML::link('/topik/filsafat', 'Filsafat')}}</li>
-
                                     </ul>
                                 </div>
                                 <div class="col-sm-3">
@@ -386,7 +582,6 @@
                                         <li>{{ HTML::link('/topik/keluarga', 'Keluarga')}}</li>
                                         <li>{{ HTML::link('/topik/kesehatan', 'Kesehatan')}}</li>
                                         <li>{{ HTML::link('/topik/kuliner', 'Kuliner')}}</li>
-
                                     </ul>
                                 </div>
                                 <div class="col-sm-3">
@@ -407,8 +602,6 @@
                                         <li>{{ HTML::link('/topik/seni', 'Seni')}}</li>
                                         <li>{{ HTML::link('/topik/tip-and-trick', 'Tip&trik')}}</li>
                                         <li>{{ HTML::link('/topik/wisata', 'Wisata')}}</li>
-
-
                                     </ul>
                                 </div>
                             </div>
