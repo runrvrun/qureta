@@ -116,6 +116,10 @@ class PostsController extends Controller {
             $requestData['updated_by'] = Auth::user()->username;
 
             $post = Post::findOrFail($post_id);
+            //user cannot update published post
+            if($post->post_status == 'publish' && (Auth::user()->role == 'user')){
+              return response()->json(['responseText' => 'Store Failed! Post already published, can only edited by editor', 'postid' => $post_id, 'lastsaved' => $post->updated_at], 200);
+            }
             $post->update($requestData);
             return response()->json(['responseText' => 'Update Success', 'postid' => $post_id, 'lastsaved' => $curtime], 200);
         } else {
@@ -176,12 +180,12 @@ class PostsController extends Controller {
             $fileName = rand(11111, 99999) . '_'. rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
-            Image::make($file->getRealPath())->resize(350, null, function ($constraint) {
+            Image::make($file->getRealPath())->resize(450, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('jpg', 75)->save($uploadThumbPath . $fileName);
-            Image::make($file->getRealPath())->resize(653, null, function ($constraint) {
+            })->encode('jpg', 80)->save($uploadThumbPath . $fileName);
+            Image::make($file->getRealPath())->resize(853, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+            })->encode('jpg', 80)->save($uploadPath . $fileName)->destroy();
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['post_image'] = $fileName;
@@ -350,6 +354,7 @@ class PostsController extends Controller {
         $limit = 10;
         $post = Post::where('post_slug', '=', $permalink)->first();
         $populer = get_popular_post($limit);
+        $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(4);
 
         if ($post == null)
             abort('404');
@@ -390,7 +395,7 @@ class PostsController extends Controller {
             }
         }
         $post['post_content'] =  $this->addTerkait($post->post_content,$post->id);
-        return view('pages.single', compact('post', 'related', 'category', 'populer'));
+        return view('pages.single', compact('post', 'related', 'category', 'populer','anotherPost'));
     } else {
         return redirect('/');
     }

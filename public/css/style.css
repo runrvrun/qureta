@@ -1,5 +1,5 @@
 body{
-    margin-left: 2%;
+    margin-left: 0%;
     background-color: #fff;
     margin-top: 0px;
     font-family: Oswald,'Open Sans',sans-serif;
@@ -802,7 +802,7 @@ ul.ui-autocomplete li{
 
 .article-featured-img{
     max-width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .sidebar{
@@ -867,10 +867,10 @@ ul.ui-autocomplete li{
 }
 
 .post-image-credit{
-    color: #555;
-    background-color: #fafafa;
-    padding: 3px 17px;
+    color: #888;
+    text-transform: uppercase;
     font-weight: lighter;
+    font-size : 75%; 
 }
 
 .mainslider-image{
@@ -1379,7 +1379,7 @@ hr.displaynone{
 .overlay-deactive
 {
 	animation: sidebar-overlay-deactive 0.35s;
-	display:block !important;	
+	display:block !important;
 }
 #sidebar-mobile li
 {
@@ -1472,4 +1472,126 @@ hr.displaynone{
 .articel-info
 {
     color:#9c9c9c;
+}
+.terpopuler-home-atas-title{
+	width:100%;
+	color:white;
+	position:absolute;
+	bottom:5px;
+	transition: bottom 0.5s;
+}
+.terpopuler-home-atas-title-mobile{
+	width:100%;
+	color:white;
+	position:absolute;
+	bottom:5px;
+	transition: bottom 0.5s;
+}
+.terpopuler-home-atas-info{
+	opacity:0;
+	position:absolute;
+	bottom:5px;
+	transition: opacity 0.5s;
+	color:white;
+}
+.terpopuler-home-atas-info-mobile{
+	position:absolute;
+	bottom:5px;
+	color:white;
+}
+.terpopuler-home-atas-info a{
+	color:white !important;
+}
+.terpopuler-home-atas-info-mobile a{
+	color:white !important;
+}
+.terpopuler-home-atas-col:hover .terpopuler-home-atas-title{
+	bottom:50px;
+}
+.terpopuler-home-atas-col:hover .terpopuler-home-atas-info{
+	opacity:1;
+}
+.header-profile-new{
+  position: relative;
+  width: 100%;
+  height: 28em;
+  background-position: top;
+  border-bottom: .5em solid white;
+}
+.header-profile-new > .user-info{
+  width: 15em;
+  position: absolute;
+  overflow: hidden;
+  bottom: 0px;
+  right: 1em;
+  color: white;
+}
+.header-profile-new > .user-info > .user-info-top{
+  width: 100%;
+  height: 2em;
+  background-color: rgba(0,0,0,0.75);
+  padding: 2px 5px;
+  font-size: 1.15em;
+}
+.header-profile-new > .user-info > .user-info-bio{
+  width: 100%;
+  padding: 5px 13px;
+  margin-top: 2px;
+  background-color: rgba(0,0,0,0.75);
+  margin-bottom: 2px;
+}
+.header-profile-new > .user-info > .user-info-bottom{
+  width: 100%;
+  background-color: rgba(0,0,0,0.75);
+  padding: 2px 5px;
+}
+.profile-new-atas{
+  display: block;
+  position: absolute;
+  bottom: -3em;
+  left: 5em;
+}
+.profile-new-atas > .user-avatar{
+  border-radius: 100%;
+  overflow: hidden;
+  height: 10em;
+  width: 10em;
+  border:5px solid white;
+  background-color: white;
+}
+.profile-new-atas > .user-avatar img{
+  width: auto;
+  height: 100%;
+  margin: auto;
+}
+
+.profile-new-atas > .user-info{
+  margin-left: 1em;
+  color: white;
+}
+.profile-post-list{
+  border:2px solid #dedede;
+  width: 100%;
+  border-radius: 5px;
+  background-color: white;
+  height: 8em;
+  overflow: hidden;
+}
+.profile-post-list h4{
+  padding: 5px 15px;
+  font-size: 1.35em;
+  width: 100%;
+}
+.profile-post-list .profile-post-list-img{
+  width: 13em;
+}
+.profile-post-list .profile-post-list-img img{
+  width: 100%;
+  height: auto;
+}
+.form-slide--open{
+    width:100%;
+}
+.form-slide .hide {
+    visibility: hidden;
 }

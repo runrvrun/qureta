@@ -53,6 +53,20 @@ class ProfileController extends Controller {
             'profesi' => 'required|max:20'
         ]);
 
+        if ($request->hasFile('user_image_cover')) {
+            $uploadPath = public_path('/uploads/cover/');
+
+            $extension = 'jpg';
+            $fileName = rand(11111, 99999) . '.' . $extension;
+
+            $file = $request->file('user_image_cover');
+            Image::make($file->getRealPath())->fit(800, 450)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+
+            // $request->file('buqu_image')->move($uploadPath, $fileName);
+            $requestData['user_image_cover'] = $fileName;
+
+        }
+
         if ($request->hasFile('user_image')) {
             $uploadPath = public_path('/uploads/avatar/');
 
@@ -64,6 +78,7 @@ class ProfileController extends Controller {
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['user_image'] = $fileName;
+            
         }
 
         $requestData['name'] = $request->name;
@@ -158,15 +173,17 @@ class ProfileController extends Controller {
             }
         }
         $posts = Post::where('post_author', $users->id)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->take(4)->get();
-        $buqus = Buqu::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(2)->get();
+        $buqus = Buqu::where('buqu_author', $users->id)->orderBy('id', 'DESC')->take(4)->get();
         $followers = Followers::join('users','follower_id','=','users.id')->where('user_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followerpage');
 
         $jml_followers = Followers::where('user_id',$users->id)->distinct('follower_id')->count('follower_id');
         $jml_following = Followers::where('follower_id',$users->id)->distinct('user_id')->count('user_id');
+        $jml_post = Post::where('post_author', $users->id)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->count('id');
+        $jml_buqu = Buqu::where('buqu_author', $users->id)->count('id');
 
         $followings = Followers::join('users','user_id','=','users.id')->where('follower_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followingpage');
 
-        return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_followers','jml_following'));
+        return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_post','jml_buqu','jml_followers','jml_following'));
     }
 
     public function terbaru($limit = 52) {

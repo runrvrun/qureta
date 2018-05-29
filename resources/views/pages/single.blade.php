@@ -117,7 +117,8 @@
 <hr/>
 <!-- author info -->
 <!-- related article -->
-@if(!$post->hide_adsense)
+
+    @if(!$post->hide_adsense)
     <div class="row adsense-homepage-top">
         <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Qresponsive -->

@@ -82,9 +82,17 @@
     <div class="container">
         <p>&copy; <span id="copy-name"><a href="http://www.qureta.com">Qureta.com</a></span> {{ Carbon::now()->year }}</p>
     </div>
+    <script>
+        $(document).ready(function(){
+            $(".slide-btn").click(function(){
+                $(".form-slide").slideToggle();
+            });
+        });
+    </script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script data-cfasync="false" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Scripts -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="/js/app.js"></script>
     <script type="text/javascript" src="{{ URL::asset('bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('jquery-cookie/jquery.cookie.js') }}"></script>
@@ -94,3 +102,4 @@
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     @stack('scripts')
     <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js') }}"></script>
+  

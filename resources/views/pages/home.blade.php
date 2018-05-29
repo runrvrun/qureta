@@ -9,6 +9,49 @@
 @endsection
 
 @section('content')
+<!-- terpopuler-now mobile -->
+<div id="wrap" class="mobile-only">
+	<div class="" style="margin-top:4.8em;"></div>
+	<div style="width:100vw;overflow:hidden;">
+	<div class="slideshow-populer-now-mobile">
+		@foreach ($populer_today as $key=>$row)
+			<div class="terpopuler-home-atas-col" title="{{ $row->post_title }}" style="background:linear-gradient(rgba(0,0,0,0)0%,rgba(0,0,0,0)60%, rgba(0,0,0,0.7)95%),url('{{ URL::asset('/uploads/post/'.$row->post_image) }}');background-size:cover;background-position:center;height:18em;position:relative">
+				<center> <a href="{{ url('/post/'.$row->post_slug) }}"> <h3 class="terpopuler-home-atas-title-mobile" align="center" style="text-shadow:0px 2px 5px rgba(0,0,0,0.9);width:100%;padding:20px;padding-bottom:0px;">{{ $row->post_title }}</h3></a></center>
+		</div>
+		@endforeach
+	</div>
+</div>
+</div>
+<!-- terpopuler-now desktop -->
+<div id="wrap" class="desktop-only">
+<div class=" terpopuler-home-atas" style="width:100%;overflow:hidden;padding:0px;margin:0px;">
+	<div class="row" style="padding:0px;margin:0px;">
+		@foreach ($populer_today as $key=>$row)
+		<a href="{{ url('/post/'.$row->post_slug) }}">
+		<div class="terpopuler-home-atas-col col-md-4 col-xs-12" title="{{ $row->post_title }}" style="background:linear-gradient(rgba(0,0,0,0)0%,rgba(0,0,0,0)60%, rgba(0,0,0,0.9)95%),url('{{ URL::asset('/uploads/post/'.$row->post_image) }}');background-size:cover;background-position:center;height:22em;position:relative">
+			<center> <h3 class="terpopuler-home-atas-title" align="center" style="width:90%;text-shadow:0px 2px 5px rgba(0,0,0,0.9)">{{ $row->post_title }}</h3></center>
+			<div class="terpopuler-home-atas-info" style="padding:5px 10px;">
+			<div class="user-info">
+                @if(strpos($row->post_authors->user_image,'ttps://') || strpos($row->post_authors->user_image,'ttp://'))
+                <div class="image"><img src="{{ $row->post_authors->user_image }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
+                @else
+                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$row->post_authors->user_image) }}" alt="{{ $row->post_authors->user_image }}" onerror="avaError(this);" /></div>
+                @endif
+                <div class="name" style="color:white">
+                {{ HTML::link('/profile/'.$row->post_authors->username, $row->post_authors->name)}}
+                @if(isset($row->post_authors->role) && ($row->post_authors->role == 'premium' || $row->post_authors->role == 'partner' || $row->post_authors->role == 'admin' || $row->post_authors->role == 'editor'))
+                <small class="verified-user" style="width:15px;" title="verified-user">&nbsp;</small>
+                @endif
+                </div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca </div>
+			</div>
+			</div>
+		</div>
+		</a>
+		@endforeach
+	</div>
+</div>
+</div>
 <div class="container" style="overflow:hidden">
   @if (Session::has('flash_message'))
   <div class="alert alert-success alert-dismissible" role="alert">
@@ -36,8 +79,7 @@
   @if(Auth::Check())
   <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
   @endif
-  <!--kuliah qureta-->
-  <div class="mobile-only spacer" style="min-height:50px;"></div>
+  <!-- <div class="mobile-only spacer" style="min-height:50px;"></div> -->
   @if($newsflash)
   <div class="row topic-title">
       <div class="col-sm-12 newsflash">
@@ -45,40 +87,6 @@
       </div>
   </div>
   @endif
-  <div class="row topic-title">
-      <div class="col-sm-12">
-          <h3>{{ HTML::link('https://kuliah.qureta.com', 'KULIAH QURETA')}}</h3>
-      </div>
-  </div>
-  <div class="buqu-slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
-      @foreach ($kuliah as $key=>$row)
-      @if($key<4)
-      <div class="article col-sm-3 grid-group-item">
-          <!--Author-->
-          <br>
-          <div class="user-info">
-              <div class="image"><img src="https://kuliah.qureta.com/uploads/teacher/{{ $row->teachers->url_foto }}" alt="{{ $row->teachers->url_foto }}" onerror="avaError(this);" /></div>
-              <div class="name">{{ $row->teachers->name }}</div>
-              <div class="title">{{ $row->teachers->job }}</div>
-          </div>
-          <!--Image-->
-          <div class="article-image">
-              <a href="https://kuliah.qureta.com"><img src="https://kuliah.qureta.com/uploads/course/{{ $row->url_foto }}" alt="{{ $row->url_foto }}" onerror="imgError(this);" /></a>
-          </div>
-          <!--Article-->
-          <div class="article-info">
-              <div class="info">
-                  {{ $row->lectures->count()+1 }} video &middot; {{ $row->course_users->count() }} peserta
-              </div>
-              <div class="title">
-                  {!! HTML::link('https://kuliah.qureta.com/course/'.$row->slug, $row->name)!!}
-              </div>
-          </div>
-      </div>
-      @endif
-      @endforeach
-  </div>
-  <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <!--topic row 1-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -135,7 +143,7 @@
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="{{ '/topik/'.$row->category_slug}}">{{ $row->category_title or '' }}</a></div>
                 <div class="title">
                     {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}
                 </div>
@@ -515,6 +523,40 @@ $recommended_writers = get_recommended_user();
         @endforeach
     </div>
     <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+    <div class="row topic-title">
+        <div class="col-sm-12">
+            <h3>{{ HTML::link('https://kuliah.qureta.com', 'KULIAH QURETA')}}</h3>
+        </div>
+    </div>
+    <div class="buqu-slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
+        @foreach ($kuliah as $key=>$row)
+        @if($key<4)
+        <div class="article col-sm-3 grid-group-item">
+            <!--Author-->
+            <br>
+            <div class="user-info">
+                <div class="image"><img src="https://kuliah.qureta.com/uploads/teacher/{{ $row->teachers->url_foto }}" alt="{{ $row->teachers->url_foto }}" onerror="avaError(this);" /></div>
+                <div class="name">{{ $row->teachers->name }}</div>
+                <div class="title">{{ $row->teachers->job }}</div>
+            </div>
+            <!--Image-->
+            <div class="article-image">
+                <a href="https://kuliah.qureta.com"><img src="https://kuliah.qureta.com/uploads/course/{{ $row->url_foto }}" alt="{{ $row->url_foto }}" onerror="imgError(this);" /></a>
+            </div>
+            <!--Article-->
+            <div class="article-info">
+                <div class="info">
+                    {{ $row->lectures->count()+1 }} video &middot; {{ $row->course_users->count() }} peserta
+                </div>
+                <div class="title">
+                    {!! HTML::link('https://kuliah.qureta.com/course/'.$row->slug, $row->name)!!}
+                </div>
+            </div>
+        </div>
+        @endif
+        @endforeach
+    </div>
+    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
     <!--slider and banner-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -584,8 +626,12 @@ $recommended_writers = get_recommended_user();
 <script>
 $(document).ready(function () {
     $('.img-slider').show();
+		$('.slideshow-populer-now-mobile').slick({
+    	autoplay: true,
+			accessibility: false,
+			autoplaySpeed: 10000
+    });
 });
-
 $(document).ready(function (e) {
     /** force crop thumbnails **/
     var articleimage = $('.article-image');
@@ -716,6 +762,13 @@ $('.btnFollowUser').click(function () {
             }
         });
     }
+});
+$(document).ready(function(){
+    $('.btn-slide').toggle(function () {
+        $(".form-slide").addClass("hide");
+    }, function () {
+        $(".form-slide").removeClass("hide");
+    });
 });
 </script>
 @endsection

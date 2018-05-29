@@ -66,6 +66,10 @@ class HomeController extends Controller {
         unset($post_metum[4]);
         $kiat = $post_metum;
         //populer
+        $post_metum = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::yesterday())->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
+        unset($post_metum[3]);
+        $populer_today = $post_metum;
+        //populer now
         $limit=12;
         $posts = get_popular_post($limit);
 
@@ -76,7 +80,7 @@ class HomeController extends Controller {
         ///get newsflash
         $newsflash = Newsflash::inRandomOrder()->first();
 
-        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah','newsflash'));
+        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'posts', 'buqus','kuliah','newsflash','populer_today'));
     }
 
 public function hometest() {
