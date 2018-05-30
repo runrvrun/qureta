@@ -349,6 +349,38 @@ class PostsController extends Controller {
             // return print_r($content);
         }
     }
+    function addBanner($content,$id)
+    {
+        if(!empty($content))
+        {
+            $terkait = Post_metum::where('meta_name', 'banner_inside_article')->where('post_id', $id)->value('meta_value');
+            $carr = explode('</p>',$content);
+            $terkait = json_decode($terkait,true);
+
+            $arr = array();
+            foreach($carr as $key=>$citem){
+              array_push($arr,$citem);
+                array_push($arr,"</p>");
+              if(is_array($terkait) || is_object($terkait))
+              {
+                  foreach($terkait as $key2 => $data)
+                  {
+                      if($data['at'] != '-' and $data['at'] > 0 and $data['id'] != '-' and  $data['id'] > 0 and ($data['at']==$key || ($key==count($carr)-1 and $data['at']>=count($carr))) )
+                      {
+                          $banner = \App\Banner::where('Id',$data['id'])->first();
+                          if($banner->show_end == '' || $banner->show_end > Carbon::now()){
+                            $data = '<div class="banner-inside-article"><a target="_blank" href="'.$banner->link.'"><img src="'.  asset('/uploads/banner/'.$banner->image).'" /></a></div>';
+                            array_push($arr,$data);
+                          }
+                      }
+                  }
+              }
+            }
+
+            return html_entity_decode(implode($arr));
+            // return print_r($content);
+        }
+    }
     public function showpermalink($permalink) {
 
         $limit = 10;
@@ -395,6 +427,7 @@ class PostsController extends Controller {
             }
         }
         $post['post_content'] =  $this->addTerkait($post->post_content,$post->id);
+        $post['post_content'] =  $this->addBanner($post->post_content,$post->id);
         return view('pages.single', compact('post', 'related', 'category', 'populer','anotherPost'));
     } else {
         return redirect('/');
@@ -427,10 +460,11 @@ class PostsController extends Controller {
             $category = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->pluck('meta_value')->first();
             $fcategory = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_featured_category')->pluck('meta_value')->first();
             $related = Post_metum::where('post_id', $post->id)->where('meta_name', 'related_post')->value('meta_value');
+            $banner_inside_article = Post_metum::where('post_id', $post->id)->where('meta_name', 'banner_inside_article')->value('meta_value');
             $competition = Competition_post::with('competition')->where('post_id', $post->id)->where('competition_id','>',0)->first();
             if (Auth::check()) {
                 if ($post->post_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
-                    return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition','related'));
+                    return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition','related','banner_inside_article'));
                 }
             } else {
                 return redirect('/');
@@ -551,6 +585,11 @@ class PostsController extends Controller {
             $requestCompPost = ['post_id' => $post->id, 'competition_id' => $request->post_competition];
             Competition_post::create($requestCompPost);
         }
+
+        ///save banner_inside_article
+        $bia = ['post_id' => $post->id, 'meta_name' => 'banner_inside_article', 'meta_value' => json_encode($request->banner_inside_article)];
+        Post_metum::where('post_id', $post->id)->where('meta_name', 'banner_inside_article')->delete();
+        Post_metum::create($bia);
 
         if (isset($request->savepublish)) {
            //send email to user

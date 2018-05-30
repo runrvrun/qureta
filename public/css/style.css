@@ -1589,9 +1589,5 @@ hr.displaynone{
   width: 100%;
   height: auto;
 }
-.form-slide--open{
-    width:100%;
-}
-.form-slide .hide {
-    visibility: hidden;
-}
+
+

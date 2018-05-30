@@ -22,7 +22,7 @@ class StatisticsController extends Controller {
         $pagetitle = 'Statistik Topik';
         /*$categories = Category::select(DB::raw('category_title,(select count(1) from post_meta where meta_name = \'post_category\' AND meta_value = categories.id) counter,
 (select sum(view_count) from posts left join post_meta on posts.id=post_meta.post_id where meta_name = \'post_category\' AND meta_value = categories.id) viewcounter'))->orderBy('counter', 'DESC')->distinct()->paginate(50);*/
-        $categories = Post_metum::select(DB::raw('DISTINCT category_title, count(1) counter, sum(view_count) viewcounter'))
+        $categories = Post_metum::select(DB::raw('DISTINCT category_title, category_slug, count(1) counter, sum(view_count) viewcounter'))
                 ->leftJoin('posts', 'post_meta.post_id', '=', 'posts.id')
                 ->leftJoin('categories', 'post_meta.meta_value', '=', 'categories.id')
                 ->where('meta_name','post_category')

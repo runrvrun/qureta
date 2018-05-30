@@ -4,6 +4,19 @@
 - {!! $post->post_title !!}
 @endsection
 
+@section('addcss')
+<!-- ini harusnya ada di style.css, tapi disini dulu karena style.css lagi dipake sama dhamar dan farid-->
+<style>
+.banner-inside-article{
+  margin: 0 auto;
+  margin: 10px 0 15px 0;
+}
+.banner-inside-article>a>img{
+  width: 50%; 
+}
+</style>
+@endsection
+
 @section('content')
 <?php Carbon::setLocale('id'); ?>
 @if(!$post->hide_adsense)

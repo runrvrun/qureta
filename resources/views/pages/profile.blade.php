@@ -135,7 +135,7 @@
         @if(count($recommended_writers)>0)
         @foreach($recommended_writers as $recw)
         <div class="row recommended_writers_box" style="height:6em;overflow:hidden;background-color:white;margin:10px 0px;border-radius:3px;overflow:hidden;">
-            <div class="col-md-4" style="background-repeat: no-repeat;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url(http://bogor.net/wp-content/uploads/2018/02/hand_writing_book_man_7986_1920x1080.jpg);background-size: contain;height:100%;">
+            <div class="col-md-4 col-xs-4" style="background-repeat: no-repeat;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url(http://bogor.net/wp-content/uploads/2018/02/hand_writing_book_man_7986_1920x1080.jpg);background-size: cover;height:100%;">
                 <a href="/profile/{{ $recw->user->username }}">
                 <div class="image" style="background-color:#ddd;height:4em;width:4em;border-radius:100%;overflow:hidden;margin:15px 0px;">
                     @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))

@@ -194,3 +194,10 @@ function update_user_post_count($user_id) {
 function get_recommended_user() {
     return App\User_metum::with('user')->where('meta_name', '=', 'recommended')->where('meta_value', '=', '1')->inRandomOrder()->take(4)->get();
 }
+
+function get_post_topik($id) {
+    $categoryid = App\Post_metum::where('meta_name', 'post_category')->where('post_id', $id)->first();
+    $category = App\Category::find($categoryid->meta_value);
+
+    return $category;
+}

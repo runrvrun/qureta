@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Banner;
 use Illuminate\Http\Request;
 use Session;
+use Carbon;
 
 class BannersController extends Controller
 {
@@ -46,9 +47,9 @@ class BannersController extends Controller
 			'name' => 'required'
 		]);
         $requestData = $request->all();
-        
+
 if ($request->hasFile('image')) {
-    
+
     $uploadPath = public_path('/uploads/banner/');
 
     $extension = $request->file('image')->getClientOriginalExtension();
@@ -107,6 +108,7 @@ if ($request->hasFile('image')) {
 			'name' => 'required'
 		]);
         $requestData = $request->all();
+        $requestData['show_end'] = Carbon::createFromFormat('d/m/Y H.i',$requestData['show_end'])->format('Y-m-d H:i:s');
 
 if ($request->hasFile('image')) {
     $uploadPath = public_path('/uploads/banner/');

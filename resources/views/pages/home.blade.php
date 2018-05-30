@@ -143,7 +143,8 @@
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="{{ '/topik/'.$row->category_slug}}">{{ $row->category_title or '' }}</a></div>
+                <?php $topik = get_post_topik($row->id)  ?>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">
                     {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}
                 </div>
@@ -212,7 +213,7 @@
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca<i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
@@ -277,7 +278,7 @@
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
@@ -390,7 +391,7 @@ $recommended_writers = get_recommended_user();
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
@@ -455,7 +456,7 @@ $recommended_writers = get_recommended_user();
             </div>
             <!--Article-->
             <div class="article-info">
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca</div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
             <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
@@ -764,11 +765,10 @@ $('.btnFollowUser').click(function () {
     }
 });
 $(document).ready(function(){
-    $('.btn-slide').toggle(function () {
-        $(".form-slide").addClass("hide");
-    }, function () {
-        $(".form-slide").removeClass("hide");
+    $(".slide-btn").click(function(){
+    $(".form-slide").animate({width:'toggle'},750;
     });
 });
+
 </script>
 @endsection

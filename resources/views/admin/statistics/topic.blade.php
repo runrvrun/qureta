@@ -27,7 +27,7 @@
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
-                                    <th>No</th><th> Topik </th><th> Jumlah Naskah </th><th> Jumlah View </th>
+                                    <th style="text-align:right">No</th><th> Topik </th><th style="text-align:right"> Jumlah Naskah </th><th style="text-align:right"> Jumlah View </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,10 +35,10 @@
                                 @foreach($categories as $key=>$item)
                                 <?php $total += $item->counter; $totalview += $item->viewcounter; ?>
                                 <tr>
-                                    <td class="pull-right">{{ $categories->firstItem() + $key }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td class="pull-right">{{ number_format($item->counter,0,',','.') }}</td><td class="pull-right">{{ number_format($item->viewcounter,0,',','.') }}</td>
+                                    <td style="text-align:right">{{ $categories->firstItem() + $key }}</td><td>{{ HTML::link('/topik/'.$item->category_slug,$item->category_title) }}</td><td style="text-align:right">{{ number_format($item->counter,0,',','.') }}</td><td style="text-align:right">{{ number_format($item->viewcounter,0,',','.') }}</td>
                                 </tr>
                                 @endforeach
-                            <tfoot><th>&nbsp;</th><th style="text-align: right">Total</th><th class="pull-right">{{ number_format($total,0,',','.') }}</th><th class="pull-right">{{ number_format($totalview,0,',','.') }}</th></tfoot>
+                            <tfoot><th>&nbsp;</th><th style="text-align: right">Total</th><th style="text-align:right">{{ number_format($total,0,',','.') }}</th><th style="text-align:right">{{ number_format($totalview,0,',','.') }}</th></tfoot>
                             </tbody>
                         </table>
                         @if (method_exists($categories,'render') && $categories->lastPage()>1)

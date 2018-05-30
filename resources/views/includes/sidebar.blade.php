@@ -2,30 +2,27 @@
     <br>
     <h4 style="color: #EB4320">TERPOPULER</h4>
     <br>
-    <br> @foreach($populer as $key=>$rel)
+    @foreach($populer as $key=>$rel)
     <div class="row">
-        <div class="col-md-4 col-xs-4">
+        <div class="col-md-4 col-xs-5" style="margin:0px !important;padding:0px !important;" >
             <!--Image-->
             <div class="article-image sidebar">
                 <a href="{{ url('post/'.$rel->post_slug) }}">
-                    <img src="{{ URL::asset('/uploads/post/thumb/'.$rel->post_image) }}" alt="{{ $rel->post_image }}" onerror="imgError(this);"
-                    />
+                    <img src="{{ URL::asset('/uploads/post/thumb/'.$rel->post_image) }}" alt="{{ $rel->post_image }}" onerror="imgError(this);" style="width:100% !important" />
                 </a>
             </div>
         </div>
-        <div class="col-md-8 col-xs-8 article-sidebar">
+        <div class="col-md-8 col-xs-7 article-sidebar"  style="padding-left:5px !important;" >
             <!--Article-->
-
             <div class="judul">{{ HTML::link('/post/'.$rel->post_slug, $rel->post_title)}}</div>
-            <div class="user-info">
+            <div class="articel-info">
                 <div class="info">
                     <i class="fa fa-eye"></i> {{ number_format($rel->view_count,0,',','.') }} views</div>
             </div>
-
         </div>
-
     </div>
-    <hr> @endforeach
+    <hr style="1px solid #eee;margin:13px 0px;" />
+    @endforeach
 </div>
 @if(isset($banner->image))
 <!-- banner 1 name: home-top-right, size: 336 pixel x 280 pixel -->
@@ -94,6 +91,7 @@ $recommended_writers = get_recommended_user();
                     </div>
                     @endif
                 </div>
+	<div style="clear:both"></div>
             </div>
         </div>
     </div>

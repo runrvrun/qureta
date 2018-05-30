@@ -18,32 +18,39 @@
 
                         {!! Form::open(['url' => '/admin/banners', 'class' => 'form-horizontal', 'files' => true]) !!}
 
-                                    <div class="form-group {{ $errors->has('name') ? 'has-error' : ''}}">
-                {!! Form::label('name', 'Name', ['class' => 'col-md-4 control-label']) !!}
+                        <div class="form-group {{ $errors->has('position') ? 'has-error' : ''}}">
+                            {!! Form::label('position', 'Lokasi', ['class' => 'col-md-4 control-label']) !!}
+                            <div class="col-md-6">
+                                {!! Form::select('position', array('inside_article' => 'Dalam Artikel'), 0, ['class' => 'form-control', 'required' => 'required']) !!}
+                                {!! $errors->first('position', '<p class="help-block">:message</p>') !!}
+                            </div>
+                        </div>
+            <div class="form-group {{ $errors->has('name') ? 'has-error' : ''}}">
+                {!! Form::label('name', 'Nama', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
                     {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
                     {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
-            <div class="form-group {{ $errors->has('size') ? 'has-error' : ''}}">
-                {!! Form::label('size', 'Size', ['class' => 'col-md-4 control-label']) !!}
-                <div class="col-md-6">
-                    {!! Form::text('size', null, ['class' => 'form-control']) !!}
-                    {!! $errors->first('size', '<p class="help-block">:message</p>') !!}
-                </div>
-            </div>
             <div class="form-group {{ $errors->has('image') ? 'has-error' : ''}}">
-                {!! Form::label('image', 'Image', ['class' => 'col-md-4 control-label']) !!}
+                {!! Form::label('image', 'Gambar', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
                     {!! Form::file('image', null, ['class' => 'form-control']) !!}
                     {!! $errors->first('image', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
             <div class="form-group {{ $errors->has('link') ? 'has-error' : ''}}">
-                {!! Form::label('link', 'Link', ['class' => 'col-md-4 control-label']) !!}
+                {!! Form::label('link', 'Link (opsional)', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
-                    {!! Form::text('link', null, ['class' => 'form-control']) !!}
+                    {!! Form::text('link', null, ['class' => 'form-control','placeholder' => 'http://']) !!}
                     {!! $errors->first('link', '<p class="help-block">:message</p>') !!}
+                </div>
+            </div>
+            <div class="form-group {{ $errors->has('show_end') ? 'has-error' : ''}}">
+                {!! Form::label('show_end', 'Aktif Sampai (opsional)', ['class' => 'col-md-4 control-label']) !!}
+                <div class="col-md-6">
+                    {!! Form::date('show_end', null, ['class' => 'form-control']) !!}
+                    {!! $errors->first('show_end', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
 

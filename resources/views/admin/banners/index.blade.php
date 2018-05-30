@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">Banners</div>
                     <div class="panel-body">
@@ -15,14 +15,14 @@
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>ID</th><th> Name </th><th> Size </th><th> Image </th><th> Link </th><th>Actions</th>
+                                        <th>ID</th><th> Position </th><th> Name </th><th> Image </th><th> Link </th><th> Show Until </th><th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($banners as $item)
                                     <tr>
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ $item->name }}</td><td>{{ $item->size }}</td><td>{{ $item->image }}</td><td>{{ $item->link }}</td>
+                                        <td>{{ $item->position }}</td><td>{{ $item->name }}</td><td><img src="{{ URL::asset('uploads/banner/'.$item->image) }}" width="150px" /><br/>{{ $item->image }}</td><td>{{ $item->link }}</td><td>{{ $item->show_end->format("d M Y") }}</td>
                                         <td>
                                             <a href="{{ url('/admin/banners/' . $item->id) }}" class="btn btn-success btn-xs" title="View Banner"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/admin/banners/' . $item->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Banner"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>

@@ -64,7 +64,6 @@ class ProfileController extends Controller {
 
             // $request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['user_image_cover'] = $fileName;
-
         }
 
         if ($request->hasFile('user_image')) {

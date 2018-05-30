@@ -49,7 +49,6 @@ use AuthenticatesUsers;
             // Authentication passed...
             if (Auth::user()->banned_until < Carbon::now()){
 	              Session::put('qureta_fullname',Auth::user()->name);
-
                 Session::flash('alert-type','alert-info');
                 Session::flash('login_message','Halo ' . Auth::user()->name . '! Selamat menulis');
                 return redirect()->intended('/');

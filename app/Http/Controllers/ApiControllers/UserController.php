@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon;
 use Session;
+use App\Followers;
+use Image;
+use User;
+use DB;
 use App\Log;
 
 class UserController extends Controller {
@@ -21,20 +25,15 @@ class UserController extends Controller {
         'data' => ['id' => $request->u]
       ]);
     }
-    public function checkToken (Request $request)
+    public function checkToken ($userLogin,$token)
     {
-      $user = \App\User::where('id', $request->u)->where(['api_token' => $request->t])->first();
+      $user = \App\User::where('id', $userLogin)->where(['api_token' => $token])->first();
       if($user){
-        return response()->json([
-          'status' => 'success',
-          'token' => $request->t,
-          'data' => ['id' => $request->u]
-        ]);
-      }else{
-        return response()->json([
-          'status' => 'fail',
-          'data' => ['message' => 'Invalid token.']
-        ]);
+        return true;
+      }
+      else
+      {
+        return false;
       }
     }
     public function getUsername (Request $request)
@@ -82,20 +81,17 @@ class UserController extends Controller {
         ]);
       }
     }
-    public function getEmail (Request $request)
+    public function checkFollow ($userLogin,$id)
     {
-      /*$user = \App\User::select('email')->where('id', $request->n)->first();
-      if($user){
-        return response()->json([
-          'status' => 'success',
-          'data' => $user
-        ]);
-      }else{*/
-        return response()->json([
-          'status' => 'fail',
-          'data' => ['message' => 'Data not found.']
-        ]);
-      //}
+      $data = DB::table('followers')->where('follower_id',$userLogin)->where('user_id',$id)->count();
+      if($data!=0)
+      {
+        return true;
+      }
+      else
+      {
+        return false; 
+      }
     }
     public function getPhone (Request $request)
     {
@@ -339,20 +335,23 @@ class UserController extends Controller {
     }
     public function getProfile (Request $request)
     {
+      $userLogin = isset($request->userLogin)? $request->userLogin:0;
+      $token = isset($request->token)? $request->token:0;
       if($request->get=="slug")
       {
-        $request->n = getId($request->n);
+        $request->id = getId($request->id);
       }
-      $user = \App\User::select('id','username','name','email','phone_number','role','user_image','post_count')->where('id',$request->n)->first();
+      $user = \App\User::select('id','username','name','email','phone_number','role','user_image','post_count')->where('id',$request->id)->first();
       $data['user_id']=$user->id;
       $data['username']=$user->username;
       $data['name']=$user->name;
       //$data['email']=$user->email;
       $data['phone']=$user->phone_number;
+      $data['email']=$user->email;
       $data['role']=$user->role;
-      $data['user_image']=asset('/uploads/avatar/').$user->image;
+      $data['user_image']=asset('/uploads/avatar/')."/".$user->user_image;
       $data['post_count']=$user->post_count;
-      $um = \App\User_metum::where('user_id',$request->n)->get();
+      $um = \App\User_metum::where('user_id',$request->id)->get();
       foreach($um as $umm){
         $uma[$umm->meta_name] = $umm->meta_value;
       }
@@ -361,20 +360,22 @@ class UserController extends Controller {
       $data['pendidikan']=isset($uma['pendidikan'])? $uma['pendidikan']:'';
       $data['profesi']=isset($uma['profesi'])? $uma['profesi']:'';
       $data['short_bio']=isset($uma['short_bio'])? $uma['short_bio']:'';
-      $data['tanggallahir']=isset($uma['tanggallahir'])? $uma['tanggallahir']:'';
-      $data['tempatlahir']=isset($uma['tempatlahir'])? $uma['tempatlahir']:'';
+      $data['tanggal_lahir']=isset($uma['tanggallahir'])? $uma['tanggallahir']:'';
+      $data['tempat_lahir']=isset($uma['tempatlahir'])? $uma['tempatlahir']:'';
       $data['twitter']=isset($uma['twitter'])? $uma['twitter']:'';
+      $data['linkedin']=isset($uma['linkedin'])? $uma['linkedin']:'';
       $data['website']=isset($uma['website'])? $uma['website']:'';
-      $data['follower']=\App\Followers::where('user_id',$request->n)->count();
-      $data['following']=\App\Followers::where('follower_id',$request->n)->count();
+      $data['follow']=$this->checkFollow($userLogin,$user->id);
+      $data['follower']=\App\Followers::where('user_id',$request->id)->count();
+      $data['following']=\App\Followers::where('follower_id',$request->id)->count();
       return response()->json([
         'success' => true,
-        'data' => $data
+        'hasil' => $data
       ]);
     }
     public function getMetaProfile (Request $request)
     {
-      $um = \App\User_metum::where('user_id',$request->n)->get();
+      $um = \App\User_metum::where('user_id',$request->id)->get();
       foreach($um as $umm){
         $uma[$umm->meta_name] = $umm->meta_value;
       }
@@ -451,78 +452,88 @@ class UserController extends Controller {
     }
     public function follow (Request $request)
     {
-      $userid = $request->u;
-      $followerid = $request->n;
-      $user = \App\User::find($userid);
-      $follower = \App\User::find($followerid);
-      $user->follow($follower);
-      return response()->json([
-        'status' => 'success'
-      ]);
-    }
-    public function unfollow (Request $request)
-    {
-      $userid = $request->userid;
-      $followerid = $request->followerid;
-      $user = \App\User::find($userid);
-      $follower = \App\User::find($followerid);
-      $user->unfollow($follower);
-      return response()->json([
-        'status' => 'success'
-      ]);
-    }
-    public function checkFollow (Request $request)
-    {
-      $follow = \App\Followers::where('user_id', $request->u)->where('follower_id',$request->n)->count();
-      return response()->json([
-        'status' => 'success',
-        'data' => ['following' => $follow]
-      ]);
+      $userLogin = $request->userLogin;
+      $token = $request->token;
+      $id = $request->id;
+      if($this->checkToken($userLogin,$token))
+      {
+        $id = $request->id;
+        if($this->checkFollow($userLogin,$id))
+        {
+          $id = \App\User::find($id);
+          $userLogin = \App\User::find($userLogin);
+          $id->unfollow($userLogin);
+          return response()->json([
+          'status' => 'success',
+          'hasil' => ['sukses' => true,'follow' => $this->checkFollow($userLogin,$id)]
+          ]);
+        }
+        else
+        {
+          $id = \App\User::find($id);
+          $userLogin = \App\User::find($userLogin);
+          $id->follow($userLogin);
+          return response()->json([
+          'status' => 'success',
+          'hasil' => ['sukses' => true,'follow' => $this->checkFollow($userLogin,$id)]
+          ]);
+        }
+      }
     }
     public function getQuretans (Request $request)
     {
-      $u = isset($request->u)? $request->u:0;
-      $l = isset($request->l)? $request->l:10;
-      $n = isset($request->n)? $request->n:0;
+      $userLogin = isset($request->userLogin)? $request->userLogin:0;
+      $token = isset($request->token)? $request->token:0;
+      $limit = isset($request->limit)? $request->limit:10;
+      $offset = isset($request->offset)? $request->offset:0;
       $user = \App\User::select('id','name','username','role as user_role','user_image','post_count')
-      ->where('status', 1)->where('post_count','>','0')->orderBy('post_count','DESC')->limit($l)->offset($n)->get();
+      ->where('status', 1)->where('post_count','>','0')->orderBy('post_count','DESC')->limit($limit)->offset($offset*$limit)->get();
       foreach($user as $key=>$row)
       {
           $um =  \App\User_metum::select('meta_value')->where('user_id', $row->id)->where('meta_name','profesi')->first();
-          $user[$key]['profesi'] = isset($um)? $um->meta_value:'';
+          $userImage = parse_url($user[$key]['user_image']);
+          if (empty($userImage['scheme'])) {
+            $userImage = "http://qureta.com/uploads/avatar/".$user[$key]['user_image'];
+          }
+          else
+          {
+            $userImage = $user[$key]['user_image'];
+          }
+          $user[$key]['user_image'] = $userImage;
+          $user[$key]['user_profesi'] = isset($um)? $um->meta_value:'';
           $um =  \App\User_metum::select('meta_value')->where('user_id', $row->id)->where('meta_name','short_bio')->first();
           $user[$key]['short_bio'] = isset($um)? $um->meta_value:'';
           $user[$key]['follower_count'] =  \App\Followers::where('user_id', $row->id)->count();
           $user[$key]['following_count'] =  \App\Followers::where('follower_id', $row->id)->count();
-          $user[$key]['follow'] =  \App\Followers::where('user_id', $row->id)->where('follower_id', $u)->count();
+          $user[$key]['follow'] =  \App\Followers::where('user_id', $row->id)->where('follower_id', $userLogin)->count()==1?true:false;
       }
       return response()->json([
         'status' => 'success',
-        'data' => $user
+        'hasil' => $user
       ]);
     }
     public function getSearchUser (Request $request)
     {
-      $n = isset($request->n)? $request->n:'';
-      $o = isset($request->o)? $request->o:0;
-      $u = isset($request->u)? $request->u:0;
-      $o--;
-      $o = ($o>0 ? $o*6 : 0);
+      $search = $request->search;
+      $limit = isset($request->limit)? $request->limit:10;
+      $offset = isset($request->offset)? $request->offset:0;
+      $userLogin = isset($request->userLogin)? $request->userLogin:0;
+      $token = isset($request->token)? $request->token:0;
       $user = \App\User::select('id','name','username','role as user_role','user_image','post_count')
-      ->where('username','like','%'.$n.'%')->orWhere('name','like','%'.$n.'%')->limit(6)->offset($o)->get();
+      ->where('status', 1)->where('post_count','>','0')->where('name','like','%'.$search.'%')->limit($limit)->offset($offset)->get();
       foreach($user as $key=>$row)
       {
           $um =  \App\User_metum::select('meta_value')->where('user_id', $row->id)->where('meta_name','profesi')->first();
-          $user[$key]['profesi'] = isset($um)? $um->meta_value:'';
+          $user[$key]['user_profesi'] = isset($um)? $um->meta_value:'';
           $um =  \App\User_metum::select('meta_value')->where('user_id', $row->id)->where('meta_name','short_bio')->first();
           $user[$key]['short_bio'] = isset($um)? $um->meta_value:'';
           $user[$key]['follower_count'] =  \App\Followers::where('user_id', $row->id)->count();
           $user[$key]['following_count'] =  \App\Followers::where('follower_id', $row->id)->count();
-          $user[$key]['follow'] =  \App\Followers::where('user_id', $row->id)->where('follower_id', $u)->count();
+          $user[$key]['follow'] =  \App\Followers::where('user_id', $row->id)->where('follower_id', $userLogin)->count();
       }
       return response()->json([
         'status' => 'success',
-        'data' => $user
+        'hasil' => $user
       ]);
     }
     public function getSuggestSearchUser (Request $request)
@@ -536,159 +547,207 @@ class UserController extends Controller {
         'data' => $user
       ]);
     }
-    public function setUsername (Request $request)
+
+    public function editProfile(Request $request)
     {
-      \App\User::where('id', $request->id)->update(['username' => $v]);
-      return response()->json([
-        'status' => 'success'
+      $userLogin = $request->userLogin;
+      $token = $request->token;
+      if($this->checkToken($userLogin,$token))
+      {
+        $status;
+        if(isset($request->name))
+        {
+          $status = $this->setName($userLogin,$request->name);
+        }
+        if(isset($request->email))
+        {
+          $status = $this->setEmail($userLogin,$request->email);
+        }
+        if(isset($request->phoneNumber))
+        {
+          $status = $this->setPhone_number($userLogin,$request->phoneNumber);
+        }
+        if(isset($request->kota))
+        {
+          $status = $this->setKota($userLogin,$request->kota);
+        }
+        if(isset($request->linkedIn))
+        {
+          $status = $this->setLinkedin($userLogin,$request->linkedIn);
+        }
+        if(isset($request->minat))
+        {
+          $status = $this->setMinat($userLogin,$request->minat);
+        }
+        if(isset($request->pendidikan))
+        {
+          $status = $this->setPendidikan($userLogin,$request->pendidikan);
+        }
+        if(isset($request->profesi))
+        {
+          $status = $this->setProfesi($userLogin,$request->profesi);
+        }
+        if(isset($request->shortBio))
+        {
+          $status = $this->setShortBio($userLogin,$request->shortBio);
+        }
+        if(isset($request->tanggalLahir))
+        {
+          $status = $this->setTanggalLahir($userLogin,$request->tanggalLahir);
+        }
+        if(isset($request->tempatLahir))
+        {
+          $status = $this->setTempatLahir($userLogin,$request->tempatLahir);
+        }
+        if(isset($request->twitter))
+        {
+          $status = $this->setTwitter($userLogin,$request->twitter);
+        }
+        if(isset($request->website))
+        {
+          $status = $this->setWebsite($userLogin,$request->website);
+        }
+        if(isset($request->pass))
+        {
+          $status = $this->setPass($userLogin,$request->pass);
+        }
+        if ($request->hasFile('avatar')) {
+          $uploadPath = public_path('/uploads/avatar/');
+          $extension = 'jpg';
+          $fileName = rand(11111, 99999) . '.' . $extension;
+          $file = $request->file('avatar');
+          Image::make($file->getRealPath())->fit(240, 240)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+          $user = \App\User::where('id',$userLogin)->first();
+          $user['user_image'] = $fileName;
+          $user->save();
+          $status = true;
+        }
+        return response()->json([
+        'status' => 'success',
+        'hasil' => $status
       ]);
+      }
     }
-    public function setName (Request $request)
+
+    public function setName ($userLogin,$value)
     {
-      \App\User::where('id', $request->id)->update(['name' => $v]);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      \App\User::where('id', $userLogin)->update(['name' => $value]);
+      return true;
     }
-    public function setEmail (Request $request)
+    public function setEmail ($userLogin,$value)
     {
-      \App\User::where('id', $request->id)->update(['email' => $v]);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      \App\User::where('id', $userLogin)->update(['email' => $value]);
+      return true;
     }
-    public function setPhone_number (Request $request)
+    public function setPhone_number ($userLogin,$value)
     {
-      \App\User::where('id', $request->id)->update(['phone_number' => $v]);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      \App\User::where('id', $userLogin)->update(['phone_number' => $value]);
+        return true;
     }
-    public function setUserImage (Request $request)
+    public function setProfesi ($userLogin,$value)
     {
-      \App\User::where('id', $request->id)->update(['user_image' => $v]);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'profesi']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'profesi';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setProfesi (Request $request)
+    public function setKota ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'profesi']);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'kota']);
       $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'profesi';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
-    }
-    public function setKota (Request $request)
-    {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'kota']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
+      $requestData['user_id'] = $userLogin;
       $requestData['meta_name'] = 'kota';
-      $requestData['meta_value'] = $request->v;
+      $requestData['meta_value'] = $value;
       \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      return true;
     }
-    public function setLinkedin (Request $request)
+    public function setLinkedin ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'linkedin']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'linkedin';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'linkedin']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'linkedIn';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setMinat (Request $request)
+    public function setMinat ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'minat']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'minat';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'minat']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'minat';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setPendidikan (Request $request)
+    public function setPendidikan ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'pendidikan']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'pendidikan';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'pendidikan']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'pendidikan';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setShortBio (Request $request)
+    public function setShortBio ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'short_bio']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'short_bio';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'short_bio']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'short_bio';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setTanggalLahir (Request $request)
+    public function setTanggalLahir ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'tanggallahir']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'tanggal_lahir';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'tanggallahir']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'tanggallahir';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setTempatLahir (Request $request)
+    public function setTempatLahir ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'tempatlahir']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'tempatlahir';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'tempatlahir']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'tempatlahir';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setTwitter (Request $request)
+    public function setTwitter ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'twitter']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'twitter';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'twitter']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'twitter';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-    public function setWebsite (Request $request)
+    public function setWebsite ($userLogin,$value)
     {
-      $um = \App\User_metum::where('user_id', $request->id)->where(['meta_name' => 'website']);
-      $um->delete();
-      $requestData['user_id'] = $request->id;
-      $requestData['meta_name'] = 'website';
-      $requestData['meta_value'] = $request->v;
-      \App\User_metum::create($requestData);
-      return response()->json([
-        'status' => 'success'
-      ]);
+      $um = \App\User_metum::where('user_id', $userLogin)->where(['meta_name' => 'website']);
+        $um->delete();
+        $requestData['user_id'] = $userLogin;
+        $requestData['meta_name'] = 'website';
+        $requestData['meta_value'] = $value;
+        \App\User_metum::create($requestData);
+        return true;
     }
-}
+    public function setPass ($userLogin,$value)
+    {
+      
+      \App\User::where('id', $userLogin)->update(['password' => bcrypt($value)]);
+      return true;
+    }
+  }

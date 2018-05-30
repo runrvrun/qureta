@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        @include('includes.head')    
+        @include('includes.head')
     </head>
     <body>
         @include('includes.header')
 
         <div class="container-fluid content profile-page">        
-            <div class="row">       
+            <div class="row">
                 <div>
-                    @yield('content')                             
+                    @yield('content')
                 </div>
-            </div>        
-        </div>        
+            </div>
+        </div>
 
         <footer class="footer" id="footertop">
             @include('includes.footer')

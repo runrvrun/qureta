@@ -19,13 +19,16 @@ class Banner extends Model
     * @var string
     */
     protected $primaryKey = 'id';
+    protected $dates = [
+        'show_end'
+    ];
 
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'size', 'image', 'link'];
+    protected $fillable = ['position','name', 'size', 'image', 'link','show_end'];
 
-    
+
 }

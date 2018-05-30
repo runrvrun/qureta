@@ -417,8 +417,8 @@
                     <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
                 </a>
             </div>
-
-            <ul class="nav navbar-nav navbar-left">
+  
+            {{-- <ul class="nav navbar-nav navbar-left">
                 {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
                 <div class="input-group">
                     <div class="input-group-btn search-panel">
@@ -438,11 +438,38 @@
                     </div>
                 </div>
                 {!! Form::close() !!}
-            </ul>
+            </ul> --}}
+           
 
             <!-- Right Side Of Navbar -->
+            
             <ul class="nav navbar-nav navbar-right">
-                <!-- Authentication Links -->
+                <!-- Authentication Links -->   
+               <ul class="nav navbar-nav navbar-left">
+                {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
+                <div class="input-group">
+                         <div class="input-group form-slide">
+                            <div class="input-group-btn search-panel">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span id="search_concept"><span id="search_concept_icon" class="glyphicon glyphicon-file"></span></span> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#artikel"> <span class="glyphicon glyphicon-file"></span> Artikel</a></li>
+                                    <li><a href="#penulis"> <span class="glyphicon glyphicon-user"></span> Penulis</a></li>
+                                    <li><a href="#buqu"> <span class="glyphicon glyphicon-book"></span> Buqu</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" name="sp" value="artikel" id="search_param">
+                            <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
+                        </div>
+                    <div class="input-group-btn">
+                        <span class="btn btn-primary slide-btn" type="submit"><i class="glyphicon glyphicon-search"></i></span>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </ul>
+
+            
                 <li style="padding-right: 10px;">
                     <p class="navbar-btn">
                         <a href="{{ url('/kirim-tulisan') }}" style="background-color: #EB4320;color: #fff;" class="btn btn-default">Tulis Artikel</a>
@@ -527,6 +554,7 @@
         <div class="container">
             <div class="collapse navbar-collapse" id="app-navbar-collapse3">
                 <!-- Left Side Of Navbar -->
+                <div class="slide-nav">
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
                         <a href="{{ url('/artikel-terbaru') }}">Artikel</a>
@@ -560,7 +588,16 @@
                             <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
+                    <li>{{ HTML::link('/topik/agama', 'Agama')}}</li>
+                         <li>{{ HTML::link('/topik/budaya', 'Budaya')}}</li>
+                          <li>{{ HTML::link('/topik/buku', 'Buku')}}</li>
+                           <li>{{ HTML::link('/topik/cerpen', 'Cerpen')}}</li>
+                          <li>{{ HTML::link('/topik/ekonomi', 'Ekonomi')}}</li>
+                         <li>{{ HTML::link('/topik/filsafat', 'Filsafat')}}</li>
+                     </ul>
+                </div>
+                    
+                    {{-- <li class="dropdown">
                         <a href="{{ url('/semua-topik') }}">Topik</a>
                         <ul class="dropdown-menu dropdown-hover  multi-column columns-4">
                             <div class="row">
@@ -606,8 +643,8 @@
                                 </div>
                             </div>
                         </ul>
-                    </li>
-                </ul>
+                    </li> 
+                </ul>--}}
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="{{ url('/lomba-esai') }}">Lomba Esai</a>

@@ -7,7 +7,6 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Create New Message</div>
                     <div class="panel-body">
-
                         @if ($errors->any())
                             <ul class="alert alert-danger">
                                 @foreach ($errors->all() as $error)
@@ -15,10 +14,8 @@
                                 @endforeach
                             </ul>
                         @endif
-
-                        {!! Form::open(['url' => '/messages', 'class' => 'form-horizontal', 'files' => true]) !!}
-
-                                    <div class="form-group {{ $errors->has('sender_id') ? 'has-error' : ''}}">
+        {!! Form::open(['url' => '/messages', 'class' => 'form-horizontal', 'files' => true]) !!}
+            <div class="form-group {{ $errors->has('sender_id') ? 'has-error' : ''}}">
                 {!! Form::label('sender_id', 'Sender Id', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
                     {!! Form::number('sender_id', null, ['class' => 'form-control']) !!}
