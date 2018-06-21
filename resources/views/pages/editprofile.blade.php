@@ -7,7 +7,7 @@
     <p>{!! Session::get('flash_message') !!}</p>
 </div>
 @endif
-<div class="container">
+<div class="container" style="width:100%;">
     <div class="row">
         <div class="col-md-9">
             <div class="panel panel-default">
@@ -44,13 +44,12 @@
                         {!! Form::label('user_image_cover', 'Foto Cover', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
                             @if(!empty($user->user_image_cover))
-                            <img src="{{ URL::asset('/uploads/cover/'.$user->user_image_avatar) }}" onerror="avaError(this);"/>                  
+                            <img src="{{ URL::asset('/uploads/cover/'.$user->user_image_cover) }}" onerror="avaError(this);" style="max-width:100%;width:100%;"/>                  
                             @endif
                             {!! Form::file('user_image_cover', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('user_image_cover', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    {{ $user }}
                     <div class="form-group {{ $errors->has('name') ? 'has-error' : ''}}">
                         {!! Form::label('name', 'Nama', ['class' => 'col-md-4 control-label']) !!} <i class="fa fa-asterisk form-required"></i>
                         <div class="col-md-6">

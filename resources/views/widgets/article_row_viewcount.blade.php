@@ -1,3 +1,4 @@
+<?php Carbon::setLocale('id'); ?>
 <div class="row vertical-divider">
 @foreach ($posts as $key=>$row)
 <div class="article col-sm-3 grid-group-item">

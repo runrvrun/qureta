@@ -40,7 +40,9 @@
                     <li class="nav-divider"></li>
                     <li class="dropdown">
                         <a href="{{ url('/profile') }}" class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
-                            <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" />
+                            @if(strpos(Auth::user()->user_image,'ttps://') || strpos(Auth::user()->user_image,'ttp://'))
+                            <img src="{{ Auth::user()->user_image }}" onerror="avaError(this);"> @else
+                            <img src="{{ URL::asset('/uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);"> @endif
                         </a>
 
                         <ul class="dropdown-menu" role="menu">
@@ -417,7 +419,7 @@
                     <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
                 </a>
             </div>
-  
+
             {{-- <ul class="nav navbar-nav navbar-left">
                 {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
                 <div class="input-group">
@@ -439,12 +441,12 @@
                 </div>
                 {!! Form::close() !!}
             </ul> --}}
-           
+
 
             <!-- Right Side Of Navbar -->
-            
+
             <ul class="nav navbar-nav navbar-right">
-                <!-- Authentication Links -->   
+                <!-- Authentication Links -->
                <ul class="nav navbar-nav navbar-left">
                 {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
                 <div class="input-group">
@@ -462,14 +464,12 @@
                             <input type="hidden" name="sp" value="artikel" id="search_param">
                             <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
                         </div>
-                    <div class="input-group-btn">
-                        <span class="btn btn-primary slide-btn" type="submit"><i class="glyphicon glyphicon-search"></i></span>
-                    </div>
+                          <span class="btn btn-primary slide-btn" type="submit"><i class="glyphicon glyphicon-search"></i></span>
                 </div>
                 {!! Form::close() !!}
             </ul>
 
-            
+
                 <li style="padding-right: 10px;">
                     <p class="navbar-btn">
                         <a href="{{ url('/kirim-tulisan') }}" style="background-color: #EB4320;color: #fff;" class="btn btn-default">Tulis Artikel</a>
@@ -550,54 +550,45 @@
             </ul>
         </div>
     </nav>
+
     <nav class="navbar navbar-default navbar-lower" id="main-menu">
         <div class="container">
             <div class="collapse navbar-collapse" id="app-navbar-collapse3">
                 <!-- Left Side Of Navbar -->
-                <div class="slide-nav">
                 <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="{{ url('/artikel-terbaru') }}">Artikel</a>
+                            <ul class="dropdown-menu dropdown-hover">
+                                <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
+                                <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
+                                <li><a href="{{ url('/rekam') }}">Rekam</a></li>
+                                <li><a href="{{ url('/jejak') }}">Jejak</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown">Penulis</span></a>
+                            <ul class="dropdown-menu dropdown-hover">
+                                @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                                <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
+                                <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
+                                @endif
+                                <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
+                                <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="{{ url('/buqu-pilihan') }}">Buqu</a>
+                            <ul class="dropdown-menu dropdown-hover">
+                                @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                                <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
+                                @endif
+                                <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
+                                <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
+                                <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
+                                <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
+                            </ul>
+                        </li>
                     <li class="dropdown">
-                        <a href="{{ url('/artikel-terbaru') }}">Artikel</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/rekam') }}">Rekam</a></li>
-                            <li><a href="{{ url('/jejak') }}">Jejak</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown">Penulis</span></a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
-                            <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
-                            <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
-                            @endif
-                            <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
-                            <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="{{ url('/buqu-pilihan') }}">Buqu</a>
-                        <ul class="dropdown-menu dropdown-hover">
-                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
-                            <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
-                            @endif
-                            <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
-                            <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
-                            <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
-                        </ul>
-                    </li>
-                    <li>{{ HTML::link('/topik/agama', 'Agama')}}</li>
-                         <li>{{ HTML::link('/topik/budaya', 'Budaya')}}</li>
-                          <li>{{ HTML::link('/topik/buku', 'Buku')}}</li>
-                           <li>{{ HTML::link('/topik/cerpen', 'Cerpen')}}</li>
-                          <li>{{ HTML::link('/topik/ekonomi', 'Ekonomi')}}</li>
-                         <li>{{ HTML::link('/topik/filsafat', 'Filsafat')}}</li>
-                     </ul>
-                </div>
-                    
-                    {{-- <li class="dropdown">
                         <a href="{{ url('/semua-topik') }}">Topik</a>
                         <ul class="dropdown-menu dropdown-hover  multi-column columns-4">
                             <div class="row">
@@ -643,8 +634,9 @@
                                 </div>
                             </div>
                         </ul>
-                    </li> 
-                </ul>--}}
+                    </li>
+                </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="{{ url('/lomba-esai') }}">Lomba Esai</a>

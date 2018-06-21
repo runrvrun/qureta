@@ -60,7 +60,7 @@ class ProfileController extends Controller {
             $fileName = rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('user_image_cover');
-            Image::make($file->getRealPath())->fit(800, 450)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+            Image::make($file->getRealPath())->fit(1350, 525)->encode('jpg', 100)->save($uploadPath . $fileName)->destroy();
 
             // $request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['user_image_cover'] = $fileName;

@@ -27,48 +27,18 @@ class SocialAccountService {
             $user = User::whereEmail($providerUser->getNickname())->first();
 
             if (!$user) {
+                $uemail = $providerUser->getEmail();
+                if(empty(trim($uemail))){
+                  $uemail = $providerUser->getId();
+                }
 
                 $user = User::create([
-                            'username' => str_replace('.','_',str_replace('@','_',$providerUser->getName())),
-                            'email' => $providerUser->getEmail(),
+                            'username' => str_replace(' ','_',str_replace('.','_',str_replace('@','_',$providerUser->getName()))).rand(11111, 99999),
+                            'email' => $uemail,
                             'name' => $providerUser->getName(),
                             'user_image' => $providerUser->getAvatar(),
                             'password' => $providerName,
-                ]);
-
-                if ($providerUser->hasFile('user_image')) {
-                    $uploadPath = public_path('/uploads/avatar/');
-
-                    $extension = 'jpg';
-                    $fileName = rand(11111, 99999) . '.' . $extension;
-
-                    $file = $request->file('user_image');
-                    Image::make($file->getRealPath())->fit(240, 240)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
-
-                    //$request->file('buqu_image')->move($uploadPath, $fileName);
-                    $requestData['user_image'] = $fileName;
-                }
-            }else{
-              $user = User::create([
-                          'username' => str_replace('.','_',str_replace('@','_',$providerUser->getName())).rand(11111, 99999),                   
-                          'email' => $providerUser->getEmail(),
-                          'name' => $providerUser->getName(),
-                          'user_image' => $providerUser->getAvatar(),
-                          'password' => $providerName,
-              ]);
-
-              if ($providerUser->hasFile('user_image')) {
-                  $uploadPath = public_path('/uploads/avatar/');
-
-                  $extension = 'jpg';
-                  $fileName = rand(11111, 99999) . '.' . $extension;
-
-                  $file = $request->file('user_image');
-                  Image::make($file->getRealPath())->fit(240, 240)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
-
-                  //$request->file('buqu_image')->move($uploadPath, $fileName);
-                  $requestData['user_image'] = $fileName;
-              }
+                ]);                              
             }
 
             $account->user()->associate($user);

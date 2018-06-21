@@ -1589,5 +1589,27 @@ hr.displaynone{
   width: 100%;
   height: auto;
 }
-
-
+.slide-btn{
+    vertical-align: middle;
+    display:inline-table;
+}
+.form-slide{
+    width: 0px;
+}
+.form-slide-active{
+    width: 100px;
+}
+.box-mobile-profile .user-avatar{
+    height: 7em;
+    width: 7em;
+    border-radius: 100%;
+    border:3px solid rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+.box-mobile-profile .user-avatar img{
+    width: 100%;
+    height: auto;
+}
+.box-mobile-profile .user-info{
+    color:white;
+}

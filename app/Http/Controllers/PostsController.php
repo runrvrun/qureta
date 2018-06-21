@@ -368,7 +368,7 @@ class PostsController extends Controller {
                       if($data['at'] != '-' and $data['at'] > 0 and $data['id'] != '-' and  $data['id'] > 0 and ($data['at']==$key || ($key==count($carr)-1 and $data['at']>=count($carr))) )
                       {
                           $banner = \App\Banner::where('Id',$data['id'])->first();
-                          if($banner->show_end == '' || $banner->show_end > Carbon::now()){
+                          if ($banner->show_end > Carbon::now() || $banner->show_end < Carbon::create(1900, 1, 31, 0)){ /// < tahun 1900 == tanggal kosong
                             $data = '<div class="banner-inside-article"><a target="_blank" href="'.$banner->link.'"><img src="'.  asset('/uploads/banner/'.$banner->image).'" /></a></div>';
                             array_push($arr,$data);
                           }
