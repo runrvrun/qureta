@@ -67,14 +67,20 @@ class HomeController extends Controller {
         $kiat = $post_metum;
         //populer
         $post_metum = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::yesterday())->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
-        unset($post_metum[3]);
+        //kalau 2 hari ini kurang dari 3, ambil lagi sampai 3 hari lalu
+        if(count($post_metum) < 3){
+          $post_metum2 = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::now()->subDays(3))->where('published_at', '<', Carbon::yesterday())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
+        }
+        $post_metum = $post_metum->merge($post_metum2);
+        //ambil 3, delete sisanya
+        $post_metum->forget(3);$post_metum->forget(4);$post_metum->forget(5);
         $populer_today = $post_metum;
         //populer now
         $limit=12;
         $posts = get_popular_post($limit);
 
         ///get most popular buqus
-         $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
+        $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
         ///get latest kuliah qureta
         $kuliah = Course::with('course_users')->orderBy('updated_at','DESC')->where('enrolls_start','<=',Carbon::now())->take(4)->get();
         ///get newsflash
