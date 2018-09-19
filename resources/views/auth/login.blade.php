@@ -1,14 +1,33 @@
 @extends('layouts.app-login')
 
 @section('content')
+<style>
+body{
+  padding-top: 0px !important;
+}
+</style>
+<script>
+function clearcookie(){
+  document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+  console.log('cookie cleared');
+  alert('Selesai clear browsing data. Silakan coba login kembali.');
+}
+</script>
 <div class="desktop-only" style="min-height:100px">
 </div>
-@if (Session::has('flash_message')) 
+@if (Session::has('flash_message'))
 <div class="alert {!! Session::get('alert-type') !!} alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <p>{!! Session::get('flash_message') !!}</p>
 </div>
 @endif
+<!--div class="text-center alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <p>Qureta baru saja di update.</p>
+    <p>Bila Anda kesulitan login, clear browsing data di browser Anda atau lakukan clear data di aplikasi anda.</p>
+</div-->
+<br/>
+<br/>
 <div class="text-center logo-login">
     <a href="{{url('/')}}"> <img src="{{ URL::asset('/images/qureta-baru.png') }}" style=""></a>
 </div>
@@ -23,7 +42,7 @@
         <i class="fa fa-twitter"></i>Login dengan Twitter
     </a>
 </div>
-<form class="form-horizontal" style="" role="form" method="POST" action="{{ url('/userlogin') }}">        
+<form class="form-horizontal" style="" role="form" method="POST" action="{{ url('/userlogin') }}">
     {{ csrf_field() }}
     <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}" style="">
         <label for="email" class="col-md-4 control-label" style="color: white;"></label>
@@ -78,4 +97,7 @@
         </div>
     </div>
 </form>
+<div class="text-center">
+    <a href="https://play.google.com/store/apps/details?id=com.quretamobile.Qureta"> <img width=120 src="{{ URL::asset('/images/google-play.jpg') }}" style=""></a>
+</div>
 @endsection

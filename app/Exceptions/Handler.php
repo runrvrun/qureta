@@ -48,7 +48,13 @@ class Handler extends ExceptionHandler {
                         'responseText' => $e->getMessage()
                             ], 500);
         }
-        return parent::render($request, $exception);
+
+        //return parent::render($request, $exception);
+        if($exception->getMessage() == 'Unauthenticated.'){
+          return redirect()->guest('login');
+        }else{
+          return response()->view('errors.404',array('exception'=>$exception->getMessage()));
+        }
     }
 
     /**

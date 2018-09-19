@@ -32,7 +32,12 @@
             <?php
               $default_error_message = "Kembali ke <a href='".url('')."'>halaman depan</a>.";
             ?>
-            {!! isset($exception)? ($exception->getMessage()?$exception->getMessage():$default_error_message): $default_error_message !!}
+            @if (env('APP_DEBUG')=='true')
+            {!! $default_error_message !!}
+            {!! isset($exception)? '<br/><br/><br/><small>'.$exception.'</small>':'' !!}
+            @else
+            {!! $default_error_message !!}
+            @endif
          </small>
        </div>
       </div>

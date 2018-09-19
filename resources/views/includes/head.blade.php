@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css') }}" />
+<link rel="stylesheet" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css')}}" /> <!-- '?v=' . filemtime('./css/style.css')  -->
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick.css"/>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick-theme.css"/>
 

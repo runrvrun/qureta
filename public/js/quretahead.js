@@ -1,4 +1,20 @@
 $(document).ready(function (e) {
+    function imgError(image) {
+        image.onerror = "";
+        image.src = "/uploads/post/thumb/noimage.jpg";
+        return true;
+    }
+    function avaError(image) {
+        image.onerror = "";
+        image.src = "/uploads/avatar/noavatar.jpg";
+        return true;
+    }
+    function buquError(image) {
+        image.onerror = "";
+        image.src = "/uploads/buqu/nocover.jpg";
+        return true;
+    }
+
     /** filter search bar **/
     $('.search-panel .dropdown-menu').find('a').click(function (e) {
         e.preventDefault();
@@ -56,21 +72,6 @@ $(document).ready(function (e) {
     });
 });
 
-function imgError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/noimage.jpg";
-    return true;
-}
-function avaError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/noavatar.jpg";
-    return true;
-}
-function buquError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/nocover.jpg";
-    return true;
-}
 
 /** show header on scroll up **/
 var didScroll;
@@ -105,9 +106,9 @@ function hasScrolled() {
         $('#main-menu').removeClass('nav-down').addClass('nav-up');
     } else {
         // Scroll Up
-        //if (st + $(window).height() < $(document).height()) {
+        if (st + $(window).height() < $(document).height()) {
             $('#main-menu').removeClass('nav-up').addClass('nav-down');
-        //}
+        }
     }
 
     lastScrollTop = st;

@@ -4,6 +4,9 @@ body{
     margin-top: 0px;
     font-family: Oswald,'Open Sans',sans-serif;
 }
+.grey-bg{
+  background-color: #ECEFEF;
+}
 .desktop-only{
     display: none;
 }
@@ -69,10 +72,6 @@ br .break-buqu-mobile{
 
 br .break-mobile{
     display: none;
-}
-
-hr .hr-home{
-    margin-bottom: -10px;
 }
 
 .container-2{
@@ -178,11 +177,13 @@ div.content.profile-page .profile-side{
     margin:0 1px;
 }
 
-.footer {
-    position: relative;
+footer{
+  min-height: 200px;
+  background-color: #fff;
 }
 
 #footertop{
+    position: relative;
     margin: 15px 0;
     padding: 10px 0;
     bottom: 0;
@@ -191,6 +192,7 @@ div.content.profile-page .profile-side{
     border-bottom: 1px solid #bbb;
 }
 #footerbottom{
+    position: relative;
     margin: 10px;
     text-align: center;
     bottom: 0;
@@ -293,12 +295,19 @@ form#navBarSearchForm{
     display: block;
 }
 
+.row.topic-title{
+  background-color: #fff;
+}
+
 .topic-title h3 a{
     font-size: 16px;
     color: #EB4320;
     font-weight: bold;
 }
 
+.buqu-slider, .kuliah-slider{
+  background-color: #fff;
+}
 
 .buqu-slider .panel{
     -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .05);
@@ -343,6 +352,13 @@ form#navBarSearchForm{
     width: calc(100% - 60px);
     overflow: hidden;
     transition: all 0.5s ease;
+}
+
+.article{
+  background-color: #fff;
+  box-shadow: 2px 2px 2px #ddd;
+  margin: 0 0 10px 0;
+  padding-bottom: 15px;
 }
 
 .recommended-user .article{
@@ -421,7 +437,6 @@ div.user-info div.name a{
 }
 .article-info .title{
     font-size: 18px;
-    margin: 10px 0;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -631,8 +646,13 @@ hr.rowspace{
     border: 0;
 }
 
-h2.page-title{
+.page-title{
+  background-color: #fff;
+}
+
+.page-title h2{
     font-size:23px;
+    padding-left: 12px;
 }
 
 .publish-action{
@@ -796,10 +816,6 @@ ul.ui-autocomplete li{
     width: 336px;
 }
 
-.select-view{
-    display: none;
-}
-
 .article-featured-img{
     max-width: 100%;
     margin-bottom: 10px;
@@ -868,9 +884,8 @@ ul.ui-autocomplete li{
 
 .post-image-credit{
     color: #888;
-    text-transform: uppercase;
     font-weight: lighter;
-    font-size : 75%; 
+    font-size : 90%;
 }
 
 .mainslider-image{
@@ -1085,7 +1100,7 @@ body .container.content{
 }
 
 div.container.content{
-    margin-top:65px;
+    margin-top:85px;
 }
 
 .foot-links li a:link,.foot-links li a:hover,.foot-links li a:visited{
@@ -1123,7 +1138,6 @@ div.container.content{
 }
 
 .select-view{
-    display: block;
     font-size:16px;
     color: #999;
     text-align: right;
@@ -1200,7 +1214,7 @@ hr.displaynone{
     background: url("/images/verified.png") no-repeat;
     background-size: contain;
     height: 1em;
-    width: 100%;
+    width: 20px;
 }
 
 .ajax-loading{
@@ -1267,6 +1281,11 @@ hr.displaynone{
     }
     .login-input{
         width: 30%;
+    }
+
+    .article{
+      background-color: #fff;
+      box-shadow: none;
     }
 
     div.container.content{

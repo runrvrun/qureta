@@ -15,6 +15,10 @@
                 <div class="user-info" style="float:right;margin-top:10px;">
                     <h3 style="display:inline-block">{{ $users->name }}</h3>
                     @if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
+            		{{ $profile['profesi'] or ''}}
+		        @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || $users->id == Auth::user()->id))
+                  <small><a href="{{url('/profile/edit/'.$users->id)}}"><i class="fa fa-pencil"></i> Edit Profile</a></small>
+              		@endif
                     <small class="verified-user" style="width:15px">&nbsp;</small>
                     @endif
                     <p style="opacity:0.8;text-align:right;margin-right:1em;">
@@ -75,6 +79,10 @@
                             <div class="text-center">
                                 <button class="btn-default" id="btnFollowUser" style="margin:auto">
                                     <i class="fa fa-user-plus"></i> Follow</button>
+                                @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
+                                    <a href="{{ url('/profile/edit/'.$users->id) }}"><button class="btn-default" style="margin:auto">
+                                        <i class="fa fa-pencil"></i> Edit Profile</button></a>
+                                @endif
                             </div>
                             @endif @endif @else
                             <a href="{{url('/login')}}">

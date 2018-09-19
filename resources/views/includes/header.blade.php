@@ -1,3 +1,30 @@
+<script>
+function avaError(image) {
+    image.onerror = "";
+    image.src = "/uploads/avatar/noavatar.jpg";
+    return true;
+}
+</script>
+<style>
+.scroll-topic {
+  white-space: nowrap;
+  overflow-x: scroll; // scroll
+  -webkit-overflow-scrolling: touch;
+  background-color: #0776bd;
+  line-height: 34px;
+}
+.scroll-topic a{
+  color:#fff;
+  margin: 5px;
+}
+#app-navbar-collapse-profile ul>li{
+  margin: 10px 20px;
+}
+#app-navbar-collapse-profile ul>li a{
+  color:#333;
+  font-weight: normal;
+}
+</style>
 <!--default/mobile header-->
 <div id="wrap" class="mobile-only">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -36,50 +63,7 @@
                         <a href="{{ url('/login') }}">Login</a>
                     </li>
                     <li class="nav-divider"></li>
-                    @else
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="{{ url('/profile') }}" class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
-                            @if(strpos(Auth::user()->user_image,'ttps://') || strpos(Auth::user()->user_image,'ttp://'))
-                            <img src="{{ Auth::user()->user_image }}" onerror="avaError(this);"> @else
-                            <img src="{{ URL::asset('/uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);"> @endif
-                        </a>
-
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
-                                    <strong>{{ Auth::user()->name }}</strong>
-                                    <br/>Lihat Profil
-                                </a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ url('/profile/edit') }}">Edit Profil</a></li>
-                            <li role="separator" class="divider"></li>
-                            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                            <li><a href="{{ url('/admin') }}">Administration</a></li>
-                            <li role="separator" class="divider"></li>
-                            @elseif (Auth::user()->role === 'partner')
-                            <li><a href="{{ url('/admin/workshops') }}">Administration</a></li>
-                            <li role="separator" class="divider"></li>
-                            @endif
-                            <li>
-                                <a href="{{ url('/logout') }}"
-                                   onclick="event.preventDefault();
-                                       document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-
-                                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
                     @endif
-                    <li class="dropdown">
-                        <a class="btn btn-default" style="background-color: #EB4320;color: #fff !important;margin:0px 45px !important" href="{{ url('/kirim-tulisan') }}">Tulis Artikel</a> </li>
-                    <li class="nav-divider"></li>
                     <li class="dropdown">
                         <a href="{{ url('/artikel-terbaru') }}" data-toggle="dropdown" class="dropdown-toggle">Artikel</a>
                         <ul>
@@ -116,47 +100,6 @@
                     </li>
                     <li class="nav-divider"></li>
                     <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Topik</a>
-                        <div class="row">
-                                <div class="col-xs-5">
-                                    <ul class="dropdown">
-                                        {{ HTML::link('/topik/agama', 'Agama')}}
-                                        <br><br>
-                                        {{ HTML::link('/topik/budaya', 'Budaya')}}<br><br>
-                                        {{ HTML::link('/topik/buku', 'Buku')}}<br><br>
-                                        {{ HTML::link('/topik/cerpen', 'Cerpen')}}<br><br>
-                                        {{ HTML::link('/topik/ekonomi', 'Ekonomi')}}<br><br>
-                                        {{ HTML::link('/topik/filsafat', 'Filsafat')}}<br><br>
-                                        {{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}} <br><br>
-                                        {{ HTML::link('/topik/hiburan', 'Hiburan')}}<br><br>
-                                        {{ HTML::link('/topik/hukum', 'Hukum')}}<br><br>
-                                        {{ HTML::link('/topik/keluarga', 'Keluarga')}}<br><br>
-                                        {{ HTML::link('/topik/kesehatan','Kesehatan')}}<br><br>
-                                        {{ HTML::link('/topik/kuliner', 'Kuliner')}}
-                                    </ul>
-                                </div>
-                                <div class="col-xs-6">
-                                    <ul class="dropdown">
-                                        {{ HTML::link('/topik/lingkungan', 'Lingkungan')}}<br><br>
-                                        {{ HTML::link('/topik/media', 'Media')}}<br><br>
-                                        {{ HTML::link('/topik/olahraga', 'Olahraga')}}<br><br>
-                                        {{ HTML::link('/topik/pendidikan', 'Pendidikan')}}<br><br>
-                                        {{ HTML::link('/topik/perempuan', 'Perempuan')}}<br><br>
-                                        {{ HTML::link('/topik/politik', 'Politik')}}<br><br>
-                                        {{ HTML::link('/topik/puisi', 'Puisi')}}<br><br>
-                                        {{ HTML::link('/topik/saintek', 'Saintek')}}<br><br>
-                                        {{ HTML::link('/topik/sejarah', 'Sejarah')}}<br><br>
-                                        {{ HTML::link('/topik/seni', 'Seni')}}<br><br>
-                                        {{ HTML::link('/topik/tip-and-trick', 'Tip&trik')}}<br><br>
-                                        {{ HTML::link('/topik/wisata', 'Wisata')}}<br><br>
-                                        {{ HTML::link('/semua-topik', 'Semua Topik')}}
-                                    </ul>
-                                </div>
-
-                            </div>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Lomba Esai</a>
                         <ul>
                             <li><a href="{{ url('/lomba-esai') }}">Ikuti Lomba</a></li>
@@ -174,6 +117,7 @@
                     </li>
 <div style="padding-bottom:25px"></div>
                 </ul>
+                <br/><br/><br/>
 				</div>
 			</div>
 <div id="sidebar-overlay" onclick="sidebarBack();"></div>
@@ -190,12 +134,13 @@
                 <button type="button" class="btn btn-danger navbar-toggle collapsed pull-left">
                     <a href="{{ url('/kirim-tulisan') }}"><span><i class="fa fa-pencil-square-o fa-2x"></i></span></a>
                 </button>
-                <button type="button" class="btn navbar-toggle collapsed pull-right">
+                <button type="button" class="btn navbar-toggle collapsed pull-right" data-toggle="collapse" data-target="#app-navbar-collapse-profile" aria-expanded="false" aria-controls="app-navbar-collapse-profile">
                   @if(Auth::check())
-                    <a href="{{ url('/profile') }}" class="navbar-avatar">
-  <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" /></a>
+                    <span class="navbar-avatar">
+                      <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" />
+                    </span>
                   @else
-                    <a href="{{ url('/profile') }}"><span><i class="fa fa-sign-in fa-2x"></i></span></a>
+                    <a href="{{ url('/login') }}"><span><i class="fa fa-user fa-2x"></i></span></a>
                   @endif
                 </button>
                 <button type="button" class="navbar-toggle collapsed pull-right" data-toggle="collapse" data-target="#app-navbar-collapse2" aria-expanded="false" aria-controls="app-navbar-collapse2">
@@ -211,163 +156,18 @@
                     <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
                 </a>
             </div>
+            <div class="navbar-header scroll-topic">
+              <span style="margin-left:10px;">{{ HTML::link('/topik/politik', 'Politik')}}</span>
+              {{ HTML::link('/topik/agama', 'Agama')}}
+              {{ HTML::link('/topik/hiburan', 'Hiburan')}}
+              {{ HTML::link('/topik/pendidikan', 'Pendidikan')}}
+              {{ HTML::link('/topik/kuliner', 'Kuliner')}}
+              {{ HTML::link('/topik/kesehatan', 'Kesehatan')}}
+              {{ HTML::link('/topik/saintek', 'Saintek')}}
+              {{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}}
+              <span style="margin-right:10px;">{{ HTML::link('/topik/wisata', 'Wisata')}}</span>
+            </div>
 
-            <!--menu for mobile
-            <div class="collapse navbar-collapse" id="app-navbar-collapse1">
-                <ul class="nav navbar-nav">
-                    {!! Form::open(array('method'=>'GET', 'action'=>'QueryController@search', 'class'=>'form navbar-form searchform',  'id'=>'navBarSearchForm', 'role'=>'search')) !!}
-                    <div class="input-group">
-                        <input type="hidden" name="sp" value="artikel" id="search_param">
-                        <input type="text" class="form-control" placeholder="Cari artikel, penulis, atau buqu" name="q">
-                        <div class="input-group-btn">
-                            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
-                    </div>
-                    {!! Form::close() !!}
-                </ul>
-                <ul class="nav navbar-nav">
-                    @if (Auth::guest())
-                    <li class="dropdown">
-                        <a href="{{ url('/login') }}">Login</a>
-                    </li>
-                    <li class="nav-divider"></li>
-                    @else
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="{{ url('/profile') }}" class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
-                            <img src="{{ URL::asset('uploads/avatar/'.Auth::user()->user_image) }}" onerror="avaError(this);" />
-                        </a>
-
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url('/profile/'.Auth::user()->username) }}">
-                                    <strong>{{ Auth::user()->name }}</strong>
-                                    <br/>Lihat Profil
-                                </a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ url('/password/change') }}">Ubah Password</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ url('/profile/edit') }}">Edit Profil</a></li>
-                            <li role="separator" class="divider"></li>
-                            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                            <li><a href="{{ url('/admin') }}">Administration</a></li>
-                            <li role="separator" class="divider"></li>
-                            @elseif (Auth::user()->role === 'partner')
-                            <li><a href="{{ url('/admin/workshops') }}">Administration</a></li>
-                            <li role="separator" class="divider"></li>
-                            @endif
-                            <li>
-                                <a href="{{ url('/logout') }}"
-                                   onclick="event.preventDefault();
-                                       document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-
-                                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    @endif
-                    <li class="dropdown">
-                        <a href="{{ url('/kirim-tulisan') }}">Tulis Artikel</a> </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="{{ url('/artikel-terbaru') }}" data-toggle="dropdown" class="dropdown-toggle">Artikel <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url('/tulisanku') }}">Tulisanku</a></li>
-                            <li><a href="{{ url('/artikel-populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/rekam') }}">Rekam</a></li>
-                            <li><a href="{{ url('/jejak') }}">Jejak</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Penulis <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url('/penulis-terbaru') }}">Terbaru</a></li>
-                            <li><a href="{{ url('/penulis-populer') }}">Terpopuler</a></li>
-                            <li><a href="{{ url('/penulis-favorit') }}">Terfavorit</a></li>
-                            <li><a href="{{ url('/penulis-produktif') }}">Terproduktif</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Buqu <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor'))
-                            <li><a href="{{ url('/buqu-terbaru') }}">Buqu Terbaru</a></li>
-                            @endif
-                            <li><a href="{{ url('/buqu-pilihan') }}">Buqu Pilihan</a></li>
-                            <li><a href="{{ url('/buqu-populer') }}">Buqu Terpopuler</a></li>
-                            <li><a href="{{ url('/rakbuqu') }}">Rak Buqu</a></li>
-                            <li><a href="{{ url('/buqus/create') }}">Buat Buqu</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Topik <span class="caret"></span></a>
-                        <ul class="dropdown-menu multi-column columns-4">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <ul class="dropdown">
-                                        {{ HTML::link('/topik/agama', 'Agama')}}
-                                        <br><br>
-                                        {{ HTML::link('/topik/budaya', 'Budaya')}}<br><br>
-                                        {{ HTML::link('/topik/buku', 'Buku')}}<br><br>
-                                        {{ HTML::link('/topik/cerpen', 'Cerpen')}}<br><br>
-                                        {{ HTML::link('/topik/ekonomi', 'Ekonomi')}}<br><br>
-                                        {{ HTML::link('/topik/filsafat', 'Filsafat')}}<br><br>
-                                        {{ HTML::link('/topik/gaya-hidup', 'Gaya Hidup')}} <br><br>
-                                        {{ HTML::link('/topik/hiburan', 'Hiburan')}}<br><br>
-                                        {{ HTML::link('/topik/hukum', 'Hukum')}}<br><br>
-                                        {{ HTML::link('/topik/keluarga', 'Keluarga')}}<br><br>
-                                        {{ HTML::link('/topik/kesehatan','Kesehatan')}}<br><br>
-                                        {{ HTML::link('/topik/kuliner', 'Kuliner')}}
-                                    </ul>
-                                </div>
-                                <div class="col-xs-6">
-                                    <ul class="dropdown">
-                                        {{ HTML::link('/topik/lingkungan', 'Lingkungan')}}<br><br>
-                                        {{ HTML::link('/topik/media', 'Media')}}<br><br>
-                                        {{ HTML::link('/topik/olahraga', 'Olahraga')}}<br><br>
-                                        {{ HTML::link('/topik/pendidikan', 'Pendidikan')}}<br><br>
-                                        {{ HTML::link('/topik/perempuan', 'Perempuan')}}<br><br>
-                                        {{ HTML::link('/topik/politik', 'Politik')}}<br><br>
-                                        {{ HTML::link('/topik/puisi', 'Puisi')}}<br><br>
-                                        {{ HTML::link('/topik/saintek', 'Saintek')}}<br><br>
-                                        {{ HTML::link('/topik/sejarah', 'Sejarah')}}<br><br>
-                                        {{ HTML::link('/topik/seni', 'Seni')}}<br><br>
-                                        {{ HTML::link('/topik/tip-and-trick', 'Tip&trik')}}<br><br>
-                                        {{ HTML::link('/topik/wisata', 'Wisata')}}<br><br>
-                                        {{ HTML::link('/semua-topik', 'SEMUA TOPIK')}}
-                                    </ul>
-                                </div>
-
-                            </div>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Lomba Esai <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url('/lomba-esai') }}">Ikuti Lomba</a></li>
-                            <li><a href="{{ url('/profile/qlomba?tulisanpage=1') }}">Info Lomba</a></li>
-                            <li><a href="{{ url('/peserta-lomba-esai') }}">Peserta Lomba</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Workshop <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url('/workshop') }}">Daftar Workshop</a></li>
-                            <li><a href="{{ url('/profile/qworkshop?tulisanpage=1') }}">Info Workshop</a></li>
-                        </ul>
-                    </li>
-
-                </ul>
-            </div> -->
 			<script type="text/javascript">
 			function sidebar(){
 				$('#sidebar-mobile').removeClass('animate-sidebar-back');
@@ -405,6 +205,28 @@
                 </ul>
                 @endif
                 @endif
+            </div>
+            <!--profile for mobile-->
+            <div class="collapse navbar-collapse" id="app-navbar-collapse-profile">
+              <ul class="nav navbar-nav">
+                  @if(Auth::check())
+                  <li>{{ HTML::link('/profile', Auth::user()->name)}}</li>
+                  <li>{{ HTML::link('/profile', 'Lihat Profil')}}</li>
+                  <li>{{ HTML::link('/password/change', 'Ubah Password')}}</li>
+                  <li>{{ HTML::link('/profile/edit', 'Edit Profil')}}</li>
+                  @if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
+                  <li>{{ HTML::link('/admin', 'Administration')}}</li>
+                  @endif
+                  <li><a href="{{ url('/logout') }}"
+                     onclick="event.preventDefault();
+                             document.getElementById('logout-form').submit();">
+                      Logout
+                  </a>
+                  <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                      {{ csrf_field() }}
+                  </form></li>
+                  @endif
+              </ul>
             </div>
         </div>
     </nav>

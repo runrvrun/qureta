@@ -28,7 +28,6 @@ class HomeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-
         ///get last 4 featured post for each category
         //aktual
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
@@ -65,11 +64,15 @@ class HomeController extends Controller {
         $slides[4] = $post_metum[4];
         unset($post_metum[4]);
         $kiat = $post_metum;
-        //populer
-        $post_metum = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::yesterday())->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
+        //populer, ambil hanya yang featured_category
+        $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
+                    $query->where('meta_name', 'post_featured_category');
+                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::yesterday())->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
         //kalau 2 hari ini kurang dari 3, ambil lagi sampai 3 hari lalu
         if(count($post_metum) < 3){
-          $post_metum2 = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::now()->subDays(3))->where('published_at', '<', Carbon::yesterday())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
+          $post_metum2 = Post::with('post_authors')->whereHas('post_metum', function($query) {
+                      $query->where('meta_name', 'post_featured_category');
+                  })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::now()->subDays(3))->where('published_at', '<', Carbon::yesterday())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
         }
         $post_metum = $post_metum->merge($post_metum2);
         //ambil 3, delete sisanya

@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        @include('includes.head')  
-        @yield('addcss')  
+        @include('includes.head')
+        @yield('addcss')
     </head>
     <body>
         @include('includes.header')
 
-        <div class="container content">        
-            <div class="row">       
+        <div class="container content">
+            <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    @yield('content')                 
+                    @yield('content')
                 </div>
-            </div>        
-        </div>        
+            </div>
+        </div>
 
-        <footer class="footer" id="footertop">
+        <footer>
             @include('includes.footer')
             @yield('addjs')
         </footer>

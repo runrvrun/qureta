@@ -270,59 +270,6 @@ class PostsController extends Controller {
         if(!empty($content))
         {
             $terkait = Post_metum::where('meta_name', 'related_post')->where('post_id', $id)->value('meta_value');
-            // $terkait = "[{\"at\": 5, \"id\":15}]";
-/**
-            $content = htmlspecialchars($content, ENT_QUOTES,'UTF-8',false);
-            $content = str_replace('&lt;p', '<p', $content);
-            $content = str_replace('&lt;/p', '</p', $content);
-            // $content = str_replace('&lt;/p&gt;', '</p>', $content);
-            $content = str_replace('&gt;', '>', $content);
-
-            //fix blockquote
-            $content = str_replace('&lt;blockquote>', '<p>&lt;blockquote&gt;</p>', $content);
-            $content = str_replace('&lt;/blockquote>', '<p>&lt;/blockquote&gt;</p>', $content);
-
-            $terkait = json_decode($terkait,true);
-            $dom = new \DOMDocument();
-            libxml_use_internal_errors(true);
-            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
-            $domx = new \DOMXPath($dom);
-            $entries = $domx->evaluate("//p");
-            $arr = array();
-            $i=0;
-
-            foreach ($entries as $entry) {
-                if(is_array($terkait) || is_object($terkait))
-                {
-                    foreach($terkait as $key => $data)
-                    {
-                        if($data['at'] != '-' and  $data['id'] != '-' and $i == $data['at'])
-                        {
-                            $slug = Post::findOrFail($terkait[$key]['id'])->post_slug;
-                            $title = Post::findOrFail($terkait[$key]['id'])->post_title;
-                            $data = '<div class="bacajuga-box">Baca Juga: <a target="'.$slug.'" href="/post/'.$slug.'">'.$title.'</a></div>';
-                            array_push($arr,$data);
-                        }
-                    }
-                }
-                $data = '<' . $entry->tagName . '>' . $entry->nodeValue .  '</' . $entry->tagName . '>';
-                array_push($arr,$data);
-                $i++;
-            }
-            if(is_array($terkait) || is_object($terkait))
-                {
-                    foreach($terkait as $key => $data)
-                    {
-                        if($data['at'] != '-' and  $data['id'] != '-' and $data['at'] > count($arr))
-                        {
-                            $slug = Post::findOrFail($terkait[$key]['id'])->post_slug;
-                            $title = Post::findOrFail($terkait[$key]['id'])->post_title;
-                            $data = '<div class="bacajuga-box">Baca Juga: <a target="'.$slug.'" href="/post/'.$slug.'">'.$title.'</a></div>';
-                            array_push($arr,$data);
-                        }
-                    }
-                }
-                 */
             $carr = explode('</p>',$content);
             $terkait = json_decode($terkait,true);
 
@@ -386,7 +333,8 @@ class PostsController extends Controller {
         $limit = 10;
         $post = Post::where('post_slug', '=', $permalink)->first();
         $populer = get_popular_post($limit);
-        $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(4);
+        // $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(4);
+        $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(3)->get();
 
         if ($post == null)
             abort('404');
@@ -567,7 +515,15 @@ class PostsController extends Controller {
         $requestData['updated_by'] = Auth::user()->username;
 
         $post = Post::findOrFail($id);
-        $post->update($requestData);
+
+        //published? author cannot save anymore
+        if ($post->post_status <> 'publish') {
+          $post->update($requestData);
+        } elseif (Auth::user()->role=='admin' || Auth::user()->role=='editor') {
+          $post->update($requestData);
+        } else {
+          return redirect('/edit-tulisan/'.$post->post_slug);
+        }
 
         $requestCat = ['post_id' => $post->id, 'meta_name' => 'post_category', 'meta_value' => $request->post_category];
         Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->delete();

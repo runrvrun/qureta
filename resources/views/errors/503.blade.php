@@ -40,7 +40,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <div><img src="{{ URL::asset('/images/qureta-baru.png') }}"></img></div>
+                <div><img src="{{ URL::asset('/images/qureta-long.png') }}"></img></div>
                 <div class="title">We're down for maintenance.</div>
                 <div class="title">Be right back.</div>
             </div>

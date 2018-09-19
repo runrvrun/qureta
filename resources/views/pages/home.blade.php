@@ -1,3 +1,13 @@
+<style>
+  body{
+    background-color: #ECEFEF !important;
+  }
+  @media only screen and (min-width: 768px), (-webkit-max-device-pixel-ratio: 1.25), (max-resolution: 120dpi) {
+    body{
+      background-color: #FFF !important;
+    }
+  }
+</style>
 @extends('layouts.home')
 
 @section('title')
@@ -11,9 +21,8 @@
 @section('content')
 <!-- terpopuler-now mobile -->
 <div id="wrap" class="mobile-only">
-	<div class="" style="margin-top:4.8em;"></div>
 	<div style="width:100vw;overflow:hidden;">
-	<div class="slideshow-populer-now-mobile">
+	<div class="slideshow-populer-now-mobile" style="margin-top:100px;">
 		@foreach ($populer_today as $key=>$row)
 			<div class="terpopuler-home-atas-col" title="{{ $row->post_title }}" style="background:linear-gradient(rgba(0,0,0,0)0%,rgba(0,0,0,0)60%, rgba(0,0,0,0.7)95%),url('{{ URL::asset('/uploads/post/'.$row->post_image) }}');background-size:cover;background-position:center;height:18em;position:relative">
 				<center> <a href="{{ url('/post/'.$row->post_slug) }}"> <h3 class="terpopuler-home-atas-title-mobile" align="center" style="text-shadow:0px 2px 5px rgba(0,0,0,0.9);width:100%;padding:20px;padding-bottom:0px;">{{ $row->post_title }}</h3></a></center>
@@ -156,7 +165,7 @@
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+		<hr class="row-divider desktop-only">
     <!--topic row 2-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -222,7 +231,53 @@
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+    <?php
+    $recommended_writers = get_recommended_user();
+    ?>
+    @if(count($recommended_writers)>0)
+        <!--recommended writers-->
+        <div class="row topic-title">
+            <div class="col-sm-12">
+                <h3>{{ HTML::link('/penulis-favorit', 'PENULIS FAVORIT')}}</h3>
+            </div>
+        </div>
+        <div class="row penulis-slider recommended-user" style="height: 115px;" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
+        @foreach($recommended_writers as $recw)
+            <div class="article col-sm-3 grid-group-item" style="padding:0px;">
+                <div class="user-info">
+                    @if(strpos($recw->user->user_image,'ttps://') || strpos($recw->user->user_image,'ttp://'))
+                    <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
+                    @else
+                    <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
+                    @endif
+                    <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
+    @if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'partner' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
+    <span class="verified-user"></span>
+    @endif
+    </div>
+                    <div class="title">{{ get_user_profesi($recw->user->id) }}
+                    </div>
+                    @if(Auth::check() && $recw->user->id !== Auth::user()->id)
+                    <!--logged in and not own profile, show follow button-->
+                    @if (isFollowing($recw->user->id))
+                    <div>
+                        <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
+                    </div>
+                    @else
+                    <div>
+                        <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
+                    </div>
+                    @endif
+                    @else
+                    <div>
+                        <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+        </div>
+    @endif
     <!--topic row 3-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -288,55 +343,7 @@
         @endif
         @endforeach
     </div>
-<?php
-$recommended_writers = get_recommended_user();
-?>
-@if(count($recommended_writers)>0)
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
-    <!--recommended writers-->
-    <div class="row topic-title">
-        <div class="col-sm-12">
-            <h3>{{ HTML::link('/penulis-favorit', 'PENULIS FAVORIT')}}</h3>
-        </div>
-    </div>
-    <div class="buqu-slider recommended-user" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
-    @foreach($recommended_writers as $recw)
-        <div class="article col-sm-3 grid-group-item">
-            <div class="user-info">
-                @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))
-                <div class="image"><img src="{{ $recw->user->user_image }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
-                @else
-                <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user->user_image) }}" alt="{{ $recw->user->user_image }}" onerror="avaError(this);" /></div>
-                @endif
-                <div class="name">{{ HTML::link('/profile/'.$recw->user->username, $recw->user->name)}}
-@if(isset($recw->user->role) && ($recw->user->role == 'premium' || $recw->user->role == 'partner' || $recw->user->role == 'admin' || $recw->user->role == 'editor'))
-<span class="verified-user"></span>
-@endif
-</div>
-                <div class="title">{{ get_user_profesi($recw->user->id) }}
-                </div>
-                @if(Auth::check() && $recw->user->id !== Auth::user()->id)
-                <!--logged in and not own profile, show follow button-->
-                @if (isFollowing($recw->user->id))
-                <div>
-                    <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
-                </div>
-                @else
-                <div>
-                    <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->user->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
-                </div>
-                @endif
-                @else
-                <div>
-                    <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
-                </div>
-                @endif
-            </div>
-        </div>
-    @endforeach
-    </div>
-@endif
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+		<hr class="row-divider desktop-only">
     <!--topic row 4-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -402,7 +409,53 @@ $recommended_writers = get_recommended_user();
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+    <?php
+    $productive_writers = get_productive_user();
+    ?>
+    @if(count($productive_writers)>0)
+        <!--recommended writers-->
+        <div class="row topic-title">
+            <div class="col-sm-12">
+                <h3>{{ HTML::link('/penulis-favorit', 'PENULIS PRODUKTIF')}}</h3>
+            </div>
+        </div>
+        <div class="row penulis-slider recommended-user" style="height: 115px;" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
+        @foreach($productive_writers as $recw)
+            <div class="article col-sm-3 grid-group-item" style="padding:0px;">
+                <div class="user-info">
+                    @if(strpos($recw->user_image,'ttps://') || strpos($recw->user_image,'ttp://'))
+                    <div class="image"><img src="{{ $recw->user_image }}" alt="{{ $recw->user_image }}" onerror="avaError(this);" /></div>
+                    @else
+                    <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$recw->user_image) }}" alt="{{ $recw->user_image }}" onerror="avaError(this);" /></div>
+                    @endif
+                    <div class="name">{{ HTML::link('/profile/'.$recw->username, $recw->name)}}
+    @if(isset($recw->role) && ($recw->role == 'premium' || $recw->role == 'partner' || $recw->role == 'admin' || $recw->role == 'editor'))
+    <span class="verified-user"></span>
+    @endif
+    </div>
+                    <div class="title">{{ get_user_profesi($recw->id) }}
+                    </div>
+                    @if(Auth::check() && $recw->id !== Auth::user()->id)
+                    <!--logged in and not own profile, show follow button-->
+                    @if (isFollowing($recw->id))
+                    <div>
+                        <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->id }}" style="background-color: #337ab7;"> <i class="fa fa-check"></i> Following</button>
+                    </div>
+                    @else
+                    <div>
+                        <button class="btn btn-primary btnFollowUser" data-userid="{{ $recw->id }}" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button>
+                    </div>
+                    @endif
+                    @else
+                    <div>
+                        <a href="{{url('/login')}}"><button class="btn btn-primary btnFollowUser" style="background-color: #337ab7;"> <i class="fa fa-user-plus"></i> Follow</button></a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+        </div>
+    @endif
     <!--topic row 5-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -468,7 +521,7 @@ $recommended_writers = get_recommended_user();
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+		<hr class="row-divider desktop-only">
     <div class="row topic-title">
         <div class="col-sm-12">
             <h3>{{ HTML::link('artikel-populer', 'TERPOPULER')}}</h3>
@@ -527,13 +580,13 @@ $recommended_writers = get_recommended_user();
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+		<hr class="row-divider desktop-only">
     <div class="row topic-title">
         <div class="col-sm-12">
             <h3>{{ HTML::link('https://kuliah.qureta.com', 'KULIAH QURETA')}}</h3>
         </div>
     </div>
-    <div class="buqu-slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
+    <div class="row kuliah-slider" style="height: 315px;" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
         @foreach ($kuliah as $key=>$row)
         @if($key<4)
         <div class="article col-sm-3 grid-group-item">
@@ -561,7 +614,7 @@ $recommended_writers = get_recommended_user();
         @endif
         @endforeach
     </div>
-    <hr class="hr-home" style="margin-top: 20px; margin-bottom: -10px; border: 0;border-top: 1px solid #eee;">
+		<hr class="row-divider desktop-only">
     <!--slider and banner-->
     <div class="row topic-title">
         <div class="col-sm-12">
@@ -612,7 +665,6 @@ $recommended_writers = get_recommended_user();
             @endforeach
         </div>
     </div>
-    <hr class="hr-home" style="margin-top: 30px; margin-bottom: 10px; border: 0;border-top: 1px solid #eee;">
     <div class="row adsense-homepage-top">
         <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Qresponsive -->
@@ -628,7 +680,66 @@ $recommended_writers = get_recommended_user();
 </div>
 @endsection
 @section('addjs')
+<script type="text/javascript" src="slick/slick.min.js"></script>
+<!--slider (slick)-->
 <script>
+    $(document).ready(function (e) {
+        $('.penulis-slider').slick({
+            infinite: true,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 5000,
+            pauseOnHover: true,
+            swipe: true,
+            arrows: false,
+            responsive: [{
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
+                }
+            ]
+        });
+        $('.buqu-slider').slick({
+            infinite: true,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 10000,
+            pauseOnHover: true,
+            swipe: true,
+            arrows: false,
+            responsive: [{
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+        $('.kuliah-slider').slick({
+            infinite: true,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 10000,
+            pauseOnHover: true,
+            swipe: true,
+            arrows: false,
+            responsive: [{
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+    });
+
 $(document).ready(function () {
     $('.img-slider').show();
 		$('.slideshow-populer-now-mobile').slick({

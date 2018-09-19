@@ -26,9 +26,13 @@ class ProfileController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $user_id = Auth::user()->id;
-        $profile = ''; //get user_meta where user_id=$user_id
-        return view('pages.profile', ['profile' => $profile]);
+       if(Auth::check()){
+          $user_id = Auth::user()->id;
+          $profile = ''; //get user_meta where user_id=$user_id
+          return view('pages.profile', ['profile' => $profile]);
+       }else{
+         return redirect('/login');
+       }
     }
 
     /**
@@ -77,7 +81,7 @@ class ProfileController extends Controller {
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['user_image'] = $fileName;
-            
+
         }
 
         $requestData['name'] = $request->name;
@@ -96,6 +100,8 @@ class ProfileController extends Controller {
             if($p == 'tanggallahir' && $request->$p == '1900-01-01 00:00:00'){
                 $request->$p = '';
             }
+
+            if(empty($request->$p)) $request->$p=' ';
 
             $requestData = array('user_id' => $user->id, 'meta_name' => $p, 'meta_value' => $request->$p);
             if ($request->$pid == '') {
@@ -159,6 +165,10 @@ class ProfileController extends Controller {
     }
 
     public function profil($username = null) {
+        if($username == null && !Auth::check()){
+          return redirect('/login');
+        }
+
         $pagetitle = 'Profil';
         if ($username == null) {
             $username = Auth::User()->username;

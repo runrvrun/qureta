@@ -1,3 +1,13 @@
+<style>
+  body{
+    background-color: #ECEFEF !important;
+  }
+  @media only screen and (min-width: 768px), (-webkit-max-device-pixel-ratio: 1.25), (max-resolution: 120dpi) {
+    body{
+      background-color: #FFF !important;
+    }
+  }
+</style>
 @extends('layouts.app')
 
 @section('title')
@@ -27,7 +37,7 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
     </div>
-<h2 class="page-title">{!! $pagetitle !!} </h2>
+<div class="row page-title"><h2>{!! $pagetitle !!} </h2></div>
 <!--select view-->
 <div class="row">
     <div class="col-md-12 select-view desktop-only">
@@ -37,7 +47,6 @@
         </div>
     </div>
 </div>
-<hr class="rowspace">
     @if($posts->count() == 0)
 	<br/><br/><p>Tidak ada hasil</p>
     @endif
@@ -162,12 +171,26 @@ $('.share_button').click(function () {
 });
 </script>
 <script>
+var scrollTimer, lastScrollFireTime = 0;
 var page = 1; //track user scroll as page number, right now page number is 1
 load_more(page); //initial content load
 $(window).scroll(function() { //detect page scroll
+    var minScrollTime = 3000;
+    var now = new Date().getTime();
     if($(window).scrollTop() + $(window).height() >= $(document).height()-170) { //if user scrolled from top to bottom of the page
-        page++; //page number increment
-        load_more(page); //load content
+      if (!scrollTimer) {
+        if (now - lastScrollFireTime > (3 * minScrollTime)) {
+          page++; //page number increment
+          load_more(page); //load content
+          lastScrollFireTime = now;
+        }
+        scrollTimer = setTimeout(function() {
+              scrollTimer = null;
+              lastScrollFireTime = new Date().getTime();
+              page++; //page number increment
+              load_more(page); //load content
+        }, minScrollTime);
+      }
     }
 });
 function load_more(page){

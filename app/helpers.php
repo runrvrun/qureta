@@ -50,7 +50,7 @@ function get_popular_post($limit = 4) {
     $populer = App\Post::with('post_authors')
             ->where('post_status', 'publish')->where('hide', 0)
             ->where('published_at','<=',Carbon::now())
-            ->where('published_at','>=',Carbon::now()->subDays(30))
+            ->where('published_at','>=',Carbon::now()->subDays(3))
             ->orderBy('view_count', 'DESC')->take($limit)->get();
 //->where('published_at','<=',Carbon::now())
     return $stickypopuler->union($populer);
@@ -195,9 +195,32 @@ function get_recommended_user() {
     return App\User_metum::with('user')->where('meta_name', '=', 'recommended')->where('meta_value', '=', '1')->inRandomOrder()->take(4)->get();
 }
 
+function get_productive_user() {
+    //user dengan paling banyak tulisan terbit dalam 1 bulan
+    $users = DB::select("SELECT u.id, post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
+FROM posts p INNER JOIN users u ON p.post_author = u.id
+WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND p.published_at > date_sub(now(), interval 1 month) AND u.status=1
+GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit 4");
+
+    return $users;
+}
+
 function get_post_topik($id) {
     $categoryid = App\Post_metum::where('meta_name', 'post_category')->where('post_id', $id)->first();
     $category = App\Category::find($categoryid->meta_value);
 
     return $category;
+}
+function get_another_post ($user_id){
+    $stickypos = rand(1,4);
+    if($stickypos==1){
+        $ori = App\Post::where('post_author','=',$user_id)->where('post_status', '=', 'publish')->where('published_at','<=',Carbon::now())->orderBy('created_at', 'DESC')->take(4);
+    }elseif($stickypos==2){
+        $ori = App\Post::where('post_author','=',$user_id)->where('post_status', '=', 'publish')->where('published_at','<=',Carbon::now())->orderBy('view_count', 'DESC')->take(4);
+    }elseif($stickypos==3){
+        $ori = App\Post::where('post_author','=',$user_id)->where('post_status', '=', 'publish')->where('published_at','<=',Carbon::now())->orderBy('published_at', 'DESC')->take(4);
+    }else{
+        $ori = App\Post::where('post_author','=',$user_id)->where('post_status', '=', 'publish')->where('published_at','<=',Carbon::now())->orderBy('post_title', 'DESC')->take(4);
+    }
+    return $ori;
 }

@@ -31,7 +31,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
 //    Route::get('/', function() {
 //        return View::make('admin.index');
 //    });
-    Route::get('/', 'PostsController@pendingposts');
+    Route::get('/', 'Admin\\AnalyticsController@index');
     Route::get('/pendingposts', 'PostsController@pendingposts');
     Route::get('/publishposts', 'PostsController@publishposts');
     Route::get('/publishposts/data', 'PostsController@publishpostsData');
@@ -66,6 +66,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/hiddenposts', 'PostsController@hiddenposts');
     Route::get('/lockedposts', 'PostsController@lockedposts');
     Route::get('/emailfillprofession','ProfileController@EmailFillProfession');
+    Route::get('/analytics', 'Admin\\AnalyticsController@index');
 });
 
      Route::resource('messages', 'MessagesController');
@@ -79,13 +80,12 @@ Route::get('/kirim-tulisan/lomba/{a}', 'PostsController@kirimtulisanlomba')->mid
 Route::get('/kirim-tulisan/workshop/{a}', 'PostsController@kirimtulisanworkshop')->middleware('auth');
 Route::get('/edit-workshop/{a}/{b}', 'WorkshopController@edit');
 Route::get('/edit-tulisan/{a}', 'PostsController@edittulisan')->middleware('auth');
-Route::get('/profile', 'ProfileController@profil')->middleware('auth');
+Route::get('/profile', 'ProfileController@profil');
 Route::get('/profile/edit', 'ProfileController@edit')->middleware('auth');
 Route::get('/profile/edit/{a}', 'ProfileController@edit')->middleware('auth');
 Route::patch('/profile/update', 'ProfileController@update')->middleware('auth');
 Route::get('/profile/tulisan/{a}', 'ProfileController@tulisan');
 Route::get('/profile/buqu/{a}', 'ProfileController@buqu');
-Route::get('/profile/{a}', 'ProfileController@show');
 Route::get('/profile/{a}', 'ProfileController@profil');
 Route::get('/penulis', 'ProfileController@populer');
 Route::get('/penulis-favorit', 'ProfileController@favorit');

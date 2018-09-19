@@ -5,12 +5,12 @@
 @endsection
 
 @section('content')
-{{ Carbon::setLocale('id') }}
+<?php Carbon::setLocale('id') ?>
 <h2 class="page-title">{{ $pagetitle }}</h2>
-<div class="row vertical-divider">
+<div>
     @if(count($lombas)>0)
       @foreach ($lombas as $key=>$row)
-      <div class="article grid-group-item">
+      <div class="grid-group-item">
           <div class="article-info lomba">
               <div class="title">{{ $row->competition_title }}</div>
               <p>{{ $row->competition_content }}</p>
