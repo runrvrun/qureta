@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-10">
             <div class="panel panel-default">
-                <div class="panel-heading">Naskah Lomba: {{ $competition_posts[0]->comps->competition_title or '' }}</div>
+                <div class="panel-heading">Naskah Lomba: {{ $competition_posts[0]->comps->competition_title ?? '' }}</div>
                 <div class="panel-body">
 
                         <!--<a href="{{ url('/admin/competition_posts/create') }}" class="btn btn-primary btn-xs" title="Add New Competition_post"><span class="glyphicon glyphicon-plus" aria-hidden="true"/></a>-->

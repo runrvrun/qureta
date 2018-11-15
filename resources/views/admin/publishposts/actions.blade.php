@@ -9,7 +9,7 @@
     {!! Form::button('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" title="Push Notification" />', array(
             'type' => 'submit',
             'class' => 'btn btn-warning btn-xs',
-            'title' => 'Delete Post',
+            'title' => 'Send Notification',
             'onclick'=>'return confirm("Send push notification? (Do not send too often)")'
     )) !!}
 {!! Form::close() !!}

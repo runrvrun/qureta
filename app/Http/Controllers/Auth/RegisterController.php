@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\User_metum;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
@@ -65,9 +66,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+      //dd($data);
         $user = User::create([
             'name' => $data['name'],
-            'username' => $data['username'],
+            'username' => str_replace(' ','_',$data['username']),
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);

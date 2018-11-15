@@ -47,6 +47,10 @@ class Buqu extends Model {
         return $this->belongsTo('App\User', 'buqu_author');
     }
 
+    public function buqu_posts() {
+        return $this->hasMany('App\Buqu_post', 'buqu_id');
+    }
+
     function buqulikes() {
         return $this->belongsToMany('App\User', 'buqulikes', 'buqu_id', 'follower_id')->withTimestamps();
     }

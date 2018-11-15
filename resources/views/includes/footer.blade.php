@@ -100,4 +100,4 @@
     <!-- Datatable App scripts -->
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     @stack('scripts')
-    <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js') }}"></script>
+    <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/qureta.js?v=201809181512') }}"></script>

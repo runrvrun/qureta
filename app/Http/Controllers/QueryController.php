@@ -13,6 +13,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class QueryController extends Controller {
 
+      public function __construct()
+      {
+        date_default_timezone_set('Asia/Jakarta');
+      }
     public function search(Request $request) {
         if ($request->input('gototopik')) {
             $q = $request->input('gototopik');

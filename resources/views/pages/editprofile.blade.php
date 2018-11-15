@@ -29,12 +29,12 @@
                     'files' => true,
                     'autocomplete' => 'off'
                     ]) !!}
-                    {{ Form::hidden('user_id',$user->id) }}                    
+                    {{ Form::hidden('user_id',$user->id) }}
                     <div class="form-group {{ $errors->has('full_name') ? 'has-error' : ''}}">
                         {!! Form::label('user_image', 'Foto', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
                             @if(!empty($user->user_image))
-                            <img src="{{ URL::asset('/uploads/avatar/'.$user->user_image) }}" onerror="avaError(this);"/>                  
+                            <img src="{{ URL::asset('/uploads/avatar/'.$user->user_image) }}" onerror="avaError(this);"/>
                             @endif
                             {!! Form::file('user_image', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('user_image', '<p class="help-block">:message</p>') !!}
@@ -44,7 +44,7 @@
                         {!! Form::label('user_image_cover', 'Foto Cover', ['class' => 'col-md-4 control-label']) !!}
                         <div class="col-md-6">
                             @if(!empty($user->user_image_cover))
-                            <img src="{{ URL::asset('/uploads/cover/'.$user->user_image_cover) }}" onerror="avaError(this);" style="max-width:100%;width:100%;"/>                  
+                            <img src="{{ URL::asset('/uploads/cover/'.$user->user_image_cover) }}" onerror="avaError(this);" style="max-width:100%;width:100%;"/>
                             @endif
                             {!! Form::file('user_image_cover', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('user_image_cover', '<p class="help-block">:message</p>') !!}
@@ -130,7 +130,7 @@
                     </div>
                     <div class="form-group {{ $errors->has('website') ? 'has-error' : ''}}">
                         {!! Form::label('website', 'Website', ['class' => 'col-md-4 control-label']) !!}
-                        <div class="col-md-6">                            
+                        <div class="col-md-6">
                             {{ Form::hidden('website_id',null) }}
                             {!! Form::text('website', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('website', '<p class="help-block">:message</p>') !!}
@@ -168,7 +168,7 @@
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-4">
                             {!! Form::submit('Update Profil', ['class' => 'btn btn-primary']) !!}
-                        </div>            
+                        </div>
                     </div>
                     {!! Form::close() !!}
 @if(Auth::user()->role === 'admin')

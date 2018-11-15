@@ -20,6 +20,10 @@ use Mail;
 
 class ProfileController extends Controller {
 
+      public function __construct()
+      {
+        date_default_timezone_set('Asia/Jakarta');
+      }
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +53,7 @@ class ProfileController extends Controller {
 	    Auth::logout();
             return redirect('/login');
 	}
-        if(!isset($request->recommended)){
+        if(!isset($request->recommended) || $request->recommended==null){
             $request->recommended=0;
         }
         $this->validate($request, [
@@ -104,6 +108,11 @@ class ProfileController extends Controller {
             if(empty($request->$p)) $request->$p=' ';
 
             $requestData = array('user_id' => $user->id, 'meta_name' => $p, 'meta_value' => $request->$p);
+
+            if($requestData['meta_name'] =='recommended' && $requestData['meta_value']==" ") {
+                $requestData['meta_value'] = "0";
+            }
+
             if ($request->$pid == '') {
                 User_metum::create($requestData);
             } else {

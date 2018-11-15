@@ -29,7 +29,7 @@ function clearcookie(){
 <br/>
 <br/>
 <div class="text-center logo-login">
-    <a href="{{url('/')}}"> <img src="{{ URL::asset('/images/qureta-baru.png') }}" style=""></a>
+    <a href="{{url('/')}}"> <img src="{{ URL::asset('/images/qureta-long-70.png') }}" style=""></a>
 </div>
 
 <div class="row center-block text-center social-login login-facebook" style="">

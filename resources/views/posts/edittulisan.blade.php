@@ -288,28 +288,9 @@
                             </a>
                         </div>
                         <div class="col-md-7">
-                            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'editor')
-                            <div id="ModalPesan" class="modal fade">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                            <h4 class="modal-title">Kembalikan Tulisan</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            {!! Form::textarea('moderation_message', null,['id'=>'moderation-message', 'size'=>'40x5']) !!}
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                            {!! Form::submit('Confirm', ['name' => 'savedraft', 'class' => 'btn btn-primary pull-right marginleftright','onclick' =>  'return KembalikanTulisan('.$post->id.')']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             @if($post->post_status == 'pending' || $post->post_status == 'publish')
-                            <a href="#ModalPesan" role="button" class="btn btn-warning pull-right marginleftright" data-toggle="modal">Kembalikan ke Penulis</a>
-
-                            @endif
+                            {!! Form::submit('Kembalikan ke Penulis', ['name' => 'savedraft', 'class' => 'btn btn-warning pull-right marginleftright']) !!}
+                            {!! Form::text('moderation_message', null,['id'=>'moderation-message', 'placeholder'=> 'pesan kembalikan ke penulis', 'size'=>'60', 'class'=>'form-control pull-right']) !!}
                             @endif
                         </div>
                     </div>

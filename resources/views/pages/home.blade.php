@@ -148,19 +148,16 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <?php $topik = get_post_topik($row->id)  ?>
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">
                     {!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}
                 </div>
             </div>
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='{{ $row->post_title }} | Qureta' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'>
-	</div>
-	</div>
         </div>
         @endif
         @endforeach
@@ -218,15 +215,14 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <?php $topik = get_post_topik($row->id)  ?>
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>
         @endif
         @endforeach
@@ -330,15 +326,14 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <?php $topik = get_post_topik($row->id)  ?>
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot;  <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot;  <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>
         @endif
         @endforeach
@@ -396,15 +391,14 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <?php $topik = get_post_topik($row->id)  ?>
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot;  <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot;  <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>
         @endif
         @endforeach
@@ -508,15 +502,14 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <?php $topik = get_post_topik($row->id)  ?>
-                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="'/topik/'{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
+                <div class="info">{{ $row->published_at->diffForHumans() }} &middot; {{read_time($row->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>
         @endif
         @endforeach
@@ -554,28 +547,13 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this);" /></a>
+                <a href="{{ url('/post/'.$row->post_slug) }}"><img src="{{ URL::asset('/uploads/post/thumb/'.$row->post_image) }}" alt="{{ $row->post_image }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
                 <div class="info">{{ $row->published_at->diffForHumans() }} &middot; <i class="fa fa-eye"></i> {{ number_format($row->view_count,0,',','.') }} views</div>
                 <div class="title">{!! HTML::link('/post/'.$row->post_slug, $row->post_title)!!}</div>
             </div>
-            <!--Share Like Buqu-->
-            <!--div class="article-action">
-                <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                @if(Auth::check())
-                @if (isLiking($row->id))
-                <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                @else
-                <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                @endif
-                @else
-                <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
-                @endif
-                <span class="action-button"><a href="{{ url('/buqu_posts/create/'.$row->id) }}"><i class="fa fa-book"></i> {{ get_post_buqu_count($row->id) }}</a></span>
-            </div-->
-            <div class="share{{ $row->id }}" style="display:none"><div class='shareaholic-canvas' data-app='share_buttons' data-app-id='26649626' data-title='Qureta - {{ $row->post_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'></div></div>
         </div>
         @endif
         @endforeach
@@ -599,7 +577,7 @@
             </div>
             <!--Image-->
             <div class="article-image">
-                <a href="https://kuliah.qureta.com"><img src="https://kuliah.qureta.com/uploads/course/{{ $row->url_foto }}" alt="{{ $row->url_foto }}" onerror="imgError(this);" /></a>
+                <a href="https://kuliah.qureta.com"><img src="https://kuliah.qureta.com/uploads/course/{{ $row->url_foto }}" alt="{{ $row->url_foto }}" onerror="imgError(this)" /></a>
             </div>
             <!--Article-->
             <div class="article-info">
@@ -640,23 +618,6 @@
                                 <div class="col-md-12 judul" style="position: absolute; bottom:10%; text-shadow: 2px 2px 4px #000000;">
                                     {{ HTML::link('/buqu/'.$row->buqu_slug, $row->buqu_title)}}
                                 </div>
-                            </div>
-                        </div>
-                        <div class="article-action">
-                            <span class="action-button"><i class="fa fa-newspaper-o"></i> {{ get_buqu_post_count($row->id) }}</span>
-                            <span class="action-button"><a class="share_button" data-postid="{{ $row->id }}"><i class="fa fa-share-alt"></i> <span class="share-counter{{ $row->id }}">{{$row->share_count}}</span></a></span>
-                            @if(Auth::check())
-                            @if (isLikingBuqu($row->id))
-                            <span class="action-button"><a class="active btnLike" data-postid="{{ $row->id }}" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                            @else
-                            <span class="action-button"><a data-postid="{{ $row->id }}" class="btnLike" title="Like"><i class="fa fa-heart"></i> <span class="like-counter{{ $row->id }}">{{ $row->like_count }}</span></a></span>
-                            @endif
-                            @else
-                            <a href="{{ url('/login') }}"><span class="action-button"><i class="fa fa-heart-o"></i> {{$row->like_count}}</span></a>
-                            @endif
-                        </div>
-                        <div class="share{{ $row->id }}" style="display:none">
-                            <div class='shareaholic-canvas' data-app='share_buttons' data-app-id='' data-title='Qureta - {{ $row->buqu_title }}' data-link='{{ url('/post/'.$row->post_slug) }}' data-image='{{ url('/post/'.$row->post_slug) }}'>
                             </div>
                         </div>
                     </div>
@@ -757,13 +718,6 @@ $(document).ready(function (e) {
     var width = articleimage.width();
     articleimage.css('height', width * 157 / 262);
 });
-
-$('.share_button').click(function () {
-    var $this = $(this);
-    var postid = $this.data('postid');
-    $('.share' + postid).toggle();
-    $('.shareaholic-share-button.ng-scope').css('display', 'block');
-});
 $('.btnLike').click(function () {
     var $this = $(this);
     $this.toggleClass('active');
@@ -817,32 +771,6 @@ $('.btnLike').click(function () {
                 $('.like-counter' + postid).html(parseInt($('.like-counter' + postid).html(), 10) - 1)
             }
         });
-    }
-});
-// share counter
-$('.share_button').click(function () {
-    var $this = $(this);
-    var postid = $this.data('postid');
-    var token = '{{{ csrf_token() }}}';
-    var data = {"_token": token, "id": postid};
-    if (cookies_enabled()) {
-        if ($.cookie("share" + postid)) {
-            // cookie exist, already count share, do nothing
-        } else {
-            // add share counter
-            $.ajax({
-                url: "/post/incrementsharecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $.cookie("share" + postid, postid, {expires: 1});
-                    $('.share-counter' + postid).html(parseInt($('.share-counter' + postid).html(), 10) + 1)
-                }
-            });
-        }
     }
 });
 

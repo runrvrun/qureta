@@ -31,7 +31,7 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
 //    Route::get('/', function() {
 //        return View::make('admin.index');
 //    });
-    Route::get('/', 'Admin\\AnalyticsController@index');
+    Route::get('/', 'PostsController@pendingposts');
     Route::get('/pendingposts', 'PostsController@pendingposts');
     Route::get('/publishposts', 'PostsController@publishposts');
     Route::get('/publishposts/data', 'PostsController@publishpostsData');
@@ -54,12 +54,12 @@ Route::group(array('prefix' => 'admin', 'middleware' => 'AuthAdmin'), function()
     Route::get('/users/search', 'Admin\\UsersController@search');
     Route::get('/users/changepassword/{a}', 'Admin\\UsersController@changeform');
     Route::post('/users/changepass', 'Admin\\UsersController@changepassword');
-    Route::resource('/users/data', 'Admin\\UsersController@indexdata');
+    Route::get('/users/data', 'Admin\\UsersController@alluserdata');
     Route::resource('/users', 'Admin\\UsersController');
     Route::resource('/statistics/search', 'Admin\\StatisticsController@search');
     Route::resource('/statistics', 'Admin\\StatisticsController');
     Route::resource('/newsflash', 'Admin\\NewsflashesController');
-    Route::resource('/shops/data', 'Admin\\ShopsController@indexdata');
+    Route::get('/shops/data', 'Admin\\ShopsController@indexdata');
     Route::resource('/shops', 'Admin\\ShopsController');
     Route::get('/emailresetblastv3/{a}/{b}', 'Auth\\BlastResetPasswordController@resetrange');
     Route::get('/emailresetblastv3', 'Auth\\BlastResetPasswordController@resetall');
@@ -156,3 +156,8 @@ Route::resource('admin/competition_winner', 'Admin\\Competition_winnerController
 Route::get('/hometest', 'HomeController@hometest');
 
 //Route::post('/api/save-subscription', 'PushSubscriptionController@save_subscription');
+
+//ugly fix untuk handle error biar ga keluar 9742758471829304
+Route::get('/js/undefined', function () {
+    return redirect('/');
+});

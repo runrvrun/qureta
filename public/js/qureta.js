@@ -56,22 +56,6 @@ $(document).ready(function (e) {
     });
 });
 
-function imgError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/noimage.jpg";
-    return true;
-}
-function avaError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/noavatar.jpg";
-    return true;
-}
-function buquError(image) {
-    image.onerror = "";
-    image.src = "/uploads/images/nocover.jpg";
-    return true;
-}
-
 /** show header on scroll up **/
 var didScroll;
 var lastScrollTop = 0;

@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-10">
             <div class="panel panel-default">
-                <div class="panel-heading">Naskah Lomba: {{ $competition->competition_title or '' }}</div>
+                <div class="panel-heading">Naskah Lomba: {{ $competition->competition_title ?? '' }}</div>
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="datatable">

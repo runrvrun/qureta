@@ -14,15 +14,14 @@
                 </div>
                 <div class="user-info" style="float:right;margin-top:10px;">
                     <h3 style="display:inline-block">{{ $users->name }}</h3>
-                    @if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))
-            		{{ $profile['profesi'] or ''}}
+                    @if(isset($users->role) && ($users->role == 'premium' || $users->role == 'admin' || $users->role == 'editor'))            		
 		        @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || $users->id == Auth::user()->id))
                   <small><a href="{{url('/profile/edit/'.$users->id)}}"><i class="fa fa-pencil"></i> Edit Profile</a></small>
               		@endif
                     <small class="verified-user" style="width:15px">&nbsp;</small>
                     @endif
                     <p style="opacity:0.8;text-align:right;margin-right:1em;">
-                        <i>{{ $profile['profesi'] or ''}}</i>
+                        <i>{{ $profile['profesi'] ?? ''}}</i>
                     </p>
                 </div>
                 <div class="clearfix"></div>
@@ -41,7 +40,7 @@
                 </div>
                 @if(!empty($profile['short_bio']))
                 <div class="user-info-bio">
-                    <div style="font-style:italic;word-wrap: break-word;max-height:10em;overflow-x:hidden;width:103%;">{{ $profile['short_bio'] or ''}}</div>
+                    <div style="font-style:italic;word-wrap: break-word;max-height:10em;overflow-x:hidden;width:103%;">{{ $profile['short_bio'] ?? ''}}</div>
                 </div>
                 @else
                 <div style="margin:5px 0px;"></div>
@@ -288,7 +287,7 @@
                             @endif
                             <br>
                             <i style="opacity:0.7;text-align:right;padding:0px;margin:0px;">
-                                {{ $profile['profesi'] or ''}}
+                                {{ $profile['profesi'] ?? ''}}
                             </i>
                         </div>
                         <div style="display:block;">
@@ -477,7 +476,7 @@
             @endif
               </h2>
               <p>
-              {{ $profile['profesi'] or ''}}
+              {{ $profile['profesi'] ?? ''}}
               @if(Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'editor' || $users->id == Auth::user()->id))
                   <small><a href="{{url('/profile/edit/'.$users->id)}}"><i class="fa fa-pencil"></i> Edit Profile</a></small>
               @endif</p>
@@ -492,7 +491,7 @@
               @endif
               @endif
               <hr>
-              <p style="font-style:italic;color:#777">{{ $profile['short_bio'] or ''}}</p>
+              <p style="font-style:italic;color:#777">{{ $profile['short_bio'] ?? ''}}</p>
         </div>
       </div>
       <div class="row profile-main" style="background-color:#0776bd; padding-top:15px; padding-bottom:15px; color:#FFF;margin-bottom:10px">

@@ -7,6 +7,7 @@
 
 <title>Qureta @yield('title')</title>
 
+<link rel="shortcut icon" href="{{asset('favicon.ico')}}" type="image/x-icon">
 <!-- Styles -->
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="{{ URL::asset('/font-awesome/css/font-awesome.css')}}" rel="stylesheet">
@@ -14,10 +15,11 @@
 <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css')}}" /> <!-- '?v=' . filemtime('./css/style.css')  -->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick.css"/>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick-theme.css"/>
+<!--link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick-theme.css"/-->
 
 <!-- Scripts -->
+<script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/quretahead.js?v=201809181512') }}"></script>
 <script data-cfasync='false'>
 window.Laravel = <?php
 echo json_encode([

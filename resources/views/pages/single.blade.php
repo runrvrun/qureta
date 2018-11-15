@@ -12,7 +12,7 @@
   margin: 10px 0 15px 0;
 }
 .banner-inside-article>a>img{
-  width: 50%; 
+  width: 50%;
 }
 </style>
 @endsection
@@ -101,7 +101,7 @@
 <div class="post-image-credit"><small>{{ $post->post_image_credit }}</small></div>
 @endif
 <div class="article-single title">
-    <div class="info"><small><i class="fa fa-tag"></i> <a href="{{ '/topik/'.$category->category_slug }}">{{ $category->category_title or '' }}</a></small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
+    <div class="info"><small><i class="fa fa-tag"></i> <a href="{{ '/topik/'.$category->category_slug }}">{{ $category->category_title ?? '' }}</a></small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
     <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1>
     <input type="hidden" id="postid" value="{{ $post->id }}" />
 </div>
@@ -506,7 +506,7 @@ $(document).ready(function (e) {
     var isSubscribed = false;
     $(document).ready(function (e) {
       // get subscription value
-      return navigator.serviceWorker.register('/js/sw.js?v=4')
+      return navigator.serviceWorker.register('/js/sw.js?v=6')
       .then(function(registration) {
           registration.pushManager.getSubscription()
             .then(function(subscription) {
@@ -566,6 +566,7 @@ $(document).ready(function (e) {
             "{{env('VAPID_PUBLIC_KEY')}}"
           )
         };
+        console.log("vapid public key: {{env('VAPID_PUBLIC_KEY')}}");
         return registration.pushManager.subscribe(subscribeOptions);
 console.log(registration.pushManager.getSubscription());
       })

@@ -238,7 +238,7 @@ function avaError(image) {
             <div class="navbar-header">
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ URL::asset('images/qureta-logo.png') }}" alt="Qureta" />
+                    <img src="{{ URL::asset('images/qureta-long.png') }}" alt="Qureta" />
                 </a>
             </div>
 
@@ -334,7 +334,7 @@ function avaError(image) {
                 </li>
                 @else
                 <li class="dropdown">
-                    <a href="{{ url('/profile') }}" class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <a class="dropdown-toggle navbar-avatar" data-toggle="dropdown" role="button" aria-expanded="false">
                         <img src="{{ URL::asset('uploads/avatar/'. Auth::user()->user_image ) }}" onerror="avaError(this);" />
                     </a>
 
@@ -352,7 +352,7 @@ function avaError(image) {
                         <li><a href="{{ url('/admin') }}">Administration</a></li>
                         <li role="separator" class="divider"></li>
                         @elseif (Auth::user()->role === 'partner')
-                        <li><a href="{{ url('/admin/workshops') }}">Administration</a></li>
+                        <li><a href="{{ url('/admin/workshops') }}">Workshop</a></li>
                         <li role="separator" class="divider"></li>
                         @endif
                         <li>

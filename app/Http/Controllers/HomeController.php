@@ -19,6 +19,7 @@ class HomeController extends Controller {
      * @return void
      */
     public function __construct() {
+      date_default_timezone_set('Asia/Jakarta');
         //$this->middleware('auth');
     }
 
@@ -74,7 +75,9 @@ class HomeController extends Controller {
                       $query->where('meta_name', 'post_featured_category');
                   })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::now()->subDays(3))->where('published_at', '<', Carbon::yesterday())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(3)->get();
         }
+        if(!empty($post_metum2)){
         $post_metum = $post_metum->merge($post_metum2);
+        }
         //ambil 3, delete sisanya
         $post_metum->forget(3);$post_metum->forget(4);$post_metum->forget(5);
         $populer_today = $post_metum;

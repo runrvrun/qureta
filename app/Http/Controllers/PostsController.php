@@ -34,10 +34,14 @@ use Illuminate\Validation\Rule;
 use Analytics;
 use Counter;
 use Mail;
-use Datatables;
+use Yajra\Datatables\Datatables;
 
 class PostsController extends Controller {
 
+      public function __construct()
+      {
+        date_default_timezone_set('Asia/Jakarta');
+      }
     /**
      * Display a listing of the resource.
      *
@@ -637,9 +641,10 @@ class PostsController extends Controller {
         }
         update_user_post_count($post->post_author);
 
-	if (isset($request->savepublish)) {
+	      if (isset($request->savepublish)) {
             return redirect('/admin/pendingposts');
         } elseif (isset($request->savedraft)) {
+            Session::flash('flash_message', 'Naskah dikembalikan ke penulis. ');
             return redirect('/admin/pendingposts');
         } else {
             return redirect('/edit-tulisan/' . $post->post_slug);
@@ -715,11 +720,15 @@ class PostsController extends Controller {
     }
     public function publishpostsData()
      {
+         date_default_timezone_set('Asia/Jakarta');
          return Datatables::of(Post::select('posts.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
          ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
          ->addColumn('action', function ($post) {
                   return view('admin.publishposts.actions', compact('post'))->render();
-             })->make(true);
+             })->editColumn('published_at', function ($post) {
+                return $post->published_at ? with(new Carbon($post->published_at))->format('d/m/Y H:i') : '';
+            })
+             ->make(true);
      }
 
     public function hiddenposts() {

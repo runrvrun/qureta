@@ -14,6 +14,7 @@ class User extends Authenticatable {
     use Messagable;
     use HasPushSubscriptions;
 
+    protected $connection = 'qureta_prod';
     /**
      * The attributes that are mass assignable.
      *

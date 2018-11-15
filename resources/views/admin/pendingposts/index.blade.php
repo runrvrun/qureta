@@ -3,6 +3,14 @@
 @section('content')
     <div class="container">
         <div class="row">
+          @if (Session::has('flash_message'))
+          <div class="alert alert-success alert-dismissible col-md-8" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              <p>{!! Session::get('flash_message') !!}</p>
+          </div>
+          @endif
             <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">Naskah Masuk</div>
