@@ -85,14 +85,17 @@
             <div class="form-group">
                 <small>{!! Form::checkbox('readaturan','1',true) !!} Saya telah membaca dan mengerti {!! HTML::link('/page/tips-menulis','aturan penulisan') !!}.</small>
             </div>
+            <div class="form-group">
+		{!! Form::text('post_tag', null, ['class' => 'form-control', 'placeholder' => 'tulis tag']) !!}
+            </div>
             <div class="form-group form-inline {{ $errors->has('post_category') ? 'has-error' : ''}}">
                 <div class="col-md-4">Topik {!! Form::select('post_category', get_dd_categories(), null, ['class' => 'form-control']) !!} {!! $errors->first('post_category', '<p class="help-block">:message</p>') !!}</div>
                 <div class="col-md-4">
                     <small id="autosavenotify" class="pull-right"></small>
                 </div>
+
                 <div class="col-md-4">
                     {!! Form::hidden('post_status', 'draft') !!}
-                    {!! Form::submit('Kirim ke Editor', ['name' => 'savepending', 'class' => 'btn btn-primary pull-right marginleftright']) !!}
                     {!! Form::submit('Simpan', ['class' => 'btn btn-success pull-right marginleftright']) !!}
                 </div>
             </div>

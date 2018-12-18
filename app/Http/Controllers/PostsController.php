@@ -366,7 +366,8 @@ class PostsController extends Controller {
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), date("d"))->addDays(rand(1,99));
                 $metrics = 'ga%3Apageviews,ga%3Avisits';
                 $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
-                $analytics = Analytics::performQuery($startDate, $endDate, $metrics, $others);
+                $period = Period::create($startDate, $endDate);
+                $analytics = Analytics::performQuery($period, $metrics, $others);
 	        if($analytics->rows[0][1] > $post->view_count){
                     //update view count with count from analytics
                     $post->view_count = $analytics->rows[0][1];
