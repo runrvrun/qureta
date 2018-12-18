@@ -200,7 +200,7 @@ function get_productive_user() {
     $users = DB::select("SELECT u.id, post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
 FROM posts p INNER JOIN users u ON p.post_author = u.id
 WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND p.published_at > date_sub(now(), interval 1 month) AND u.status=1
-GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit 4");
+GROUP BY post_author, u.id, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit 4");
 
     return $users;
 }

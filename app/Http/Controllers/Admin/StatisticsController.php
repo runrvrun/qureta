@@ -27,7 +27,7 @@ class StatisticsController extends Controller {
                 ->leftJoin('categories', 'post_meta.meta_value', '=', 'categories.id')
                 ->where('meta_name','post_category')
                 ->where('post_status','publish')->where('hide','0')->where('published_at', '<=', Carbon::now())
-                ->groupBy('category_title')
+                ->groupBy('category_title','category_slug')
                 ->orderBy('counter', 'DESC')->paginate(50);
 
         return view('admin.statistics.topic', compact('categories','pagetitle'));

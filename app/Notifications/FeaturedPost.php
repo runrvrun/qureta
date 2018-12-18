@@ -7,11 +7,13 @@ use Illuminate\Notifications\Messages\MailMessage;
 use NotificationChannels\WebPush\WebPushMessage;
 use NotificationChannels\WebPush\WebPushChannel;
 
-class FeaturedPost extends Notification
+class FeaturedPost extends Notification implements ShouldQueue
 {
     use Queueable;
     public $title, $body, $url;
     /**
+     *
+     *
      * Create a new notification instance.
      *
      * @return void
@@ -35,10 +37,10 @@ class FeaturedPost extends Notification
     public function toWebPush($notifiable, $notification)
     {
       $time = \Carbon\Carbon::now();
-        return WebPushMessage::create()
+        return (new WebPushMessage)
             ->title($this->title)
             ->icon(url('/images/qureta-logo.png'))
             ->body($this->body)
-            ->id($this->url);//ga ada property url, jadi pake id aja
+            ->lang($this->url);//ga ada property url, jadi pake lang aja
     }
 }

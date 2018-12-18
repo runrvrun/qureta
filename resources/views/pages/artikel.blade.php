@@ -5,62 +5,71 @@
 @endsection
 
 @section('content')
-<?php Carbon::setLocale('id'); ?>
-@if(Auth::Check())
-<input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-@endif
-@if (isset($_SESSION['flash_message']))
-<div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <p>{{ Session::get('flash_message') }}</p>
-</div>
-@endif
-    <div class="row adsense-homepage-top">
-        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- Qresponsive -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9742758471829304"
-             data-ad-slot="4756147752"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+<!-- Adsense -->
+<section id="adsensetop">
+    <div class="container">
+          @if (isset($_SESSION['flash_message']))
+          <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <p>{{ Session::get('flash_message') }}</p>
+          </div>
+          @endif
+          <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <!-- Qresponsive -->
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-9742758471829304"
+               data-ad-slot="4756147752"
+               data-ad-format="auto"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
     </div>
-<h2 class="page-title">{!! $pagetitle !!} </h2>
-<!--select view-->
-<div class="row">
-    <div class="col-md-12 select-view desktop-only">
-        <div class="btn-group" role="group">
-            <button  type="button" id="grid" class="toggle-grid-view btn btn-default"><i class="glyphicon glyphicon-th"></i> Grid</button>
-            <button  type="button" id="list" class="toggle-grid-view btn btn-default"><i class="glyphicon glyphicon-th-list"></i> List</button>
+</section>
+<!-- / Adsense -->
+<!-- Content -->
+<section id="content">
+    <div class="container">
+      <!-- Main Content -->
+        <div class="main-content">
+          <h2 class="page-title">{!! $pagetitle !!} </h2>
+          @if(count($posts))
+          <div class="column-one-third">
+                <div class="outertight smimg">
+                  <ul class="block">
+                        @foreach ($posts as $key=>$row)
+                        <li>
+                          @component('components.article_box_small', ['row' => $row])
+                          @endcomponent
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            @else
+        	   <br/><br/><h3>Tidak ada hasil</h3>
+            @endif
         </div>
+        <!-- /Main Content -->
     </div>
-</div>
-<hr class="rowspace">
-    @if($posts->count() == 0)
-	<br/><br/><p>Tidak ada hasil</p>
-    @endif
-    @include('widgets.article_row')
-@if (method_exists($posts,'render') && $posts->lastPage()>1)
-@if(isset($querystring['sp']) && isset($querystring['q']))
-<div class="pagination-wrapper"> {!! $posts->appends(['sp' => $querystring['sp'],'q' => $querystring['q']])->render() !!} </div>
-@else
-<div class="pagination-wrapper"> {!! $posts->render() !!} </div>
-@endif
-@endif
-    <div class="row adsense-homepage-bottom">
-        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- Qresponsive -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9742758471829304"
-             data-ad-slot="4756147752"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+</section>
+<!-- / Content -->
+<!-- Adsense -->
+<section id="adsensebottom">
+    <div class="container">
+          <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <!-- Qresponsive -->
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-9742758471829304"
+               data-ad-slot="4756147752"
+               data-ad-format="auto"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
     </div>
+</section>
+<!-- / Adsense -->
 @endsection
 @section('addjs')
 <script type="text/javascript" src="slick/slick.min.js"></script>

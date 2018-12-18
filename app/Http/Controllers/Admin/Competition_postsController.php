@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Session;
 use DB;
 use Auth;
-use Datatables;
+use Yajra\Datatables\Datatables;
 
 class Competition_postsController extends Controller {
 
@@ -55,7 +55,7 @@ word_count, DATE_FORMAT(published_at,\'%d-%m-%Y\') published_at')
                   return view('admin.competition_posts.actions', compact('item'))->render();
           })->addColumn('star', function ($item) {
                   return view('admin.competition_posts.star', compact('item'))->render();
-          })->make(true);
+          })->rawColumns(['star','action'])->make(true);
      }
     /**
      * Show the form for creating a new resource.

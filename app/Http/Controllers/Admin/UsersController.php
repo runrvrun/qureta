@@ -11,7 +11,7 @@ use Hash;
 use Carbon;
 use DB;
 use App\Post;
-use Datatables;
+use Yajra\Datatables\Datatables;
 
 class UsersController extends Controller {
 
@@ -30,7 +30,7 @@ class UsersController extends Controller {
         return view('admin.users.index_dt', compact('totaluser','penulis','admin','partner','premium'));
     }
 
-    public function indexdata() {
+    public function alluserdata() {
       return Datatables::of(User::select('id','username','name','email','phone_number'))
       ->addColumn('action', function ($item) {
                return view('admin.users.actions', compact('item'))->render();

@@ -32,6 +32,7 @@ use Cmgmyr\Messenger\Models\Participant;
 use Cmgmyr\Messenger\Models\Thread;
 use Illuminate\Validation\Rule;
 use Analytics;
+use Spatie\Analytics\Period;
 use Counter;
 use Mail;
 use Yajra\Datatables\Datatables;
@@ -49,24 +50,14 @@ class PostsController extends Controller {
      */
     public function index() {
         //$posts = Post::paginate(25);
-        //return view('posts.index', compact('posts'));
+        //return view('pages.index', compact('posts'));
         return redirect('/post');
     }
-
-    public function indexcategories() {
-        $posts = Post::paginate(25);
-
-        return view('posts.index', compact('posts'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\View\View
      */
-    public function create() {
-        return view('posts.create');
-    }
 
     public function kirimtulisan() {
         if (is_banned(Auth::user()->id)) {
@@ -74,7 +65,7 @@ class PostsController extends Controller {
             return redirect('/login');
         }
 	      $draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
-        return view('posts.kirimtulisan',compact('draftcount'));
+        return view('pages.kirimtulisan',compact('draftcount'));
     }
 
     public function kirimtulisanlomba($lombaid) {
@@ -84,7 +75,7 @@ class PostsController extends Controller {
         }
         $draftcount = 0;
         $lomba = Competition::findOrFail($lombaid);
-        return view('posts.kirimtulisan', compact('lomba','draftcount'));
+        return view('pages.kirimtulisan', compact('lomba','draftcount'));
     }
 
     public function kirimtulisanworkshop($workshopid) {
@@ -93,7 +84,7 @@ class PostsController extends Controller {
             return redirect('/login');
         }
         $workshop = Workshop::findOrFail($workshopid);
-        return view('posts.kirimtulisanworkshop', compact('workshop'));
+        return view('pages.kirimtulisanworkshop', compact('workshop'));
     }
 
     public function admin_kirimtulisanworkshop($workshopid) {
@@ -102,7 +93,7 @@ class PostsController extends Controller {
             return redirect('/login');
         }
         $workshop = Workshop::findOrFail($workshopid);
-        return view('posts.adminkirimtulisanworkshop', compact('workshop'));
+        return view('pages.adminkirimtulisanworkshop', compact('workshop'));
     }
 
     public function autosave(Request $request) {
@@ -184,12 +175,16 @@ class PostsController extends Controller {
             $fileName = rand(11111, 99999) . '_'. rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
+            /*
             Image::make($file->getRealPath())->resize(450, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('jpg', 80)->save($uploadThumbPath . $fileName);
-            Image::make($file->getRealPath())->resize(853, null, function ($constraint) {
+            })->encode('jpg', 100)->save($uploadThumbPath . $fileName);
+            Image::make($file->getRealPath())->resize(1000, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('jpg', 80)->save($uploadPath . $fileName)->destroy();
+            })->encode('jpg', 100)->save($uploadPath . $fileName)->destroy();
+            */
+            Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 100)->save($uploadThumbPath . $fileName);
+            Image::make($file->getRealPath())->fit(653, 373)->encode('jpg', 100)->save($uploadPath . $fileName)->destroy();
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['post_image'] = $fileName;
@@ -212,7 +207,7 @@ class PostsController extends Controller {
 
         if (isset($request->savepending)) {
             Session::flash('flash_message', 'Naskah dikirim ke editor. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
-            return view('posts.thankyou', compact('addmsg'));
+            return view('pages.thankyou', compact('addmsg'));
         } else {
             Session::flash('flash_message', 'Naskah disimpan. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
             return redirect('/edit-tulisan/' . $post->post_slug);
@@ -229,7 +224,7 @@ class PostsController extends Controller {
     public function show($id) {
         $post = Post::findOrFail($id);
 
-        return view('posts.show', compact('post'));
+        return view('pages.show', compact('post'));
     }
     function setArtikelTerkait(Request $request)
     {
@@ -358,17 +353,19 @@ class PostsController extends Controller {
             //counter: Kryptonit3
             Counter::count('post', $post->id);
             //hit google analytics once every hour, so api call limit won't reached
-            if((Carbon::parse($post->created_at)->diffInSeconds(Carbon::now()) % 60) < 30 ){
+            if(((Carbon::parse($post->created_at)->diffInSeconds(Carbon::now()) % 60) < 30 ) || (Auth::check() && Auth::user()->role == 'admin')){
 	    try {
                 //counter: google analytics
                 $startDate = $post->created_at;
                 //$endDate = Carbon::now();
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), date("d"))->addDays(rand(1,99));
-                $metrics = 'ga%3Apageviews,ga%3Avisits';
+                //$metrics = 'ga%3Apageviews,ga%3Avisits';
+                $metrics = 'ga%3Apageviews';
                 $others = array('dimensions' => 'ga%3ApagePath', 'filters' => 'ga%3ApagePath==/post/' . $post->post_slug);
                 $period = Period::create($startDate, $endDate);
                 $analytics = Analytics::performQuery($period, $metrics, $others);
-	        if($analytics->rows[0][1] > $post->view_count){
+
+		if($analytics->rows[0][1] > $post->view_count){
                     //update view count with count from analytics
                     $post->view_count = $analytics->rows[0][1];
                     //update the counter in database too
@@ -376,12 +373,19 @@ class PostsController extends Controller {
                     $post->update($requestData);
                 }
             }catch (\Exception $e) {
-                //return $e->getMessage();
+                if(Auth::check() && Auth::user()->role == 'admin'){
+		    return $e->getMessage();
+		}
             }
         }
         $post['post_content'] =  $this->addTerkait($post->post_content,$post->id);
         $post['post_content'] =  $this->addBanner($post->post_content,$post->id);
-        return view('pages.single', compact('post', 'related', 'category', 'populer','anotherPost'));
+        //penulis terfavorit
+        $terfavorit = DB::select("SELECT u.id, post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
+INNER JOIN users u ON p.post_author = u.id
+WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
+group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 5");
+        return view('pages.single', compact('post', 'related', 'category', 'populer','anotherPost','terfavorit'));
     } else {
         return redirect('/');
     }
@@ -400,7 +404,7 @@ class PostsController extends Controller {
             return redirect('/');
         }
 
-        return view('posts.edit', compact('post'));
+        return view('pages.edit', compact('post'));
     }
 
     public function edittulisan($permalink) {
@@ -415,9 +419,10 @@ class PostsController extends Controller {
             $related = Post_metum::where('post_id', $post->id)->where('meta_name', 'related_post')->value('meta_value');
             $banner_inside_article = Post_metum::where('post_id', $post->id)->where('meta_name', 'banner_inside_article')->value('meta_value');
             $competition = Competition_post::with('competition')->where('post_id', $post->id)->where('competition_id','>',0)->first();
+            $draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
             if (Auth::check()) {
                 if ($post->post_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
-                    return view('posts.edittulisan', compact('post', 'category', 'fcategory', 'competition','related','banner_inside_article'));
+                    return view('pages.kirimtulisan', compact('post', 'category', 'fcategory', 'competition','related','banner_inside_article','draftcount'));
                 }
             } else {
                 return redirect('/');
@@ -510,8 +515,8 @@ class PostsController extends Controller {
             $fileName = rand(11111, 99999) . '_' . rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('post_image');
-            Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 75)->save($uploadThumbPath . $fileName);
-            Image::make($file->getRealPath())->fit(653, 373)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+            Image::make($file->getRealPath())->fit(300, 179)->encode('jpg', 100)->save($uploadThumbPath . $fileName);
+            Image::make($file->getRealPath())->fit(653, 373)->encode('jpg', 100)->save($uploadPath . $fileName)->destroy();
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['post_image'] = $fileName;
@@ -575,6 +580,7 @@ class PostsController extends Controller {
                 $user = User::find($f->follower_id);
                 \Notification::send($user, new NewPost($post));
             }
+            update_user_post_count($post->post_author);
         } elseif (isset($request->savepending)) {
             Session::flash('flash_message', 'Naskah dikirim ke editor. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
         } elseif (isset($request->savedraft)) {
@@ -640,7 +646,6 @@ class PostsController extends Controller {
         } else {
             Session::flash('flash_message', 'Naskah disimpan. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
         }
-        update_user_post_count($post->post_author);
 
 	      if (isset($request->savepublish)) {
             return redirect('/admin/pendingposts');
@@ -707,7 +712,7 @@ class PostsController extends Controller {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('post_status', 'pending')->orderBy('submitted_at','ASC')->paginate(25);
 
-            return view('admin.pendingposts.index', compact('posts'));
+            return view('admin.pendingpages.index', compact('posts'));
         }
     }
 
@@ -715,17 +720,17 @@ class PostsController extends Controller {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             //$posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
 
-            //return view('admin.publishposts.index', compact('posts'));
-            return view('admin.publishposts.index_dt');
+            //return view('admin.publishpages.index', compact('posts'));
+            return view('admin.publishpages.index_dt');
         }
     }
     public function publishpostsData()
      {
          date_default_timezone_set('Asia/Jakarta');
-         return Datatables::of(Post::select('posts.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
+         return Datatables::of(Post::select('pages.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
          ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
          ->addColumn('action', function ($post) {
-                  return view('admin.publishposts.actions', compact('post'))->render();
+                  return view('admin.publishpages.actions', compact('post'))->render();
              })->editColumn('published_at', function ($post) {
                 return $post->published_at ? with(new Carbon($post->published_at))->format('d/m/Y H:i') : '';
             })
@@ -736,7 +741,7 @@ class PostsController extends Controller {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('hide', '1')->paginate(25);
 
-            return view('admin.posts.index', compact('posts'));
+            return view('admin.pages.index', compact('posts'));
         }
     }
 
@@ -744,7 +749,7 @@ class PostsController extends Controller {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('require_login', '1')->paginate(25);
 
-            return view('admin.posts.index', compact('posts'));
+            return view('admin.pages.index', compact('posts'));
         }
     }
 
@@ -922,7 +927,7 @@ class PostsController extends Controller {
     public function autoComplete(Request $request) {
         $query = $request->get('term','');
 
-        $posts=Post::where('post_title','LIKE','%'.$query.'%')->where('post_status','=','publish')->get();
+        $posts=Post::where('post_title','LIKE','%'.$query.'%')->where('post_status','=','publish')->take(10)->get();
 
         $data=array();
         foreach ($posts as $post) {

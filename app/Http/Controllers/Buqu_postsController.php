@@ -10,6 +10,7 @@ use App\Post;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
+use Carbon;
 
 class Buqu_postsController extends Controller {
 

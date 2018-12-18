@@ -48,7 +48,7 @@ class PagesController extends Controller
 			'post_title' => 'required'
 		]);
         $requestData = $request->all();
-        
+
         Page::create($requestData);
 
         Session::flash('flash_message', 'Page added!');
@@ -69,19 +69,19 @@ class PagesController extends Controller
 
         return view('admin.pages.show', compact('page'));
     }
-    
+
     public function showpermalink($permalink)
     {
         $page = Page::where('post_slug' , '=', $permalink)->first();
-                
+
         ///sidebar content
-        $categories = Category::pluck('category_title', 'category_slug');        
+        $categories = Category::pluck('category_title', 'category_slug');
         $populer = Post::with('post_authors')->orderBy('view_count', 'DESC')->orderBy('id', 'DESC')->take(4)->get();
 
         if (is_null($page)) {
             abort(404);
         }
-        
+
         return view('pages.page', compact('page','categories','populer'));
     }
 
@@ -113,7 +113,7 @@ class PagesController extends Controller
 			'post_title' => 'required'
 		]);
         $requestData = $request->all();
-       
+
         $page = Page::findOrFail($id);
         $page->update($requestData);
 

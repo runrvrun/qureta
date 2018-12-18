@@ -1,51 +1,38 @@
 @extends('layouts.app')
 
+@section('title')
+- Pesan
+@endsection
+@section('addhead')
+@endsection
 @section('content')
-<?php Carbon::setLocale('id') ?>
-<div class="col-md-10">
-    <h2 class="page-title">{{ $thread->subject }}</h2>
-    <p>Penerima: 
-        @foreach($users as $row)
-        {{$row->name}},
-        @endforeach
-    </p>
+<section id="content">
+    <div class="container">
+      <h2 class="page-title">{{ $thread->subject }}</h2>
 
-    @foreach($thread->messages as $message)
-    <div class="row message-block">
-        @if($message->user->username == Auth::user()->username)        
-        <div class="user-info col-md-2">
-            <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$message->user->user_image) }}" onerror="avaError(this);" /></div>
-        </div>
-        <div class="col-md-10 message-bubble me">                    
-            <div class="name">{{ HTML::link('/profile/'.$message->user->username, $message->user->name)}}</div>            
-            <p>{!! $message->body !!}</p>
-            <div class="text-muted pull-right"><small>{{ $message->created_at->format('d M Y H:i') }}</small></div>                    
-        </div>
-        @else        
-        <div class="user-info col-md-2">
-            <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$message->user->user_image) }}" onerror="avaError(this);" /></div>
-        </div>
-        <div class="col-md-10 message-bubble you">                    
-            <div class="name">{{ HTML::link('/profile/'.$message->user->username, $message->user->name)}}</div>
-            <p>{!! $message->body !!}</p>
-            <div class="text-muted pull-right"><small>{{ $message->created_at->format('d M Y H:i') }}</small></div>                    
-        </div>
-        @endif
+      @foreach($thread->messages as $message)
+      <div class="message-block">
+            @component('components.user', ['row' => $message->user])
+            @endcomponent
+            <div class="col-md-10 message-bubble me">
+                <small>{{ $message->created_at->format('d F Y H:i') }}</small>
+                <p>{!! $message->body !!}</p>
+            </div>
+      </div>
+      @endforeach
+      <div class="clearfix"></div>
+      {!! Form::open(['route' => ['messages.update', $thread->id], 'method' => 'PUT']) !!}
+      <!-- Message Form Input -->
+      <div class="form-group message-reply-block" style="margin-left:50px;">
+          <label for="message">Balasan</label><br/>
+          {!! Form::textarea('message', null, ['class' => 'form-control','style' => 'height: 80px;']) !!}
+          <!-- Submit Form Input -->
+          <div class="form-group">
+              {!! Form::submit('Submit', ['class' => 'btn btn-primary form-control']) !!}
+          </div>
+      </div>
+      {!! Form::close() !!}
     </div>
-    @endforeach
-    <div class="clearfix"></div>
-    {!! Form::open(['route' => ['messages.update', $thread->id], 'method' => 'PUT']) !!}
-    <!-- Message Form Input -->        
-    <div class="form-group">
-        <label for="message">Balasan</label>
-        {!! Form::textarea('message', null, ['class' => 'form-control','rows'=>5]) !!}
-    </div>
-
-    <!-- Submit Form Input -->
-    <div class="form-group">
-        {!! Form::submit('Submit', ['class' => 'btn btn-primary form-control']) !!}
-    </div>
-    {!! Form::close() !!}
 </div>
 @endsection
 

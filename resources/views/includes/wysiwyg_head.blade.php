@@ -1,5 +1,5 @@
  <!--froala WYSIWYG editor-->
-        <link rel="stylesheet" href="{{ URL::asset('froala/css/froala_editor.min.css') }}" />
+        <link rel="stylesheet" href="{{ URL::asset('froala/css/froala_editor.min.css?v=2') }}" />
         <link rel="stylesheet" href="{{ URL::asset('froala/css/froala_style.min.css') }}" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css">
         <link rel="stylesheet" href="{{ URL::asset('froala/css/plugins/char_counter.css') }}">

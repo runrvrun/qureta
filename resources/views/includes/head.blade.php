@@ -1,6 +1,6 @@
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="Qureta - The Future of Reading">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 @yield('og')
 <!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -8,15 +8,20 @@
 <title>Qureta @yield('title')</title>
 
 <link rel="shortcut icon" href="{{asset('favicon.ico')}}" type="image/x-icon">
-<!-- Styles -->
-<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link href="{{ URL::asset('/font-awesome/css/font-awesome.css')}}" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css')}}" /> <!-- '?v=' . filemtime('./css/style.css')  -->
-<!--link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick.css"/>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick/slick/slick-theme.css"/-->
+<!-- STYLES -->
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/superfish.css') }}" media="screen"/>
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/fontello/fontello.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/flexslider.css') . '?v=' . filemtime('./css/flexslider.css')}}" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/ui.css') . '?v=' . filemtime('./css/ui.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/base.css') . '?v=' . filemtime('./css/base.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/style.css') . '?v=' . filemtime('./css/style.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/960.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/devices/1000.css') }}" media="only screen and (min-width: 768px) and (max-width: 1000px)" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/devices/767.css') }}" media="only screen and (min-width: 480px) and (max-width: 767px)" />
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/devices/479.css') }}" media="only screen and (min-width: 200px) and (max-width: 479px)" />
+<link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,300,700,800' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<!--[if lt IE 9]> <script type="text/javascript" src="js/customM.js"></script> <![endif]-->
 
 <!-- Scripts -->
 <script data-cfasync="false" type="text/javascript" src="{{ URL::asset('js/quretahead.js?v=201809181512') }}"></script>
@@ -38,5 +43,4 @@ echo json_encode([
 
   ga('create', 'UA-69720429-1', 'auto');
   ga('send', 'pageview');
-
 </script>

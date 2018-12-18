@@ -16,12 +16,18 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 
 class WorkshopController extends Controller {
 
-use RegistersUsers;	
+use RegistersUsers;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\View\View
      */
+
+    public function __construct()
+    {
+      date_default_timezone_set('Asia/Jakarta');
+    }
+    
     public function index() {
 
         $workshops = Workshop::with('workshop_authors')->orderBy('workshop_enddate', 'DESC')->paginate(25);
@@ -65,9 +71,9 @@ use RegistersUsers;
             'workshop_author' => 'required'
         ]);
         $requestData = $request->all();
- 
+
         $requestData['workshop_startdate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_startdate'])->format('Y-m-d H:i:s');
-        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s'); 
+        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s');
 
         Workshop::create($requestData);
 
@@ -99,13 +105,13 @@ use RegistersUsers;
      */
     public function edit($id) {
         $workshop = Workshop::with('workshop_authors')->findOrFail($id);
-        
+
         return view('admin.workshops.edit', compact('workshop'));
     }
 
     public function peserta($id) {
         $workshop = Workshop_post::where('workshop_id',$id)->orderBy('name','ASC')->paginate(10);
-        
+
         return view('admin.workshops.peserta', compact('workshop'));
     }
 
@@ -129,14 +135,14 @@ use RegistersUsers;
         $requestData = $request->all();
 
         $requestData['workshop_startdate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_startdate'])->format('Y-m-d H:i:s');
-        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s'); 
+        $requestData['workshop_enddate'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['workshop_enddate'])->format('Y-m-d H:i:s');
 
         $workshop = Workshop::findOrFail($id);
         $workshop->update($requestData);
 
         //update winners
         //delete existing winners, then re-insert
-       
+
 
         Session::flash('flash_message', 'Workshop updated!');
 

@@ -7,83 +7,81 @@
 @section('content')
 <!-- Adsense -->
 <section id="adsensetop">
-    <div class="container">
-          @if (isset($_SESSION['flash_message']))
-          <div class="alert alert-success alert-dismissible" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <p>{{ Session::get('flash_message') }}</p>
-          </div>
-          @endif
-          <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <!-- Qresponsive -->
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-9742758471829304"
-               data-ad-slot="4756147752"
-               data-ad-format="auto"></ins>
-          <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-    </div>
+  @component('components.adsense')
+  @endcomponent
 </section>
 <!-- / Adsense -->
 <!-- Content -->
 <section id="content">
     <div class="container">
-      <!-- Main Content -->
+      <h2 class="page-title">{!! $pagetitle !!} </h2>
+      <!-- Main Content, Article Result -->
         <div class="main-content">
-          <h2 class="page-title">{!! $pagetitle !!} </h2>
-          @if(count($posts))
-          <div class="column-one-third">
-                <div class="outertight smimg">
-                  <ul class="block">
-                        @foreach ($posts as $key=>$row)
-                        <li>
-                          @component('components.article_box_small', ['row' => $row])
-                          @endcomponent
-                        </li>
-                        @endforeach
-                    </ul>
+          <div class="column-two-third">
+                <div class="outerwide">
+                  <h5 class="line"><span>Tulisan</span></h5>
+                  @if(count($posts))
+                  <ul class="block2">
+                      @for ($i = 0; $i < count($posts); $i++)
+                        <?php $row = $posts[$i]; ?>
+                        @if ($i%2)
+                          <li class="m-r-no">
+                            @component('components.article_box', ['row' => $row])
+                            @endcomponent
+                          </li>
+                        @else
+                          <li>
+                            @component('components.article_box', ['row' => $row])
+                            @endcomponent
+                          </li>
+                        @endif
+                      @endfor
+                  </ul>
+                  @else
+              	   <br/><br/><h3>Tidak ada hasil</h3>
+                  @endif
                 </div>
             </div>
-            @else
-        	   <br/><br/><h3>Tidak ada hasil</h3>
-            @endif
         </div>
-        <!-- /Main Content -->
+        <!-- /Main Content, Article Result -->
+        <!-- Sidebar, User Result -->
+        <div class="column-one-third">
+          <div class="sidebar">
+            <h5 class="line"><span>Penulis</span></h5>
+              @if(count($users))
+              <div id="tabs">
+                <ul style="display:none;">
+                    <li><a href="#tabs1">Penulis</a></li>
+                </ul>
+                <div id="tabs1" style="border:none;padding:0;">
+                  <ul>
+                      @foreach ($users as $key=>$row)
+                      <li>
+                        @component('components.user', ['row' => $row])
+                        @endcomponent
+                      </li>
+                      @endforeach
+                  </ul>
+                </div>
+              </div>
+              @else
+               <br/><br/><h3>Tidak ada hasil</h3>
+              @endif
+          </div>
+        </div>
+        <!-- / Sidebar, User Result -->
     </div>
 </section>
 <!-- / Content -->
 <!-- Adsense -->
 <section id="adsensebottom">
-    <div class="container">
-          <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <!-- Qresponsive -->
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-9742758471829304"
-               data-ad-slot="4756147752"
-               data-ad-format="auto"></ins>
-          <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-    </div>
+  @component('components.adsense')
+  @endcomponent
 </section>
 <!-- / Adsense -->
 @endsection
-@section('addjs')
-<script type="text/javascript" src="slick/slick.min.js"></script>
+@section('addfooter')
 <script>
-$(document).ready(function (e) {
-    /** force crop thumbnails **/
-    var articleimage = $('.article-image');
-    var width = articleimage.width();
-    articleimage.css('height', width * 157 / 262);
-    var articleimage = $('.article-image.sidebar');
-    var width = articleimage.width();
-    articleimage.css('height', width * 157 / 262);
-});
-
 function cookies_enabled()
 {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false;
@@ -95,94 +93,5 @@ function cookies_enabled()
     }
     return (cookieEnabled);
 }
-
-$('.btnLike').click(function () {
-    var $this = $(this);
-    $this.toggleClass('active');
-    var postid = $this.data('postid');
-    var followerid = document.getElementById('followerid').value;
-    var token = '{{{ csrf_token() }}}';
-    var data = {"_token": token, "postid": postid, "followerid": followerid};
-    if ($this.hasClass('active')) {
-        $.ajax({
-            url: "/post/like",
-            type: "POST",
-            data: data,
-            error: function (exception) {
-                console.log(data)
-            },
-            success: function () {
-                $(this).children("i").css({'color': '#EE5757'});
-            }
-        });
-        $.ajax({
-            url: "/post/incrementlikecounter",
-            type: "POST",
-            data: data,
-            error: function (exception) {
-                console.log(data)
-            },
-            success: function () {
-                $('.like-counter' + postid).html(parseInt($('.like-counter' + postid).html(), 10) + 1)
-            }
-        });
-    } else {
-        $.ajax({
-            url: "/post/unlike",
-            type: "POST",
-            data: data,
-            error: function (exception) {
-                console.log(data)
-            },
-            success: function () {
-                $(this).children("i").css({'color': '#dedede'});
-            }
-        });
-        $.ajax({
-            url: "/post/decrementlikecounter",
-            type: "POST",
-            data: data,
-            error: function (exception) {
-                console.log(data)
-            },
-            success: function () {
-                $('.like-counter' + postid).html(parseInt($('.like-counter' + postid).html(), 10) - 1)
-            }
-        });
-    }
-});
-// share counter
-$('.share_button').click(function () {
-    var $this = $(this);
-    var postid = $this.data('postid');
-    $('.share' + postid).toggle();
-    $('.shareaholic-share-button.ng-scope').css('display','block');
-});
-
-$('.share_button').click(function () {
-    var $this = $(this);
-    var postid = $this.data('postid');
-    var token = '{{{ csrf_token() }}}';
-    var data = {"_token": token, "id": postid};
-    if (cookies_enabled()) {
-        if ($.cookie("share" + postid)) {
-            // cookie exist, already count share, do nothing
-        } else {
-            // add share counter
-            $.ajax({
-                url: "/post/incrementsharecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $.cookie("share" + postid, postid, {expires: 1});
-                    $('.share-counter' + postid).html(parseInt($('.share-counter' + postid).html(), 10) + 1)
-                }
-            });
-        }
-    }
-});
 </script>
 @endsection

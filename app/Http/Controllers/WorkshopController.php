@@ -26,9 +26,15 @@ class WorkshopController extends Controller {
      *
      * @return \Illuminate\View\View
      */
+
+    public function __construct()
+    {
+      date_default_timezone_set('Asia/Jakarta');
+    }
+
     public function index($workshopid = null) {
 	$pagetitle = 'Workshop';
-        $workshops = Workshop::where('workshop_startdate','<=',Carbon::now()->format('Y-m-d H:i:s'))->where('workshop_enddate','>=',Carbon::now()->format('Y-m-d H:i:s'))->orderBy('workshop_enddate')->orderBy('workshop_startdate')->orderBy('workshop_title')->paginate(25);           
+        $workshops = Workshop::where('workshop_startdate','<=',Carbon::now()->format('Y-m-d H:i:s'))->where('workshop_enddate','>=',Carbon::now()->format('Y-m-d H:i:s'))->orderBy('workshop_enddate')->orderBy('workshop_startdate')->orderBy('workshop_title')->paginate(25);
         if (Auth::check()) {
             $user_id = Auth::user()->id;
             $cek_file = Workshop_files::where('user_id',$user_id)->whereNotNull('workshop_id',$workshopid);
@@ -42,7 +48,7 @@ class WorkshopController extends Controller {
      *
      * @return \Illuminate\View\View
      */
-   
+
 
     /**
      * Store a newly created resource in storage.
@@ -68,8 +74,8 @@ class WorkshopController extends Controller {
         $files = array_merge($files1,$files2);
         $file_count = count($files);
         $uploadcount = 0;
-    
-        foreach($files as $file) 
+
+        foreach($files as $file)
         {
               $rules = array('file' => 'required|max:10000|mimes:doc,docx,pdf');
               //$rules2 = array('email' => 'unique:workshop_members,email); //'required|mimes:png,gif,jpeg,txt,pdf,doc'
@@ -85,7 +91,7 @@ class WorkshopController extends Controller {
                     $input['files'] = $filename;
                     $input['original_filename'] = $filename;
                     $input['filename'] = $file->getFilename().'.'.$filename;
-                    
+
                     $wf = Workshop_files::create($input);
                 }
                 //elseif($validator->passes() && $validator2->fails())
@@ -101,7 +107,7 @@ class WorkshopController extends Controller {
                    return Redirect::back()->withInput(Input::all());
                 }
         }
-        
+
         if($uploadcount == $file_count)
         {
             Workshop_post::create($input);
@@ -127,7 +133,7 @@ class WorkshopController extends Controller {
      * @return \Illuminate\View\View
      */
     public function show($id) {
-        
+
     }
 
     /**
@@ -140,7 +146,7 @@ class WorkshopController extends Controller {
    public function edit($workshop_id, $id) {
       // $query = ['workshop_id' => $workshop_id, 'user_id' => $id]->value('id');
         $workshop = Workshop_post::where('workshop_id',$workshop_id)->where('user_id',$id)->first();
-        
+
         return view('posts.editworkshop', compact('workshop'));
     }
 
@@ -164,8 +170,8 @@ class WorkshopController extends Controller {
         $files = Input::file('files');
         $file_count = count($files);
         $uploadcount = 0;
-    
-        foreach($files as $file) 
+
+        foreach($files as $file)
         {
               $rules = array('file' => 'required|max:10000|mimes:doc,docx,pdf');
               $rules2 = array('email' => 'unique:workshop_members,email'); //'required|mimes:png,gif,jpeg,txt,pdf,doc'
@@ -181,13 +187,13 @@ class WorkshopController extends Controller {
                     $input['files'] = $filename;
                     $input['original_filename'] = $filename;
                     $input['filename'] = $file->getFilename().'.'.$filename;
-                    
+
                     Workshop_files::create($input);
                 }
-                
+
         }
-        
-       
+
+
             $workshop = Workshop_post::findOrFail($id);
             $workshop->update($input);
             //$subject = 'Pendaftaran Workshop Qureta';
@@ -196,19 +202,19 @@ class WorkshopController extends Controller {
             //});
             Session::flash('flash_message', 'Update Berhasil!');
             return redirect('/workshop');
-        
-       
+
+
     }
 
     public function peserta($id) {
         if(Auth::check()){
             $workshop = Workshop_post::where('workshop_id',$id)->get();
-            
+
             return view('pages.pesertaWorkshop', compact('workshop'));
         }
          else{
             return redirect('/login');
-            
+
         }
     }
 
@@ -224,7 +230,7 @@ class WorkshopController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id) {
-       
+
     }
 
 }

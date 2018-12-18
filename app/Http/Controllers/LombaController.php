@@ -18,10 +18,16 @@ class LombaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+     {
+       date_default_timezone_set('Asia/Jakarta');
+     }
+
     public function index()
-    {        
+    {
         $pagetitle = 'Lomba Esai';
-        $lombas = Competition::where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->paginate(25);
+        $lombas = Competition::where('competition_startdate','<=',Carbon::now())->where('competition_enddate','>',Carbon::now())->paginate(25);
 
         return view('pages.lomba', compact('pagetitle','lombas'));
     }
@@ -84,14 +90,14 @@ class LombaController extends Controller
     public function peserta()
     {
         if(Auth::check()){
-         $competitions = Competition::with('comp_authors')->where('competition_startdate','<=',Carbon::today()->toDateString())->where('competition_enddate','>=',Carbon::today()->toDateString())->orderBy('competition_enddate', 'DESC')->paginate(25);
+         $competitions = Competition::with('comp_authors')->where('competition_startdate','<=',Carbon::now())->where('competition_enddate','>=',Carbon::now())->orderBy('competition_enddate', 'DESC')->paginate(25);
 
          return view('pages.peserta_lomba', compact('competitions'));
         }
         else{
             return redirect('/login');
         }
-        
+
     }
 
     public function post_peserta($competitionid)
@@ -99,15 +105,15 @@ class LombaController extends Controller
         if(Auth::check()){
             $competition_posts = Competition_post::with('comps', 'composts')->where('competition_id',$competitionid)->join('posts','posts.id', '=', 'competition_posts.post_id')->where('post_status', '=', 'publish')->orderBy('posts.published_at','DESC')->get();
             return view('pages.post_peserta', compact('competition_posts'));
-            } 
-           
-        
+            }
+
+
         else{
             return redirect('/login');
         }
-        
+
     }
-        
+
     /**
      * Remove the specified resource from storage.
      *

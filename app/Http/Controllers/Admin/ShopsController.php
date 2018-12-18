@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Shop;
 use Illuminate\Http\Request;
 use Session;
-use Datatables;
+use Yajra\Datatables\Datatables;
 
 class ShopsController extends Controller
 {

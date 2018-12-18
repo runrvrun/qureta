@@ -1,11 +1,7 @@
-@extends('layouts.sidebar')
+@extends('layouts.app')
 
-@section('title')
-- {!! $post->post_title !!}
-@endsection
 
-@section('addcss')
-<!-- ini harusnya ada di style.css, tapi disini dulu karena style.css lagi dipake sama dhamar dan farid-->
+@section('addhead')
 <style>
 .banner-inside-article{
   margin: 0 auto;
@@ -18,209 +14,142 @@
 @endsection
 
 @section('content')
-<?php Carbon::setLocale('id'); ?>
-@if(!$post->hide_adsense)
-    <div class="row adsense-homepage-bottom">
-        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- Qresponsive -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9742758471829304"
-             data-ad-slot="4756147752"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-<br>
-@endif
-@if( $post->post_status !== 'publish' )
-<div class="alert alert-warning alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Post status: {{ $post->post_status }}
-</div>
-@endif
-
-<div class="clearfix"></div>
-@if(Auth::check())
-  <div class="row pull-right">
-    <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
-    @if(Auth::user()->id == $post->post_author && $post->post_status === 'draft')
-    <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a>
-    @elseif ((Auth::user()->id == $post->post_author && (Auth::user()->role === 'premium' || Auth::user()->role === 'partner') || Auth::user()->role === 'admin' || Auth::user()->role === 'editor'))
-    <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit Tulisan</a>
-    @endif
-    @if(Auth::user()->role=='admin')
-        {!! Form::open([
-            'method'=>'post_title',
-            'url' => ['/api/send-notification'],
-            'style' => 'display:inline'
-        ]) !!}
-        {!! Form::hidden('title',$post->post_title) !!}
-        {!! Form::hidden('body',substr(strip_tags($post->post_content),0,200)) !!}
-        {!! Form::hidden('url',$post->post_slug) !!}
-            {!! Form::button('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" title="Push Notification"></span> Push Notification', array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-warning btn-xs',
-                    'title' => 'Delete Post',
-                    'onclick'=>'return confirm("Send push notification? (Do not send too often)")'
-            )) !!}
-        {!! Form::close() !!}
-    @endif
-  </div>
-@endif
-<div class="clearfix"></div>
-<div class="user-info">
-    @if(strpos($post->post_authors->user_image,'ttps://') || strpos($post->post_authors->user_image,'ttp://'))
-        <div class="image"><img src="{{ $post->post_authors->user_image }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
-    @else
-        <div class="image"><img src="{{ URL::asset('/uploads/avatar/'.$post->post_authors->user_image) }}" alt="{{ $post->post_authors->user_image }}" onerror="avaError(this);" /></div>
-    @endif
-    <div class="name">
-        {{ HTML::link('/profile/'.$post->post_authors->username, $post->post_authors->name)}}
-        @if(isset($post->post_authors->role) && ($post->post_authors->role == 'premium' || $post->post_authors->role == 'partner' || $post->post_authors->role == 'admin' || $post->post_authors->role == 'editor'))
-        <span class="verified-user"></span>
-        @endif
-    </div>
-    <div class="title">{{ get_user_profesi($post->post_author) }}</div>
-    <div class="info">{{ $post->published_at ? $post->published_at->format('j M Y'): '' }} &middot; <i class="fa fa-eye"></i> {{ number_format($post->view_count,0,',','.') }} views</div>
-</div>
-<div class="clearfix"></div>
-<br>
-<div class="row">
-    <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
-    @if(Auth::check())
-    <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;" data-toggle="modal" data-target="#modaladdbuqu"><a class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
-    @else
-    <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;"><a href="{{ url('/login') }}" class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
-    @endif
-</div>
-
-<img class="article-featured-img" src="{{ URL::asset('/uploads/post/'.$post->post_image) }}" alt="{{ $post->post_image }}" onerror="imgError(this);" />
-@if(!empty($post->post_image_credit))
-<div class="post-image-credit"><small>{{ $post->post_image_credit }}</small></div>
-@endif
-<div class="article-single title">
-    <div class="info"><small><i class="fa fa-tag"></i> <a href="{{ '/topik/'.$category->category_slug }}">{{ $category->category_title ?? '' }}</a></small>  &middot;  <small><i class="fa fa-clock-o"></i> {{read_time($post->post_content)}} menit baca</small></div>
-    <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1>
-    <input type="hidden" id="postid" value="{{ $post->id }}" />
-</div>
-
-<div class="article-single content @if(!Auth::check() && $post->require_login) require-login @endif">
-    {!! $post->post_content !!}
-</div>
-    @if(!Auth::check() && $post->require_login)
-	<div class="require-login-box well text-center">
-  	<p><strong>Daftar menjadi anggota Qureta untuk membaca tulisan eksklusif <br> {!! $post->post_title !!} karya {!! $post->post_authors->name !!}</strong></p>
-  	<a href="{{ url('/register') }}" class="btn btn-success btn-lg btn-block"> Daftar </a>
-  	<p><small>Sudah menjadi anggota Qureta? {{ HTML::link('/login','Log in') }}</small></p>
-  </div>
-    @endif
-<hr/>
-
-<div class="row" id="endofpost">
-        <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
-        @if(Auth::check())
-        <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;" data-toggle="modal" data-target="#modaladdbuqu"><a class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
-        @else
-        <div class="col-xs-2 addtobuqu" style="margin-bottom:5px;text-align:right;"><a href="{{ url('/login') }}" class="btn btn-default" title="Masukkan artikel ini ke Buqu"> + Buqu </a></div>
-        @endif
-</div>
-<div class="clearfix"></div>
-<hr/>
-<!-- author info -->
-<!-- related article -->
-
-    @if(!$post->hide_adsense)
-    <div class="row adsense-homepage-top">
-        <script  data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- Qresponsive -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9742758471829304"
-             data-ad-slot="4756147752"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-@endif
-<!-- disqus comment -->
-<div class="fb-comments" data-href="v3.qureta.com/post/{{ $post->post_slug }}" data-numposts="5"></div>
-<div class="row text-center">
-  <a class="btn btn-default btn-block" id="unsub" style="display:none;margin-top:12px">Unsubscribe Notification</a>
-</div>
-<!-- modal for add buqu -->
-@if(Auth::check())
-<div class="modal" id="modaladdbuqu" style="display: none;" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Menambahkan Artikel ke Buqu</h4>
+<section id="content">
+    <div class="container">
+      <div style="margin-bottom:20px;">
+      @if(!$post->hide_adsense)
+          @component('components.adsense')
+          @endcomponent
+      @endif
+      </div>
+      <div class="main-content">
+          <!-- Single -->
+          <div class="column-two-third single">
+            @if( $post->post_status !== 'publish' )
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Post status: {{ $post->post_status }}
             </div>
-            <div class="modal-body">
-                {{ Form::hidden('addtobuqu_postid',$post->id) }}
-                Pilih Buqu {{ Form::select('addtobuqu_buquid', App\Buqu::where('buqu_author',Auth::user()->id)->pluck('buqu_title','id'), 1, ['class' => 'form-control']) }}
+            @endif
+            @if(Auth::check())
+              <div style="margin-bottom:20px;">
+                <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />
+                @if(Auth::user()->id == $post->post_author && $post->post_status === 'draft')
+                <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit Tulisan</a>
+                @elseif ((Auth::user()->id == $post->post_author && (Auth::user()->role === 'premium' || Auth::user()->role === 'partner') || Auth::user()->role === 'admin' || Auth::user()->role === 'editor'))
+                <a href="{{ url('/edit-tulisan/'.$post->post_slug) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit Tulisan</a>
+                @endif
+                @if(Auth::user()->role=='admin')
+                    {!! Form::open([
+                        'method'=>'post_title',
+                        'url' => ['/api/send-notification'],
+                        'style' => 'display:inline'
+                    ]) !!}
+                    {!! Form::hidden('title',$post->post_title) !!}
+                    {!! Form::hidden('body',substr(strip_tags($post->post_content),0,200)) !!}
+                    {!! Form::hidden('url',$post->post_slug) !!}
+                        {!! Form::button('<span class="fa fa-exclamation-sign" aria-hidden="true" title="Push Notification"></span> Push Notification', array(
+                                'type' => 'submit',
+                                'class' => 'btn btn-warning',
+                                'title' => 'Delete Post',
+                                'onclick'=>'return confirm("Send push notification? (Do not send too often)")'
+                        )) !!}
+                    {!! Form::close() !!}
+                @endif
+              </div>
+            @endif
+
+            @component('components.post_author',['row' => $post])
+            @endcomponent
+            <?php $topik = get_post_topik($post->id)  ?>
+            <span class="meta" style="text-align:left;">{{ $post->published_at->diffForHumans() }} &middot; <i class="fa fa-eye"></i> {{ $post ->view_count }} view &middot; <i class="fa fa-clock"></i> {{read_time($post ->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></span>
+            <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
+
+            <img class="article-featured-img" src="{{ URL::asset('/uploads/post/'.$post->post_image) }}" alt="{{ $post->post_image }}" onerror="imgError(this);" />
+            @if(!empty($post->post_image_credit))
+            <div class="post-image-credit"><small>{{ $post->post_image_credit }}</small></div>
+            @endif
+            <div class="article-single title">
+                <h1>{!! $post->post_title !!} <small>{!! $post->post_subtitle ? '<br/>'.$post->post_subtitle : '' !!}</small></h1>
+                <input type="hidden" id="postid" value="{{ $post->id }}" />
             </div>
-            <div class="modal-footer">
-                <a id="btnaddtobuqu" class="btn btn-primary mr-auto">Tambahkan ke Buqu</a>
-                <a href="{{ url('/buqus/create') }}" class="btn btn-default">Buat Buqu</a>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+            <div class="article-single content @if(!Auth::check() && $post->require_login) require-login @endif">
+                {!! $post->post_content !!}
             </div>
+                @if(!Auth::check() && $post->require_login)
+            	<div class="require-login-box well text-center">
+              	<p><strong>Daftar menjadi anggota Qureta untuk membaca tulisan eksklusif <br> {!! $post->post_title !!} karya {!! $post->post_authors->name !!}</strong></p>
+              	<a href="{{ url('/register') }}" class="btn btn-success btn-lg btn-block"> Daftar </a>
+              	<p><small>Sudah menjadi anggota Qureta? {{ HTML::link('/login','Log in') }}</small></p>
+              </div>
+                @endif
+            <hr/>
+            <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
+            @if(!$post->hide_adsense)
+                @component('components.adsense')
+                @endcomponent
+            @endif
+            <div class="fb-comments" data-href="v3.qureta.com/post/{{ $post->post_slug }}" data-numposts="5"></div>
+            <div class="row text-center">
+              <a class="btn btn-default btn-block" id="unsub" style="display:none;margin-top:12px">Unsubscribe Notification</a>
+            </div>
+
+          </div>
+          <!-- /Single -->
+      </div>
+      <div class="column-one-third">
+        	<div class="sidebar">
+            	<h5 class="line"><span>Terpopuler</span></h5>
+                <ul class="social">
+                	<li>
+
+                  </li>
+                </ul>
+            </div>
+            <div class="sidebar">
+              	<h5 class="line"><span>Penulis Favorit</span></h5>
+                  <ul class="social">
+                  	<li>
+
+                    </li>
+                  </ul>
+              </div>
+              @component('components.footer_menu')
+              @endcomponent
         </div>
     </div>
-</div>
-@endif
-<!-- modal selesai menambahkan buqu -->
-<div class="modal" id="modalsuccessbuqu" style="display: none;" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Menambahkan Artikel ke Buqu</h4>
-            </div>
-            <div class="modal-body" id="modalsuccessbuqubody">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 @endsection
 
-@section('og')
-<meta property="fb:app_id" content="1800357880247740" />
-<meta property="og:url" content="{{ url('/post/'.$post->post_slug) }}" />
-<meta property="og:title" content="{{ $post->post_title }}" />
-<meta property="og:image" content="{{ URL::asset('/uploads/post/'.$post->post_image) }}" />
-<meta property="og:image:width" content="640" />
-<meta property="og:image:height" content="442" />
-<meta property="og:type" content="article" />
-<meta property="og:description" content="{{ substr(strip_tags($post->post_content), 0, 500) }}">
-<meta name="shareaholic:image" content="{{ URL::asset('/uploads/post/'.$post->post_image) }}" />
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="{{ url('/post/'.$post->post_slug) }}">
-<meta name="twitter:description" content="{{ substr(strip_tags($post->post_content), 0, 500) }}">
-<meta name="twitter:text:description" content="{{ substr(strip_tags($post->post_content), 0, 500) }}">
-<meta name="twitter:title" content="{{ $post->post_title }}">
-<meta name="twitter:image" content="{{ URL::asset('/uploads/post/'.$post->post_image) }}" />
-@endsection
 
-@section('addjs')
-<script type="text/javascript" src="{{URL::asset('/slick/slick.min.js')}}"></script>
+
+@section('addfooter')
 <!-- modal box for push notif request -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 
-<script>(function(d, s, id) {
+<script>
+(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
   js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
   fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+}(document, 'script', 'facebook-jssdk'));
+
+function cookies_enabled()
+{
+    var cookieEnabled = (navigator.cookieEnabled) ? true : false;
+
+    if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled)
+    {
+        document.cookie = "testcookie";
+        cookieEnabled = (document.cookie.indexOf("testcookie") != -1) ? true : false;
+    }
+    return (cookieEnabled);
+}
+</script>
 <script>
 $(document).ready(function (e) {
     //count view
@@ -256,163 +185,6 @@ $(document).ready(function (e) {
         //fix youtube iframe cropped
         if (window.screen.availWidth < 640) {
             $('iframe').width('100%');
-        }
-});
-
-    $(document).ready(function (e) {
-        /** force crop thumbnails **/
-        var articleimage = $('.article-image');
-        var width = articleimage.width();
-        articleimage.css('height', width * 157 / 262);
-        var articleimage = $('.article-image.sidebar');
-        var width = articleimage.width();
-        articleimage.css('height', width * 157 / 262);
-    });
-
-
-    $('#btnLikePost').click(function () {
-        var $this = $(this);
-        $this.toggleClass('active');
-        var postid = document.getElementById('postid').value;
-        var followerid = document.getElementById('followerid').value;
-        var token = '{{{ csrf_token() }}}';
-        var data = {"_token": token, "postid": postid, "followerid": followerid};
-        if ($this.hasClass('active')) {
-            $.ajax({
-                url: "/post/like",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#EE5757'});
-                }
-            });
-            $.ajax({
-                url: "/post/incrementlikecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $('#like-counter').html(parseInt($('#like-counter').html(), 10) + 1)
-                }
-            });
-        } else {
-            $.ajax({
-                url: "/post/unlike",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#dedede'});
-                }
-            });
-            $.ajax({
-                url: "/post/decrementlikecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $('#like-counter').html(parseInt($('#like-counter').html(), 10) - 1)
-                }
-            });
-        }
-    });
-
-    $('#btnLikePost2').click(function () {
-        var $this = $(this);
-        $this.toggleClass('active');
-        var postid = document.getElementById('postid').value;
-        var followerid = document.getElementById('followerid').value;
-        var token = '{{{ csrf_token() }}}';
-        var data = {"_token": token, "postid": postid, "followerid": followerid};
-        if ($this.hasClass('active')) {
-            $.ajax({
-                url: "/post/like",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#EE5757'});
-                }
-            });
-            $.ajax({
-                url: "/post/incrementlikecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $('#like-counter2').html(parseInt($('#like-counter2').html(), 10) + 1)
-                }
-            });
-        } else {
-            $.ajax({
-                url: "/post/unlike",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#dedede'});
-                }
-            });
-            $.ajax({
-                url: "/post/decrementlikecounter",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $('#like-counter2').html(parseInt($('#like-counter2').html(), 10) - 1)
-                }
-            });
-        }
-    });
-
-    $('#btnBookmarkPost').click(function () {
-        var $this = $(this);
-        $this.toggleClass('active');
-        var postid = document.getElementById('postid').value;
-        var followerid = document.getElementById('followerid').value;
-        var token = '{{{ csrf_token() }}}';
-        var data = {"_token": token, "postid": postid, "followerid": followerid};
-        if ($this.hasClass('active')) {
-            $.ajax({
-                url: "/post/bookmark",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#EE5757'});
-                }
-            });
-        } else {
-            $.ajax({
-                url: "/post/unbookmark",
-                type: "POST",
-                data: data,
-                error: function (exception) {
-                    console.log(data)
-                },
-                success: function () {
-                    $(this).children("i").css({'color': '#dedede'});
-                }
-            });
         }
     });
 
@@ -631,6 +403,6 @@ console.log(registration.pushManager.getSubscription());
               console.log("Subscription successfully saved to backend.")
           }
       });
-    }
+}
 </script>
 @endsection

@@ -81,7 +81,7 @@ class ProfileController extends Controller {
             $fileName = rand(11111, 99999) . '.' . $extension;
 
             $file = $request->file('user_image');
-            Image::make($file->getRealPath())->fit(240, 240)->encode('jpg', 75)->save($uploadPath . $fileName)->destroy();
+            Image::make($file->getRealPath())->fit(256, 256)->encode('jpg', 100)->save($uploadPath . $fileName)->destroy();
 
             //$request->file('buqu_image')->move($uploadPath, $fileName);
             $requestData['user_image'] = $fileName;
@@ -201,7 +201,13 @@ class ProfileController extends Controller {
 
         $followings = Followers::join('users','user_id','=','users.id')->where('follower_id', $users->id)->orderBy('users.name', 'ASC')->paginate(50, ['*'], 'followingpage');
 
-        return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_post','jml_buqu','jml_followers','jml_following'));
+        //penulis terfavorit
+        $terfavorit = DB::select("SELECT u.id, post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
+INNER JOIN users u ON p.post_author = u.id
+WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
+group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 4");
+
+        return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_post','jml_buqu','jml_followers','jml_following','terfavorit'));
     }
 
     public function terbaru($limit = 52) {
@@ -284,5 +290,6 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
 
       return;
     }
+
 
 }

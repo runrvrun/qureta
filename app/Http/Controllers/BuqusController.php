@@ -291,4 +291,5 @@ class BuqusController extends Controller {
         return response()->json(['responseText' => 'Success!'], 200);
     }
 
+
 }

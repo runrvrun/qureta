@@ -9,8 +9,14 @@ use App\Push_subscription;
 use Auth;
 use Illuminate\Http\Request;
 use DB;
+use Session;
 
 class PushSubscriptionController extends Controller {
+  public function __construct()
+  {
+    date_default_timezone_set('Asia/Jakarta');
+  }
+
     public function save_subscription(Request $request) {
       $requestData = $request->all();
       try{
@@ -36,10 +42,15 @@ class PushSubscriptionController extends Controller {
       foreach($pushsub as $push){
         $a = ($push->user_id == 0) ? 4100:$push->user_id;//if 0, use 4100 (info qureta)
         $user = \App\User::findOrFail($a);
-        $user->notify(new \App\Notifications\FeaturedPost($request->title, $request->body, url('/post/'.$request->url)));
+        try{
+          $user->notify(new \App\Notifications\FeaturedPost($request->title, $request->body, url('/post/'.$request->url)));
+        }
+        catch (\Exception $e) {
+          return $e->getMessage();
+        }
       }
-      return redirect()->back();
-      //return response()->json(['responseText' => 'Push Success!'], 200);
-
+      //return redirect()->back()->withErrors(['msg', 'Push Notification success']);
+      Session::flash('flash_message', 'Push Notification Success');//flash message not working, kayaknya session api sama web beda
+      return redirect('admin/publishposts');
     }
 }
