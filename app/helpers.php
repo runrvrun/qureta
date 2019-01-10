@@ -20,6 +20,15 @@ function get_user_short_bio($user_id) {
 function get_user_post_count($user_id) {
     return App\Post::where('post_author', '=', $user_id)->where('post_status', '=', 'publish')->count();
 }
+function get_user_view_count($user_id) {
+    return App\Post::where('post_author', '=', $user_id)->where('post_status', '=', 'publish')->sum('view_count');
+}
+function get_user_follower_count($user_id) {
+    return App\Followers::where('user_id', '=', $user_id)->count();
+}
+function get_user_latest_post($user_id) {
+    return App\Post::with('post_authors')->where('post_author', '=', $user_id)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at','DESC')->first();
+}
 
 function get_post_buqu_count($postid) {
     return App\Buqu_post::where('post_id', '=', $postid)->count();
@@ -44,17 +53,30 @@ function get_peserta_workshop($workshopid) {
 }
 
 function get_popular_post($limit = 4) {
-    $stickypopuler = App\Post::with('post_authors')->whereHas('post_metum', function($query) {
-                    $query->where('meta_name', 'post_featured_category')->where('meta_value', '11');
-                })->where('sticky',1)->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('published_at', 'DESC')->get();
-    $populer = App\Post::with('post_authors')
-            ->where('post_status', 'publish')->where('hide', 0)
-            ->where('published_at','<=',Carbon::now())
-            ->where('published_at','>=',Carbon::now()->subDays(3))
-            ->orderBy('view_count', 'DESC')->take($limit)->get();
-//->where('published_at','<=',Carbon::now())
-    return $stickypopuler->union($populer);
+  //populer, ambil hanya yang featured_category
+  $post_metum = App\Post::with('post_authors')->whereHas('post_metum', function($query) {
+              $query->where('meta_name', 'post_featured_category');
+          })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::yesterday())->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(4)->get();
+  //kalau 2 hari ini kurang dari 3, ambil lagi sampai 3 hari lalu
+  if(count($post_metum) < 4 ){
+    $post_metum2 = App\Post::with('post_authors')->whereHas('post_metum', function($query) {
+                $query->where('meta_name', 'post_featured_category');
+            })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '>=', Carbon::now()->subDays(300))->where('published_at', '<', Carbon::yesterday())->orderBy('sticky', 'DESC')->orderBy('view_count', 'DESC')->take(4)->get();
+  }
+  if(!empty($post_metum2)){
+  $post_metum = $post_metum->merge($post_metum2);
+  }
+  return $post_metum;
 }
+
+function get_penulis_favorit($limit = 4) {
+    $terfavorit = DB::select("SELECT u.id, post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
+  INNER JOIN users u ON p.post_author = u.id
+  WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
+  group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 5");
+    return $terfavorit;
+}
+
 
 function get_categories() {
     return App\Category::pluck('category_title', 'category_slug');
@@ -206,10 +228,14 @@ GROUP BY post_author, u.id, u.name, u.username, u.user_image, u.role ORDER BY co
 }
 
 function get_post_topik($id) {
-    $categoryid = App\Post_metum::where('meta_name', 'post_category')->where('post_id', $id)->first();
-    $category = App\Category::find($categoryid->meta_value);
-
-    return $category;
+    try {
+      $categoryid = App\Post_metum::where('meta_name', 'post_category')->where('post_id', $id)->first();
+      $category = App\Category::find($categoryid->meta_value);
+      return $category;
+    }
+    catch (\Exception $e) {
+      return false;
+    }
 }
 function get_another_post ($user_id){
     $stickypos = rand(1,4);

@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 @section('content')
     <div class="container">
 @if (Session::has('flash_message'))            

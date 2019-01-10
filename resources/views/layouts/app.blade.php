@@ -14,7 +14,9 @@
         <div class="body-wrapper">
         	<div class="controller">
             <div class="controller2">
-                    @include('includes.header')
+                    <span class="hide-on-mobile">@include('includes.header')</span>
+                    <span class="hide-on-desktop">@include('includes.headerm')</span>
+                    <p class="hide-on-desktop" style="clear:both;padding-top:50px;"></p>
                     @yield('content')
                     @include('includes.footer')
           </div>

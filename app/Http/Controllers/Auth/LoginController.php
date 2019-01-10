@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon;
@@ -45,14 +46,18 @@ use AuthenticatesUsers;
     {
         $email = $request->email;
         $password = $request->password;
+        
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
+
             // Authentication passed...
             if (Auth::user()->banned_until < Carbon::now()){
+
 	              Session::put('qureta_fullname',Auth::user()->name);
                 Session::flash('alert-type','alert-info');
                 Session::flash('login_message','Halo ' . Auth::user()->name . '! Selamat menulis');
                 return redirect()->intended('/');
-            }
+            }	
+
 
             else{
                 Auth::logout();
@@ -72,6 +77,7 @@ use AuthenticatesUsers;
             return redirect('login');
         }
     }
+
 
     public function showLoginForm()
     {

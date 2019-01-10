@@ -33,7 +33,7 @@
       </div>
       {!! Form::close() !!}
     </div>
-</div>
+</section>
 @endsection
 
 @section('addjs')

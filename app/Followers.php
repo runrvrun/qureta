@@ -11,6 +11,7 @@ class Followers extends Model {
      *
      * @var string
      */
+    protected $connection = 'qureta_prod';
     protected $table = 'followers';
 
     /**
@@ -26,13 +27,13 @@ class Followers extends Model {
      * @var array
      */
     protected $fillable = ['user_id', 'follower_id'];
-    
+
     public function followers() {
         return $this->belongsTo('App\User', 'follower_id');
     }
-    
+
     public function users() {
         return $this->belongsTo('App\User', 'user_id');
     }
-    
+
 }

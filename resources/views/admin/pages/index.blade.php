@@ -1,4 +1,5 @@
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 
 @section('content')
     <div class="container">
@@ -24,7 +25,7 @@
                                         <td>{{ $item->id }}</td>
                                         <td>{{ $item->post_title }}</td><td>{{ $item->post_authors->name }}</td>
                                         <td style="white-space:nowrap;">
-                                            <a href="{{ url('/admin/pages/' . $item->id) }}" class="btn btn-success btn-xs" title="View Page"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
+                                            <a href="{{ url('/page/'.$item->post_slug) }}" class="btn btn-success btn-xs" title="View Page"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"/></a>
                                             <a href="{{ url('/admin/pages/' . $item->id . '/edit') }}" class="btn btn-primary btn-xs" title="Edit Page"><span class="glyphicon glyphicon-pencil" aria-hidden="true"/></a>
                                             {!! Form::open([
                                                 'method'=>'DELETE',

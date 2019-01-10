@@ -1,11 +1,11 @@
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-10">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Naskah</div>
+                    <div class="panel-heading">{{ $pagetitle ?? 'Naskah' }}</div>
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-borderless">

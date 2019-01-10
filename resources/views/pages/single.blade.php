@@ -16,18 +16,11 @@
 @section('content')
 <section id="content">
     <div class="container">
-      <div style="margin-bottom:20px;">
-      @if(!$post->hide_adsense)
-          @component('components.adsense')
-          @endcomponent
-      @endif
-      </div>
       <div class="main-content">
           <!-- Single -->
           <div class="column-two-third single">
             @if( $post->post_status !== 'publish' )
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="alert alert-warning">
                 Post status: {{ $post->post_status }}
             </div>
             @endif
@@ -62,7 +55,11 @@
             @component('components.post_author',['row' => $post])
             @endcomponent
             <?php $topik = get_post_topik($post->id)  ?>
-            <span class="meta" style="text-align:left;">{{ $post->published_at->diffForHumans() }} &middot; <i class="fa fa-eye"></i> {{ $post ->view_count }} view &middot; <i class="fa fa-clock"></i> {{read_time($post ->post_content)}} menit baca &middot; <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a></span>
+            <span class="meta" style="text-align:left;">{{ ($post->published_at)? $post->published_at->diffForHumans():$post->post_status }} &middot; <i class="fa fa-eye"></i> {{ $post ->view_count }} view &middot; <i class="fa fa-clock"></i> {{read_time($post ->post_content)}} menit baca &middot;
+              @if($topik)
+              <i class="fa fa-tag"></i> <a href="/topik/{{ $topik->category_slug }}">{{ $topik->category_title }}</a>
+              @endif
+            </span>
             <div class='col-xs-10 shareaholic-canvas' data-link='{{ $post->post_slug }}' data-image="{{URL::asset('/uploads/post/'.$post->post_image)}}" data-app='share_buttons' data-app-id='26649626' data-summary='QURETA | {{$post->post_authors->name}}'></div>
 
             <img class="article-featured-img" src="{{ URL::asset('/uploads/post/'.$post->post_image) }}" alt="{{ $post->post_image }}" onerror="imgError(this);" />
@@ -99,25 +96,29 @@
           <!-- /Single -->
       </div>
       <div class="column-one-third">
-        	<div class="sidebar">
-            	<h5 class="line"><span>Terpopuler</span></h5>
-                <ul class="social">
-                	<li>
-
+      	  <div class="sidebar article-list">
+          	<h5 class="line"><span>Terpopuler</span></h5>
+            <?php $populer = get_popular_post(); ?>
+            @component('components.article_list_smimage', ['posts' => $populer])
+            @endcomponent
+          </div>
+          <div class="sidebar user-snip">
+            	<h5 class="line"><span>Penulis Favorit</span></h5>
+                <ul>
+                  @foreach ($terfavorit as $key=>$row)
+                  <li>
+                    @component('components.user', ['row' => $row])
+                    @endcomponent
+                  </li>
+                  @endforeach
+                  <li>
+                    {{ HTML::link('/penulis-favorit','Penulis lainnya &raquo;',['style'=>'float:right']) }}
                   </li>
                 </ul>
             </div>
-            <div class="sidebar">
-              	<h5 class="line"><span>Penulis Favorit</span></h5>
-                  <ul class="social">
-                  	<li>
-
-                    </li>
-                  </ul>
-              </div>
-              @component('components.footer_menu')
-              @endcomponent
-        </div>
+            @component('components.footer_menu')
+            @endcomponent
+      </div>
     </div>
 </section>
 @endsection

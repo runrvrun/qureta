@@ -36,7 +36,8 @@ class BuqusController extends Controller {
 
     public function showpermalink($permalink) {
         $buqu = Buqu::where('buqu_slug', '=', $permalink)->first();
-	if($buqu == null) abort('404');
+	       if($buqu == null) abort('404');
+         $pagetitle = $buqu->buqu_title;
         $buqu_posts = Buqu_post::where('buqu_id', $buqu->id)->pluck('post_id');
         $posts = Post::with('post_authors')->whereIn('id', $buqu_posts)->where('post_status', 'publish')->paginate(12);
 
@@ -44,7 +45,7 @@ class BuqusController extends Controller {
             abort(404);
         }
 
-        return view('pages.buqusingle', compact('buqu', 'posts', 'categories'));
+        return view('pages.buqusingle', compact('buqu', 'posts', 'categories', 'pagetitle'));
     }
 
     /**
@@ -64,7 +65,7 @@ class BuqusController extends Controller {
             return redirect('/login');
 	}
 
-        return view('buqus.create');
+        return view('pages.buqu_create');
     }
 
     /**
@@ -204,12 +205,7 @@ class BuqusController extends Controller {
         $pagetitle = 'Buqu Terbaru';
         $buqus = Buqu::orderBy('id', 'DESC')->paginate(20);
 
-        //infinite scroll
-        if ($request->ajax()) {
-           return view('widgets.buqu_row', compact('buqus'));;
-        }
-
-        return view('pages.buqu_infinite', compact('pagetitle', 'buqus'));
+        return view('pages.buqu', compact('pagetitle', 'buqus'));
     }
 
     public function populer($limit = 20) {

@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-10">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Edit Page {{ $page->id }}</div>
+                    <h5>Edit Page: {{ $page->post_title }}</h5>
                     <div class="panel-body">
 
                         @if ($errors->any())
@@ -24,37 +24,30 @@
                         ]) !!}
 
                     {!! Form::hidden('post_author', null, ['class' => 'form-control']) !!}
-                                    
+
             <div class="form-group {{ $errors->has('post_content') ? 'has-error' : ''}}">
-                {!! Form::label('post_content', 'Post Content', ['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('post_content', 'Content', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-8">
                     {!! Form::textarea('post_content', null, ['class' => 'form-control wysiwygeditor']) !!}
                     {!! $errors->first('post_content', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
             <div class="form-group {{ $errors->has('post_title') ? 'has-error' : ''}}">
-                {!! Form::label('post_title', 'Post Title', ['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('post_title', 'Title', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-8">
                     {!! Form::text('post_title', null, ['class' => 'form-control']) !!}
                     {!! $errors->first('post_title', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
             <div class="form-group {{ $errors->has('post_status') ? 'has-error' : ''}}">
-                {!! Form::label('post_status', 'Post Status', ['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('post_status', 'Status', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-8">
                     {!! Form::select('post_status', ['draft', 'publish'], null, ['class' => 'form-control']) !!}
                     {!! $errors->first('post_status', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
-            <div class="form-group {{ $errors->has('comment_status') ? 'has-error' : ''}}">
-                {!! Form::label('comment_status', 'Comment Status', ['class' => 'col-md-3 control-label']) !!}
-                <div class="col-md-8">
-                    {!! Form::select('comment_status', ['open', 'close'], null, ['class' => 'form-control']) !!}
-                    {!! $errors->first('comment_status', '<p class="help-block">:message</p>') !!}
-                </div>
-            </div>
             <div class="form-group {{ $errors->has('post_slug') ? 'has-error' : ''}}">
-                {!! Form::label('post_slug', 'Post Slug', ['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('post_slug', 'Slug', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-8">
                     {!! Form::text('post_slug', null, ['class' => 'form-control']) !!}
                     {!! $errors->first('post_slug', '<p class="help-block">:message</p>') !!}

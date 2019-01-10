@@ -1,5 +1,5 @@
-@extends('layouts.app')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 @section('content')
 <div class="container">
     <div class="row">

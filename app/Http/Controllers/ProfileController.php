@@ -160,7 +160,7 @@ class ProfileController extends Controller {
             $profile->tanggallahir = '1900-01-01 00:00:00';
         }
 
-        return view('pages.editprofile', compact('user', 'profile'));
+        return view('pages.profileedit', compact('user', 'profile'));
     }
 
     /**
@@ -183,6 +183,7 @@ class ProfileController extends Controller {
             $username = Auth::User()->username;
         }
         $users = User::whereRaw('BINARY username = ?',array($username))->first();
+        $pagetitle = $users->name;
         $user_metum = User_metum::where('user_id', $users->id)->get();
         $profile = array();
         if (count($user_metum) > 0) {
@@ -210,50 +211,77 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         return view('pages.profile', compact('pagetitle', 'users', 'profile', 'posts', 'buqus', 'followers', 'followings','jml_post','jml_buqu','jml_followers','jml_following','terfavorit'));
     }
 
-    public function terbaru($limit = 52) {
+    public function terbaru(Request $request) {
         //penulis yang baru pertama membuat tulisan yang terbaru
         $pagetitle = 'Penulis Terbaru';
-        $users = DB::select("SELECT u.id, u.name, u.user_image, u.username, p.*
-FROM users u
-LEFT JOIN posts p ON u.id=p.post_author
-WHERE u.status=1 and p.id = (SELECT MIN(id) FROM posts WHERE post_author=u.id and post_status='publish' and hide=0 and published_at < now())
-ORDER BY p.published_at DESC LIMIT 52");
+        $users = Post::select(DB::raw('users.*, min(published_at) as ordering'))->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())
+        ->join('users', function ($join) {
+            $join->on('posts.post_author', '=', 'users.id')
+                 ->where('users.status','1');
+        })
+        ->groupBy('post_author')->orderBy('ordering','DESC')->paginate(15);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'0','view_count'=>'0','follower'=>'0','latest_post'=>'1','follow_button'=>'1');
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
 
-        return view('pages.penulisterbaru', compact('pagetitle', 'users'));
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
     }
 
-    public function populer($limit = 20) {
+    public function populer(Request $request) {
         //penulis dengan follower terbanyak
         $pagetitle = 'Penulis Terpopuler';
-        $users = DB::select("select u.id post_author, count(f.id) total_followers, u.name, u.username, u.user_image, u.role
-from followers f
-INNER JOIN users u ON f.user_id = u.id
-WHERE u.status=1 and username NOT IN ('qlomba', 'qworkshop','dimashendrasasmita')
-group by u.id, u.name, u.username, u.user_image, u.role  order by count(f.id) desc limit ".$limit);
+        $users = User::select(DB::raw('users.*, count(follower_id) as ordering'))->where('status','1')
+        ->join('followers', 'followers.user_id', '=', 'users.id')
+        ->groupBy('users.id')->orderBy('ordering','DESC')->paginate(15);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'1','view_count'=>'1','follower'=>'1','latest_post'=>'0','follow_button'=>'1');
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
 
-        return view('pages.penulispopuler', compact('pagetitle', 'users'));
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
     }
 
-   public function favorit($limit = 50) {
+   public function favorit(Request $request) {
         //penulis dengan post view terbanyak
         $pagetitle = 'Penulis Terfavorit';
-        $users = DB::select("select post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
-INNER JOIN users u ON p.post_author = u.id
-WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
-group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit ".$limit);
+        $users = User::select(DB::raw('users.*, SUM(posts.view_count) as ordering'))->where('status','1')
+        ->join('posts', function ($join) {
+            $join->on('posts.post_author', '=', 'users.id')
+                 ->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now());
+        })
+        ->groupBy('users.id')->orderBy('ordering','DESC')->paginate(15);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'1','view_count'=>'1','follower'=>'1','latest_post'=>'0','follow_button'=>'1');
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
 
-        return view('pages.penulisfavorit', compact('pagetitle', 'users'));
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
     }
 
-    public function produktif($limit = 50) {
+    public function produktif(Request $request) {
         //penulis dengan jumlah tulisan terbit terbanyak
         $pagetitle = 'Penulis Terproduktif';
-        $users = DB::select("SELECT post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
-FROM posts p INNER JOIN users u ON p.post_author = u.id
-WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
-GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit ".$limit);
+        $users = User::select(DB::raw('users.*, count(posts.id) as ordering'))->where('status','1')
+        ->join('posts', function ($join) {
+            $join->on('posts.post_author', '=', 'users.id')
+                 ->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now());
+        })
+        ->groupBy('users.id')->orderBy('ordering','DESC')->paginate(15);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'1','view_count'=>'1','follower'=>'1','latest_post'=>'0','follow_button'=>'1');
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
 
-        return view('pages.penulisproduktif', compact('pagetitle', 'users'));
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
     }
 
     public function tulisan($username) {
@@ -291,5 +319,41 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
       return;
     }
 
+    public function following($username, Request $request) {
+        $user = User::where('username',$username)->first();
+        $users = User::join('followers', function ($join) use($user) {
+            $join->on('followers.user_id', '=', 'users.id')
+                 ->where('followers.follower_id', $user->id);
+        })
+        ->orderBy('name','DESC')->paginate(30);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'1','view_count'=>'1','follower'=>'1','latest_post'=>'0','follow_button'=>'1');
+
+        $pagetitle = $user->name.' - Following';
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
+
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
+    }
+    public function follower($username, Request $request) {
+        $user = User::where('username',$username)->first();
+        $users = User::join('followers', function ($join) use($user) {
+            $join->on('followers.follower_id', '=', 'users.id')
+                 ->where('followers.user_id', $user->id);
+        })
+        ->orderBy('name','DESC')->paginate(30);
+        //options for user components
+        $options = array('short_bio'=>'0','post_count'=>'1','view_count'=>'1','follower'=>'1','latest_post'=>'0','follow_button'=>'1');
+
+        $pagetitle = $user->name.' - Following';
+        //infinite scroll
+        if ($request->ajax()) {
+           return view('components.user_row', compact('users','options'));;
+        }
+
+        return view('pages.user_infinite', compact('pagetitle', 'users'));
+    }
 
 }

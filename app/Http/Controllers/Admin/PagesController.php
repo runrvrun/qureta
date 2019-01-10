@@ -76,13 +76,12 @@ class PagesController extends Controller
 
         ///sidebar content
         $categories = Category::pluck('category_title', 'category_slug');
-        $populer = Post::with('post_authors')->orderBy('view_count', 'DESC')->orderBy('id', 'DESC')->take(4)->get();
 
         if (is_null($page)) {
             abort(404);
         }
 
-        return view('pages.page', compact('page','categories','populer'));
+        return view('pages.page', compact('page','categories'));
     }
 
     /**

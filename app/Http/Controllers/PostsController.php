@@ -208,7 +208,7 @@ class PostsController extends Controller {
         if (isset($request->savepending)) {
             Session::flash('flash_message', 'Naskah dikirim ke editor. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
             return view('pages.thankyou', compact('addmsg'));
-        } else {
+        }else{
             Session::flash('flash_message', 'Naskah disimpan. ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
             return redirect('/edit-tulisan/' . $post->post_slug);
         }
@@ -331,7 +331,6 @@ class PostsController extends Controller {
 
         $limit = 10;
         $post = Post::where('post_slug', '=', $permalink)->first();
-        $populer = get_popular_post($limit);
         // $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(4);
         $anotherPost = Post::where('post_author','=',$post->post_author)->orderBy('created_at', 'DESC')->take(3)->get();
 
@@ -365,7 +364,7 @@ class PostsController extends Controller {
                 $period = Period::create($startDate, $endDate);
                 $analytics = Analytics::performQuery($period, $metrics, $others);
 
-		if($analytics->rows[0][1] > $post->view_count){
+		            if($analytics->rows[0][1] > $post->view_count){
                     //update view count with count from analytics
                     $post->view_count = $analytics->rows[0][1];
                     //update the counter in database too
@@ -374,8 +373,8 @@ class PostsController extends Controller {
                 }
             }catch (\Exception $e) {
                 if(Auth::check() && Auth::user()->role == 'admin'){
-		    return $e->getMessage();
-		}
+            		    echo ('ADMIN only message: google analytics API hit limit. '.$e->getMessage());
+            		}
             }
         }
         $post['post_content'] =  $this->addTerkait($post->post_content,$post->id);
@@ -385,7 +384,7 @@ class PostsController extends Controller {
 INNER JOIN users u ON p.post_author = u.id
 WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
 group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 5");
-        return view('pages.single', compact('post', 'related', 'category', 'populer','anotherPost','terfavorit'));
+        return view('pages.single', compact('post', 'related', 'category','anotherPost','terfavorit'));
     } else {
         return redirect('/');
     }
@@ -416,13 +415,14 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         if ($post) {
             $category = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->pluck('meta_value')->first();
             $fcategory = Post_metum::where('post_id', $post->id)->where('meta_name', 'post_featured_category')->pluck('meta_value')->first();
+            $feedback_editor = Post_metum::where('post_id', $post->id)->where('meta_name', 'feedback_editor')->pluck('meta_value')->first();
             $related = Post_metum::where('post_id', $post->id)->where('meta_name', 'related_post')->value('meta_value');
             $banner_inside_article = Post_metum::where('post_id', $post->id)->where('meta_name', 'banner_inside_article')->value('meta_value');
             $competition = Competition_post::with('competition')->where('post_id', $post->id)->where('competition_id','>',0)->first();
             $draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
             if (Auth::check()) {
                 if ($post->post_author == Auth::user()->id || (Auth::user()->role === 'admin' || Auth::user()->role === 'editor')) {
-                    return view('pages.kirimtulisan', compact('post', 'category', 'fcategory', 'competition','related','banner_inside_article','draftcount'));
+                    return view('pages.kirimtulisan', compact('post', 'category', 'fcategory', 'feedback_editor', 'competition','related','banner_inside_article','draftcount'));
                 }
             } else {
                 return redirect('/');
@@ -461,11 +461,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         if (isset($request->savepublish)) {
             $requestData['post_status'] = 'publish';
             $requestData['published_by'] = Auth::user()->username;
-            if (!isset($requestData['published_at'])) {
-                $requestData['published_at'] = Carbon::now()->format('Y-m-d H:i:s');
-            } else {
-                $requestData['published_at'] = Carbon::createFromFormat('d/m/Y H.i', $requestData['published_at'])->format('Y-m-d H:i:s');
-            }
+            $requestData['published_at'] = Carbon::createFromFormat('d/m/Y H:i', $requestData['published_at']);
         } elseif (isset($request->savepending)) {
             $requestData['post_status'] = 'pending';
             $requestData['submitted_at'] = Carbon::now();
@@ -534,7 +530,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         } else {
           return redirect('/edit-tulisan/'.$post->post_slug);
         }
-
+        ///category
         $requestCat = ['post_id' => $post->id, 'meta_name' => 'post_category', 'meta_value' => $request->post_category];
         Post_metum::where('post_id', $post->id)->where('meta_name', 'post_category')->delete();
         Post_metum::create($requestCat);
@@ -543,6 +539,12 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         if ($request->post_fcategory > 0) {
             $requestFCat = ['post_id' => $post->id, 'meta_name' => 'post_featured_category', 'meta_value' => $request->post_fcategory];
             Post_metum::create($requestFCat);
+        }
+        ///feedback editor
+        Post_metum::where('post_id', $post->id)->where('meta_name', 'feedback_editor')->delete();
+        if (isset($request->feedback_editor)) {
+            $requestFeedback = ['post_id' => $post->id, 'meta_name' => 'feedback_editor', 'meta_value' => $request->feedback_editor];
+            Post_metum::create($requestFeedback);
         }
 
         ///ikutkan lomba by admin
@@ -559,15 +561,26 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
 
         if (isset($request->savepublish)) {
            //send email to user
+            if(!isset($requestData['post_slug'])){
+              $requestData['post_slug'] = '';
+            }
+           if(!isset($requestData['feedback_editor'])){
+             $requestData['feedback_editor'] = '';
+           }
            $data = [
              'name' => $post->post_authors->name,
              'title' => $requestData['post_title'],
-             'slug' => $requestData['post_slug'],
-             'message' => $requestData['moderation_message'],
+             'slug' => $post->post_slug,
+             'message' => '',
            ];
 	 //check if email valid (and not name/id if from facebook)
            if(filter_var($post->post_authors->email, FILTER_VALIDATE_EMAIL )){
-           Mail::to($post->post_authors->email)->send(new PostPublished($data));
+             try {
+                  Mail::to($post->post_authors->email)->send(new PostPublished($data));
+              }
+              catch (\Exception $e) {
+                  //return $e->getMessage();
+              }
            }
            //show alert in web
            Session::flash('flash_message', 'Naskah terbit! ' . HTML::link('/post/' . $post->post_slug, 'Lihat tulisan'));
@@ -594,7 +607,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
                         [
                             'thread_id' => $thread->id,
                             'user_id' => Auth::user()->id,
-                            'body' => '<p><i>Tulisan anda dikembalikan oleh editor dengan pesan: </i> <br/>' . $requestData['moderation_message']
+                            'body' => '<p><i>Tulisan anda dikembalikan oleh editor dengan pesan: </i> <br/>' . $requestData['feedback_editor']
                             . '</p><p>' . HTML::link('/edit-tulisan/' . $post->post_slug, ' Edit Tulisan: ' . $post->post_title, ['class' => 'btn btn-default']) . '</p>',
                         ]
                 );
@@ -610,7 +623,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
                         [
                             'thread_id' => $thread->id,
                             'user_id' => Auth::user()->id,
-                            'body' => '<p><i>Tulisan anda dikembalikan oleh editor dengan pesan: </i> <br/>' . $requestData['moderation_message']
+                            'body' => '<p><i>Tulisan anda dikembalikan oleh editor dengan pesan: </i> <br/>' . $requestData['feedback_editor']
                             . '</p><p>' . HTML::link('/edit-tulisan/' . $post->post_slug, ' Edit Tulisan: ' . $post->post_title, ['class' => 'btn btn-default']) . '</p>',
                         ]
                 );
@@ -630,12 +643,17 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
             $data = [
                'name' => $post->post_authors->name,
                'title' => $requestData['post_title'],
-               'slug' => $requestData['post_slug'],
-               'message' => $requestData['moderation_message'],
+               'slug' => $post->post_slug,
+               'message' => $requestData['feedback_editor'],
              ];
 	   //check if email valid (and not name/id if from facebook)
              if(filter_var($post->post_authors->email, FILTER_VALIDATE_EMAIL )){
-             Mail::to($post->post_authors->email)->send(new PostReturned($data));
+             try {
+                Mail::to($post->post_authors->email)->send(new PostReturned($data));
+              }
+              catch (\Exception $e) {
+                  //return $e->getMessage();
+              }
              }
             //show alert in web
             Session::flash('flash_message', 'Naskah dikembalikan ke draft.');
@@ -680,21 +698,22 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
 
         //infinite scroll
         if ($request->ajax()) {
-           return view('widgets.article_row', compact('posts'));;
+           return view('components.article_row', compact('posts'));;
         }
 
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
     }
 
+    //show topik
     public function showcategoryposts($permalink, Request $request) {
         $category = Category::where('category_slug', '=', $permalink)->first();
         $pagetitle = 'Topik: ' . $category->category_title;
         $post_metum = Post_metum::where('meta_name', '=', 'post_category')->where('meta_value', '=', $category->id)->orderBy('created_at', 'DESC')->pluck('post_id');
-        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(12);
+        $posts = Post::with('post_authors')->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->whereIn('id', $post_metum)->orderBy('published_at', 'DESC')->paginate(9);
 
         //infinite scroll
         if ($request->ajax()) {
-           return view('widgets.article_row', compact('posts'));;
+           return view('components.article_row', compact('posts'));;
         }
 
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
@@ -712,7 +731,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
             $posts = Post::with('post_authors')->where('post_status', 'pending')->orderBy('submitted_at','ASC')->paginate(25);
 
-            return view('admin.pendingpages.index', compact('posts'));
+            return view('admin.pendingposts.index', compact('posts'));
         }
     }
 
@@ -721,37 +740,66 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
             //$posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
 
             //return view('admin.publishpages.index', compact('posts'));
-            return view('admin.publishpages.index_dt');
+            return view('admin.publishposts.index_dt');
         }
     }
     public function publishpostsData()
      {
          date_default_timezone_set('Asia/Jakarta');
-         return Datatables::of(Post::select('pages.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
+         return Datatables::of(Post::select('posts.id','name','username','post_title','post_slug','view_count','published_at','published_by','post_slug')
          ->leftJoin('users','users.id','post_author')->where('post_status', 'publish'))
          ->addColumn('action', function ($post) {
-                  return view('admin.publishpages.actions', compact('post'))->render();
+                  return view('admin.publishposts.actions', compact('post'))->render();
              })->editColumn('published_at', function ($post) {
                 return $post->published_at ? with(new Carbon($post->published_at))->format('d/m/Y H:i') : '';
             })
              ->make(true);
      }
+    //   public function trendingposts() {
+    //     if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+    //         //$posts = Post::with('post_authors')->where('post_status', 'publish')->orderBy('published_at','DESC')->paginate(25);
 
-    public function hiddenposts() {
-        if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
-            $posts = Post::with('post_authors')->where('hide', '1')->paginate(25);
+    //         //return view('admin.publishposts.index', compact('posts'));
+    //         return view('admin.trendingposts.index_dt');
+    //     }
+    // }
+    // public function trendingpostsData()
+    //  {
+    //      date_default_timezone_set('Asia/Jakarta');
+    //      return Datatables::of(Post::select('posts.id', 'name','username','post_title','post_slug','view_count','published_at','published_by','post_slug', 'meta_value as paymentdone')
+    //      ->leftJoin('users','users.id','post_author')->where('post_status', 'publish')->where('view_count', '>', '5000')
+    //       ->leftJoin('post_meta', function($join)
+    //         {
+    //             $join->on('post_id', '=', 'posts.id');
+    //             $join->where('meta_name', '=', 'paymentdone');
+    //         })
+    //       )
+    //      ->addColumn('action', function ($post) {
+    //               return view('admin.trendingposts.actions', compact('post'))->render();
+    //          })->editColumn('published_at', function ($post) {
+    //             return $post->published_at ? with(new Carbon($post->published_at))->format('d/m/Y H:i') : '';
+    //         })
+    //          ->make(true);
+    //  }
 
-            return view('admin.pages.index', compact('posts'));
-        }
-    }
 
-    public function lockedposts() {
-        if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
-            $posts = Post::with('post_authors')->where('require_login', '1')->paginate(25);
+     public function hiddenposts() {
+        $pagetitle = 'Naskah Disembunyikan';
+         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+             $posts = Post::with('post_authors')->where('hide', '1')->paginate(25);
 
-            return view('admin.pages.index', compact('posts'));
-        }
-    }
+             return view('admin.posts.index', compact('posts','pagetitle'));
+         }
+     }
+
+     public function lockedposts() {
+        $pagetitle = 'Naskah Dikunci';
+         if (Auth::user()->role === 'admin' || Auth::user()->role === 'editor') {
+             $posts = Post::with('post_authors')->where('require_login', '1')->paginate(25);
+
+             return view('admin.posts.index', compact('posts','pagetitle'));
+         }
+     }
 
     public function tulisanku($status = 'publish') {
         if (Auth::check()) {
@@ -759,9 +807,10 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
             $publishcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'publish')->count();
             $pendingcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'pending')->count();
             $draftcount = Post::where('post_author', Auth::user()->id)->where('post_status', '=', 'draft')->count();
-            $pagetitle = 'Tulisanku <small> <a href="' . url('/tulisanku/publish') . '">Terbit (' . $publishcount . ')</a> | <a href="' . url('/tulisanku/pending') . '">Moderasi Editor (' . $pendingcount . ')</a> | <a href="' . url('/tulisanku/draft') . '">Draft (' . $draftcount . ')</a> </small>';
+            $pagetitle = 'Tulisanku';
+            $pagesubtitle = '<small> <a href="' . url('/tulisanku/publish') . '">Terbit (' . $publishcount . ')</a> | <a href="' . url('/tulisanku/pending') . '">Moderasi Editor (' . $pendingcount . ')</a> | <a href="' . url('/tulisanku/draft') . '">Draft (' . $draftcount . ')</a> </small>';
             if (count($posts) > 0) {
-                return view('pages.artikel_draft', compact('pagetitle', 'posts'));
+                return view('pages.artikel_draft', compact('pagetitle','pagesubtitle', 'posts'));
             } else {
                 switch ($status) {
                     case 'publish':
@@ -774,7 +823,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
                         $statusname = 'belum dikirim';
                         break;
                 }
-                return view('pages.tulisanku_none', compact('pagetitle', 'statusname'));
+                return view('pages.artikel_draft', compact('pagetitle','pagesubtitle', 'statusname','posts'));
             }
         } else {
             return Redirect::route('login')->with('message', 'Anda harus login');
@@ -799,7 +848,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
 
         //infinite scroll
         if ($request->ajax()) {
-           return view('widgets.article_row_viewcount', compact('posts'));;
+           return view('components.article_row_viewcount', compact('posts'));;
         }
 
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
@@ -851,17 +900,10 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
 
         //infinite scroll
         if ($request->ajax()) {
-           return view('widgets.article_row', compact('posts'));;
+           return view('components.article_row', compact('posts'));;
         }
 
         return view('pages.artikel_infinite', compact('pagetitle', 'posts'));
-    }
-
-    public function gototopik() {
-        ///kayaknya ini ga kepake deh, delete aja
-        //$topik = $request->input('topik');
-        //echo $topik;
-        //return Redirect::route('/topik/'.$topik);
     }
 
     public function incrementviewcounter(Request $request) {
@@ -927,7 +969,7 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
     public function autoComplete(Request $request) {
         $query = $request->get('term','');
 
-        $posts=Post::where('post_title','LIKE','%'.$query.'%')->where('post_status','=','publish')->take(10)->get();
+        $posts=Post::where('post_title','LIKE','%'.$query.'%')->where('post_status','=','publish')->orderBy('published_at','DESC')->take(10)->get();
 
         $data=array();
         foreach ($posts as $post) {
@@ -937,5 +979,17 @@ group by post_author, u.name, u.username, u.user_image, u.role  order by sum(vie
              return $data;
         else
             return ['value'=>'No Result Found','id'=>''];
+    }
+    public function markpaymentdone($postid)
+    {
+      Post_metum::where('post_id', '=', $postid)->where('meta_name','=','paymentdone')->delete();
+      $requestCat = ['post_id' => $postid, 'meta_name' => 'paymentdone', 'meta_value' => 1];
+      Post_metum::create($requestCat);
+      return redirect('/admin/trendingposts');
+    }
+    public function markpaymentundone($postid)
+    {
+      Post_metum::where('post_id', '=', $postid)->where('meta_name','=','paymentdone')->delete();
+      return redirect('/admin/trendingposts');
     }
 }

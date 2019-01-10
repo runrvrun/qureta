@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 @section('content')
 <div class="container">
     <input type="hidden" id="followerid" value="{{ Auth::user()->id }}" />

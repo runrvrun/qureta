@@ -1,4 +1,5 @@
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 
 @section('content')
 <?php Carbon::setLocale('id'); ?>

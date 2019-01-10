@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 
 @section('title')
 - {{ $pagetitle }}

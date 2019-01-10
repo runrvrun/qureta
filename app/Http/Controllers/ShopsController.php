@@ -23,9 +23,4 @@ class ShopsController extends Controller {
         $lainnya = Shop::where('category','lainnya')->orderBy('updated_at','desc')->take(4)->get();
         return view('pages.shop', compact('kaos','mug','tas','bantal','lainnya'));
     }
-    public function indexcategory($category) {
-        $shop = Shop::where('category',$category)->orderBy('updated_at','desc')->paginate(16);
-        return view('pages.shopcategory', compact('shop'));
-    }
-
 }

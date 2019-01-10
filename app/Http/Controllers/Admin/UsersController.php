@@ -31,11 +31,12 @@ class UsersController extends Controller {
     }
 
     public function alluserdata() {
-      return Datatables::of(User::select('id','username','name','email','phone_number'))
+      return Datatables::of(User::select('id','username','name','post_count','email','phone_number'))
       ->addColumn('action', function ($item) {
                return view('admin.users.actions', compact('item'))->render();
           })->make(true);
     }
+
 
     public function search(Request $request) {
         $users = User::orderBy('username')->where('username', 'like', '%' . $request->search . '%')->orWhere('name', 'like', '%' . $request->search . '%')->paginate(25, ['*'], 'page');

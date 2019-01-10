@@ -31,6 +31,7 @@ class MessagesController extends Controller
          $threads = Thread::forUser($currentUserId)->latest('updated_at')->paginate(10);
         // All threads that user is participating in, with new messages
         // $threads = Thread::forUserWithNewMessages($currentUserId)->latest('updated_at')->get();
+
         return view('messenger.index', compact('threads', 'currentUserId'));
     }
     /**
@@ -53,7 +54,11 @@ class MessagesController extends Controller
         $userId = Auth::user()->id;
         $users = User::whereIn('id', $thread->participantsUserIds($userId))->get();
         $thread->markAsRead($userId);
+
+        
+
         return view('messenger.show', compact('thread', 'users'));
+
     }
     /**
      * Creates a new message thread.
@@ -62,6 +67,9 @@ class MessagesController extends Controller
      */
     public function create(Request $request)
     {
+
+
+    	;
         return view('messenger.create', ['username'=>$request->u]);
     }
     /**
@@ -130,6 +138,7 @@ class MessagesController extends Controller
                 'thread_id' => $thread->id,
                 'user_id'   => Auth::id(),
                 'body'      => Input::get('message'),
+                
             ]
         );
         // Add replier as a participant
@@ -146,6 +155,8 @@ class MessagesController extends Controller
             $recipients = explode(',',$recipient);
             $thread->addParticipant(Input::get('recipients'));
         }
+             Session::flash('flash_message', 'Naskah dikembalikan ke draft.');
+
         return redirect('messages');
     }
 
@@ -171,4 +182,5 @@ class MessagesController extends Controller
 
         return redirect('messages');
     }
+
 }

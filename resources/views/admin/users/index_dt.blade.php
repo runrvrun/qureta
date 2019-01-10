@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
+<!-- Tidak dipakai @ extends('layouts.admin')-->
 @section('content')
 @if (Session::has('flash_message'))
 <div class="alert alert-success alert-dismissible" role="alert">
@@ -24,7 +24,7 @@
                         <table class="table table-borderless" id='allusertable'>
                             <thead>
                                 <tr>
-                                    <th> Username </th><th> Name </th><th data-sortable="false"> Email </th><th data-sortable="false"> Phone </th><th data-sortable="false">Actions</th>
+                                    <th> Username </th><th> Name </th><th> Naskah </th><th data-sortable="false"> Email </th><th data-sortable="false"> Phone </th><th data-sortable="false">Actions</th>
                                 </tr>
                             </thead>
                         </table>
@@ -163,7 +163,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($premium as $item)
+                                @foreach($admin as $item)
                                 @if(Auth::user()->role === 'admin')
                                 <tr>
                                     <td>{{ HTML::link('/profile/'.$item->username ,$item->username)}}</td><td>{{ HTML::link('/profile/'.$item->username ,$item->name) }}</td><td>{{ $item->post_count }}</td><td>{{ $item->email }}</td><td>{{ $item->phone_number }}</td>
@@ -272,7 +272,7 @@
     </div>
 </div>
 @endsection
-@section('addjs')
+@section('addfooter')
 <script>
     $(document).ready(function () {
         var url = window.location.href;
@@ -295,6 +295,7 @@
         columns: [
             { data: 'username', name: 'username' },
             { data: 'name', name: 'name' },
+            { data: 'post_count', name: 'post_count' },
             { data: 'email', name: 'email' },
             { data: 'phone_number', name: 'phone_number' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'}

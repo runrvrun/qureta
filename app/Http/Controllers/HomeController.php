@@ -36,41 +36,26 @@ class HomeController extends Controller {
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '1');
                 })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(5)->get();
-        $slides[0] = $post_metum[4];
-        unset($post_metum[4]);
         $aktual = $post_metum;
-        //fiksi
-        $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
-                    $query->where('meta_name', 'post_featured_category')->where('meta_value', '2');
-                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(5)->get();
-        $slides[1] = $post_metum[4];
-        unset($post_metum[4]);
-        $fiksi = $post_metum;
         //inspiratif
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '3');
                 })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(5)->get();
-        $slides[2] = $post_metum[4];
-        unset($post_metum[4]);
         $inspiratif = $post_metum;
         //jenaka
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '4');
-                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(7)->get();
-        $slides[3] = $post_metum[6];
-        unset($post_metum[6]);
+                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(10)->get();
         $jenaka = $post_metum;
         //kiat
         $post_metum = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '5');
                 })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(9)->get();
-        $slides[4] = $post_metum[8];
-        unset($post_metum[8]);
         $kiat = $post_metum;
         //fiksi
         $fiksi = Post::with('post_authors')->whereHas('post_metum', function($query) {
                     $query->where('meta_name', 'post_featured_category')->where('meta_value', '2');
-                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(3)->get();
+                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(10)->get();
         //lombaesai
         $lombaesai = Post::where('post_author',7162)->orderBy('published_at','DESC')->take(4)->get();
         //populer, ambil hanya yang featured_category
@@ -91,19 +76,27 @@ class HomeController extends Controller {
         $populer_today = $post_metum;
         //populer now
         $limit=12;
-        $posts = get_popular_post($limit);
+
+        $trending = Post::with('post_authors')->where('view_count','>=','5000')->orderBy('published_at','DESC')->take(4)->get();
+
+        //penulis terbaru
+        $terbaru = DB::select("SELECT u.id, u.name, u.user_image, u.username
+FROM users u
+LEFT JOIN posts p ON u.id=p.post_author
+WHERE u.status=1 and p.id = (SELECT MIN(id) FROM posts WHERE post_author=u.id and post_status='publish' and hide=0 and published_at < now())
+ORDER BY p.published_at DESC LIMIT 5");
 
         //penulis terfavorit
-        $terfavorit = DB::select("SELECT u.id, post_author, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
+        $terfavorit = DB::select("SELECT u.id, sum(view_count) total_view, u.name, u.username, u.user_image, u.role from posts p
 INNER JOIN users u ON p.post_author = u.id
 WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
-group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 4");
+group by post_author, u.name, u.username, u.user_image, u.role  order by sum(view_count) desc limit 5");
 
         //penulis terproduktif
-        $terproduktif = DB::select("SELECT u.id, post_author, count(p.id) total_post, u.name, u.username, u.user_image, u.role
+        $terproduktif = DB::select("SELECT u.id, count(p.id) total_post, u.name, u.username, u.user_image, u.role
 FROM posts p INNER JOIN users u ON p.post_author = u.id
 WHERE p.post_status = 'publish' AND p.hide = 0 AND p.published_at < now() AND u.status=1
-GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit 4");
+GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.id) desc limit 5");
 
         ///get most popular buqus
         $buqus = Buqu::where('featured_at','>',0)->orderBy('featured_at', 'DESC')->take($limit)->get();
@@ -112,7 +105,11 @@ GROUP BY post_author, u.name, u.username, u.user_image, u.role ORDER BY count(p.
         ///get newsflash
         $newsflash = Newsflash::inRandomOrder()->first();
 
-        return view('pages.home', compact('slides', 'aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'fiksi', 'lombaesai', 'posts', 'buqus','kuliah','newsflash','populer_today','terfavorit','terproduktif'));
+        $ceritakertas = Post::with('post_authors')->whereHas('post_metum', function($query) {
+                    $query->where('meta_name', 'post_featured_category')->where('meta_value', '12');
+                })->where('post_status', 'publish')->where('hide', 0)->where('published_at', '<=', Carbon::now())->orderBy('sticky', 'DESC')->orderBy('published_at', 'DESC')->take(2)->get();
+                
+        return view('pages.home', compact('aktual', 'fiksi', 'inspiratif', 'jenaka', 'kiat', 'fiksi', 'lombaesai', 'buqus','kuliah','newsflash','populer_today','trending','terbaru','terfavorit','terproduktif','ceritakertas'));
     }
 
 
